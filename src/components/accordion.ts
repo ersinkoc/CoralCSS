@@ -78,9 +78,9 @@ export class Accordion extends BaseComponent {
   protected declare config: AccordionConfig
   protected declare state: AccordionState
 
-  private items: HTMLElement[] = []
-  private triggers: HTMLElement[] = []
-  private panels: HTMLElement[] = []
+  private items!: HTMLElement[]
+  private triggers!: HTMLElement[]
+  private panels!: HTMLElement[]
 
   protected getDefaultConfig(): AccordionConfig {
     return {
@@ -101,6 +101,9 @@ export class Accordion extends BaseComponent {
   }
 
   protected setupAria(): void {
+    // Initialize arrays (needed because setupAria is called from parent constructor)
+    this.triggers = []
+    this.panels = []
     this.items = Array.from(this.queryAll(this.config.itemSelector!))
 
     this.items.forEach((item, index) => {

@@ -8,7 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@coralcss/core': path.resolve(__dirname, '../dist'),
+      '@coralcss/core/runtime': path.resolve(__dirname, '../dist/runtime.js'),
+      '@coralcss/core/components': path.resolve(__dirname, '../dist/components/index.js'),
+      '@coralcss/core': path.resolve(__dirname, '../dist/index.js'),
     },
   },
   build: {

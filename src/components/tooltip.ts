@@ -78,11 +78,11 @@ export class Tooltip extends BaseComponent {
   protected declare config: TooltipConfig
   protected declare state: TooltipState
 
-  private content: HTMLElement | null = null
-  private trigger: HTMLElement | null = null
-  private showTimeout: ReturnType<typeof setTimeout> | null = null
-  private hideTimeout: ReturnType<typeof setTimeout> | null = null
-  private titleContent: string | null = null
+  private content!: HTMLElement | null
+  private trigger!: HTMLElement | null
+  private showTimeout!: ReturnType<typeof setTimeout> | null
+  private hideTimeout!: ReturnType<typeof setTimeout> | null
+  private titleContent!: string | null
 
   protected getDefaultConfig(): TooltipConfig {
     return {
@@ -102,6 +102,11 @@ export class Tooltip extends BaseComponent {
   }
 
   protected setupAria(): void {
+    // Initialize fields (needed because setupAria is called from parent constructor)
+    this.showTimeout = null
+    this.hideTimeout = null
+    this.titleContent = null
+
     this.content = this.query(this.config.contentSelector!)
     this.trigger = this.query('[data-coral-tooltip-trigger]') ?? this.element
 

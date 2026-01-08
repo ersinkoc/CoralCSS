@@ -59,7 +59,7 @@ export class Switch extends BaseComponent {
   protected declare config: SwitchConfig
   protected declare state: SwitchState
 
-  private hiddenInput: HTMLInputElement | null = null
+  private hiddenInput!: HTMLInputElement | null
 
   protected getDefaultConfig(): SwitchConfig {
     return {
@@ -81,6 +81,9 @@ export class Switch extends BaseComponent {
   }
 
   protected setupAria(): void {
+    // Initialize field (needed because setupAria is called from parent constructor)
+    this.hiddenInput = null
+
     // Ensure proper role
     if (!this.element.getAttribute('role')) {
       this.element.setAttribute('role', 'switch')

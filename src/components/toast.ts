@@ -73,9 +73,9 @@ export class Toast extends BaseComponent {
   protected declare config: ToastConfig
   protected declare state: ToastState
 
-  private dismissTimeout: ReturnType<typeof setTimeout> | null = null
-  private remainingTime: number = 0
-  private startTime: number = 0
+  private dismissTimeout!: ReturnType<typeof setTimeout> | null
+  private remainingTime!: number
+  private startTime!: number
 
   protected getDefaultConfig(): ToastConfig {
     return {
@@ -96,6 +96,11 @@ export class Toast extends BaseComponent {
   }
 
   protected setupAria(): void {
+    // Initialize fields (needed because setupAria is called from parent constructor)
+    this.dismissTimeout = null
+    this.remainingTime = 0
+    this.startTime = 0
+
     // Set up ARIA
     this.element.setAttribute('role', 'alert')
     this.element.setAttribute('aria-live', 'polite')

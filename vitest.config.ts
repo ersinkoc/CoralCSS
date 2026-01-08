@@ -5,6 +5,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    environmentMatchGlobs: [
+      // Use jsdom for component and runtime tests
+      ['tests/unit/components/**', 'jsdom'],
+      ['tests/unit/runtime/**', 'jsdom'],
+    ],
     include: ['tests/**/*.test.ts'],
     exclude: ['tests/e2e/**', 'node_modules', 'dist'],
     coverage: {
