@@ -31,21 +31,6 @@ export function ThemeCustomizer() {
   const [activeRadius, setActiveRadius] = useState('lg')
   const { theme, setTheme } = useTheme()
 
-  // Load saved preferences
-  useEffect(() => {
-    const savedColor = localStorage.getItem('coral-color-theme')
-    const savedRadius = localStorage.getItem('coral-radius')
-
-    if (savedColor) {
-      setActiveColorTheme(savedColor)
-      applyColorTheme(savedColor)
-    }
-    if (savedRadius) {
-      setActiveRadius(savedRadius)
-      applyRadius(savedRadius)
-    }
-  }, [])
-
   const applyColorTheme = useCallback((themeId: string) => {
     // Remove all theme classes
     colorThemes.forEach(t => {
@@ -71,6 +56,21 @@ export function ThemeCustomizer() {
     }
     localStorage.setItem('coral-radius', radiusId)
   }, [])
+
+  // Load saved preferences
+  useEffect(() => {
+    const savedColor = localStorage.getItem('coral-color-theme')
+    const savedRadius = localStorage.getItem('coral-radius')
+
+    if (savedColor) {
+      setActiveColorTheme(savedColor)
+      applyColorTheme(savedColor)
+    }
+    if (savedRadius) {
+      setActiveRadius(savedRadius)
+      applyRadius(savedRadius)
+    }
+  }, [applyColorTheme, applyRadius])
 
   const handleColorChange = (themeId: string) => {
     setActiveColorTheme(themeId)
