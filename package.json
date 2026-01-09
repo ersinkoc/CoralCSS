@@ -1,5 +1,5 @@
 {
-  "name": "@coralcss/core",
+  "name": "@coral-css/core",
   "version": "1.0.0",
   "description": "A modern, zero-dependency CSS framework with utility classes, headless components, and first-class support for cutting-edge CSS features.",
   "type": "module",
@@ -106,7 +106,11 @@
         "types": "./dist/theme/index.d.cts",
         "default": "./dist/theme/index.cjs"
       }
-    }
+    },
+    "./coral.css": "./dist/coral.css",
+    "./coral.min.css": "./dist/coral.min.css",
+    "./styles": "./dist/coral.css",
+    "./styles.min": "./dist/coral.min.css"
   },
   "bin": {
     "coralcss": "./dist/cli.js"
@@ -116,7 +120,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/build-css.js",
+    "build:css": "node scripts/build-css.js",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",

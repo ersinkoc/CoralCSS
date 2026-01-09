@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|-------|
-| **NPM Package** | `@coralcss/core` |
+| **NPM Package** | `@coral-css/core` |
 | **GitHub Organization** | `https://github.com/coralcss` |
 | **GitHub Repository** | `https://github.com/coralcss/coralcss` |
 | **Documentation Site** | `https://coralcss.com` |
@@ -1062,10 +1062,10 @@ interface HeadlessComponent<TElement extends HTMLElement> {
 
 | Plugin | Purpose |
 |--------|---------|
-| `@coralcss/core/utilities` | All utility class rules |
-| `@coralcss/core/variants` | All variant processors |
-| `@coralcss/core/modern` | Modern CSS features |
-| `@coralcss/core/theming` | Theme system |
+| `@coral-css/core/utilities` | All utility class rules |
+| `@coral-css/core/variants` | All variant processors |
+| `@coral-css/core/modern` | Modern CSS features |
+| `@coral-css/core/theming` | Theme system |
 
 ### 10.2 Optional Plugins
 
@@ -1095,7 +1095,7 @@ interface HeadlessComponent<TElement extends HTMLElement> {
 
 ```typescript
 // vite.config.ts
-import coral from '@coralcss/core/vite'
+import coral from '@coral-css/core/vite'
 
 export default {
   plugins: [
@@ -1114,7 +1114,7 @@ export default {
 // postcss.config.js
 module.exports = {
   plugins: {
-    '@coralcss/core/postcss': {
+    '@coral-css/core/postcss': {
       content: ['./src/**/*.html']
     }
   }

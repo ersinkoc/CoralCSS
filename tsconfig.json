@@ -21,8 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@coralcss/core": ["src/index.ts"],
-      "@coralcss/core/*": ["src/*"]
+      "@coral-css/core": ["src/index.ts"],
+      "@coral-css/core/*": ["src/*"]
     },
     "types": ["node", "vitest/globals"]
   },

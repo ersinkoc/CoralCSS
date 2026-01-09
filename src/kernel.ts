@@ -600,7 +600,7 @@ export class Kernel implements Coral {
  *
  * @example
  * ```typescript
- * import { createCoral, presetCoral } from '@coralcss/core'
+ * import { createCoral, presetCoral } from '@coral-css/core'
  *
  * const coral = createCoral({
  *   presets: [presetCoral()],

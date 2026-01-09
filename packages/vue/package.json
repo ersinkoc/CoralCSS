@@ -1,0 +1,53 @@
+{
+  "name": "@coral-css/vue",
+  "version": "0.1.0",
+  "description": "Vue components for CoralCSS",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": {
+      "import": "./dist/styles.css"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --external vue",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --external vue",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3.0"
+  },
+  "dependencies": {
+    "@coral-css/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vue": "^3.4.0",
+    "vue-tsc": "^1.8.0"
+  },
+  "keywords": [
+    "vue",
+    "css",
+    "ui",
+    "components",
+    "coralcss"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coralcss/coralcss.git",
+    "directory": "packages/vue"
+  }
+}

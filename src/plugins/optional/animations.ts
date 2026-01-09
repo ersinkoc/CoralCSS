@@ -260,6 +260,103 @@ const keyframes = {
   0% { transform: translateY(0); }
   100% { transform: translateY(-100%); }
 }`,
+
+  // Advanced/Modern animations
+  morph: `@keyframes morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+  75% { border-radius: 60% 40% 60% 30% / 60% 50% 40% 70%; }
+}`,
+  blob: `@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(20px, -30px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.9); }
+  75% { transform: translate(30px, 20px) scale(1.05); }
+}`,
+  gradient: `@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}`,
+  typing: `@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}`,
+  blink: `@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}`,
+  reveal: `@keyframes reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}`,
+  unreveal: `@keyframes unreveal {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(0 100% 0 0); }
+}`,
+  ripple: `@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}`,
+  wave: `@keyframes wave {
+  0%, 60%, 100% { transform: initial; }
+  30% { transform: translateY(-15px); }
+}`,
+  glitch: `@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}`,
+  neon: `@keyframes neon {
+  0%, 100% { text-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary)); }
+  50% { text-shadow: 0 0 2px hsl(var(--primary)), 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)); }
+}`,
+  rainbow: `@keyframes rainbow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}`,
+  orbit: `@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+}`,
+  tilt: `@keyframes tilt {
+  0%, 50%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}`,
+  elastic: `@keyframes elastic {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.25); }
+  40% { transform: scale(0.75); }
+  50% { transform: scale(1.15); }
+  65% { transform: scale(0.95); }
+  75% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}`,
+  pop: `@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}`,
+  slideUpBounce: `@keyframes slideUpBounce {
+  0% { transform: translateY(100%); opacity: 0; }
+  50% { transform: translateY(-10%); }
+  70% { transform: translateY(5%); }
+  100% { transform: translateY(0); opacity: 1; }
+}`,
+  flip3D: `@keyframes flip3D {
+  0% { transform: perspective(400px) rotateY(0); }
+  100% { transform: perspective(400px) rotateY(360deg); }
+}`,
+  rotateIn3D: `@keyframes rotateIn3D {
+  0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; }
+  40% { transform: perspective(1000px) rotateX(20deg); }
+  60% { transform: perspective(1000px) rotateX(-10deg); }
+  80% { transform: perspective(1000px) rotateX(5deg); opacity: 1; }
+  100% { transform: perspective(1000px) rotateX(0); }
+}`,
 }
 
 /**
@@ -352,6 +449,27 @@ export function animationsPlugin(options: AnimationsPluginOptions = {}): Plugin 
       rules.push({ pattern: 'animate-breathe', properties: { animation: 'breathe 4s ease-in-out infinite' } })
       rules.push({ pattern: 'animate-glow', properties: { animation: 'glow 2s ease-in-out infinite' } })
 
+      // Advanced/Modern animations
+      rules.push({ pattern: 'animate-morph', properties: { animation: 'morph 8s ease-in-out infinite' } })
+      rules.push({ pattern: 'animate-blob', properties: { animation: 'blob 7s infinite' } })
+      rules.push({ pattern: 'animate-gradient', properties: { animation: 'gradient 4s ease infinite', 'background-size': '200% 200%' } })
+      rules.push({ pattern: 'animate-typing', properties: { animation: 'typing 3s steps(30, end)', overflow: 'hidden', 'white-space': 'nowrap' } })
+      rules.push({ pattern: 'animate-blink', properties: { animation: 'blink 1s step-end infinite' } })
+      rules.push({ pattern: 'animate-reveal', properties: { animation: 'reveal 1s ease-out forwards' } })
+      rules.push({ pattern: 'animate-unreveal', properties: { animation: 'unreveal 1s ease-in forwards' } })
+      rules.push({ pattern: 'animate-ripple', properties: { animation: 'ripple 0.6s ease-out' } })
+      rules.push({ pattern: 'animate-wave', properties: { animation: 'wave 1.2s ease-in-out infinite' } })
+      rules.push({ pattern: 'animate-glitch', properties: { animation: 'glitch 0.5s ease-in-out infinite' } })
+      rules.push({ pattern: 'animate-neon', properties: { animation: 'neon 1.5s ease-in-out infinite' } })
+      rules.push({ pattern: 'animate-rainbow', properties: { animation: 'rainbow 3s linear infinite' } })
+      rules.push({ pattern: 'animate-orbit', properties: { animation: 'orbit 4s linear infinite' } })
+      rules.push({ pattern: 'animate-tilt', properties: { animation: 'tilt 1s ease-in-out infinite' } })
+      rules.push({ pattern: 'animate-elastic', properties: { animation: 'elastic 1s ease-out' } })
+      rules.push({ pattern: 'animate-pop', properties: { animation: 'pop 0.3s ease-out' } })
+      rules.push({ pattern: 'animate-slide-up-bounce', properties: { animation: 'slideUpBounce 0.6s ease-out' } })
+      rules.push({ pattern: 'animate-flip-3d', properties: { animation: 'flip3D 1s ease-in-out' } })
+      rules.push({ pattern: 'animate-rotate-in-3d', properties: { animation: 'rotateIn3D 0.8s ease-out' } })
+
       // Marquee/scroll animations
       if (scroll) {
         rules.push({ pattern: 'animate-marquee', properties: { animation: 'marquee 20s linear infinite' } })
@@ -436,6 +554,250 @@ export function animationsPlugin(options: AnimationsPluginOptions = {}): Plugin 
         },
       })
 
+      // ========================================
+      // @starting-style Support (CSS Level 4 / Tailwind 4 parity)
+      // Enables CSS-only entry animations without JavaScript
+      // ========================================
+
+      // Starting style base class - enables starting-style animations
+      // Usage: Apply 'starting' class along with 'starting-*' utilities
+      // Note: Include generateStartingStyleCSS() output in your CSS for @starting-style rules
+      rules.push({
+        pattern: 'starting',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-scale': '0.95',
+          '--starting-translate-x': '0',
+          '--starting-translate-y': '0',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Starting style opacity variants
+      rules.push({
+        pattern: 'starting-opacity-0',
+        properties: { '--starting-opacity': '0' },
+      })
+      rules.push({
+        pattern: 'starting-opacity-50',
+        properties: { '--starting-opacity': '0.5' },
+      })
+      rules.push({
+        pattern: 'starting-opacity-100',
+        properties: { '--starting-opacity': '1' },
+      })
+
+      // Starting style scale variants
+      rules.push({
+        pattern: 'starting-scale-0',
+        properties: { '--starting-scale': '0' },
+      })
+      rules.push({
+        pattern: 'starting-scale-50',
+        properties: { '--starting-scale': '0.5' },
+      })
+      rules.push({
+        pattern: 'starting-scale-75',
+        properties: { '--starting-scale': '0.75' },
+      })
+      rules.push({
+        pattern: 'starting-scale-90',
+        properties: { '--starting-scale': '0.9' },
+      })
+      rules.push({
+        pattern: 'starting-scale-95',
+        properties: { '--starting-scale': '0.95' },
+      })
+      rules.push({
+        pattern: 'starting-scale-100',
+        properties: { '--starting-scale': '1' },
+      })
+      rules.push({
+        pattern: 'starting-scale-105',
+        properties: { '--starting-scale': '1.05' },
+      })
+      rules.push({
+        pattern: 'starting-scale-110',
+        properties: { '--starting-scale': '1.1' },
+      })
+
+      // Starting style translate variants
+      const startingTranslateValues = ['0', '1', '2', '4', '8', '12', '16', '24', '32']
+      for (const v of startingTranslateValues) {
+        const rem = parseInt(v) * 0.25
+        rules.push({
+          pattern: `starting-translate-x-${v}`,
+          properties: { '--starting-translate-x': `${rem}rem` },
+        })
+        rules.push({
+          pattern: `-starting-translate-x-${v}`,
+          properties: { '--starting-translate-x': `-${rem}rem` },
+        })
+        rules.push({
+          pattern: `starting-translate-y-${v}`,
+          properties: { '--starting-translate-y': `${rem}rem` },
+        })
+        rules.push({
+          pattern: `-starting-translate-y-${v}`,
+          properties: { '--starting-translate-y': `-${rem}rem` },
+        })
+      }
+
+      // Starting style duration
+      rules.push({
+        pattern: 'starting-duration-75',
+        properties: { '--starting-duration': '75ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-100',
+        properties: { '--starting-duration': '100ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-150',
+        properties: { '--starting-duration': '150ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-200',
+        properties: { '--starting-duration': '200ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-300',
+        properties: { '--starting-duration': '300ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-500',
+        properties: { '--starting-duration': '500ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-700',
+        properties: { '--starting-duration': '700ms' },
+      })
+      rules.push({
+        pattern: 'starting-duration-1000',
+        properties: { '--starting-duration': '1000ms' },
+      })
+
+      // Starting style easing
+      rules.push({
+        pattern: 'starting-ease-linear',
+        properties: { '--starting-easing': 'linear' },
+      })
+      rules.push({
+        pattern: 'starting-ease-in',
+        properties: { '--starting-easing': 'cubic-bezier(0.4, 0, 1, 1)' },
+      })
+      rules.push({
+        pattern: 'starting-ease-out',
+        properties: { '--starting-easing': 'cubic-bezier(0, 0, 0.2, 1)' },
+      })
+      rules.push({
+        pattern: 'starting-ease-in-out',
+        properties: { '--starting-easing': 'cubic-bezier(0.4, 0, 0.2, 1)' },
+      })
+      rules.push({
+        pattern: 'starting-ease-bounce',
+        properties: { '--starting-easing': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)' },
+      })
+
+      // Pre-built starting style compositions for common patterns
+      // Note: Include generateStartingStyleCSS() output in your CSS for @starting-style rules
+
+      // Fade in from opacity 0
+      rules.push({
+        pattern: 'starting-fade',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-scale': '1',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Scale in from smaller
+      rules.push({
+        pattern: 'starting-scale',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-scale': '0.9',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Slide in from top
+      rules.push({
+        pattern: 'starting-slide-down',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-translate-y': '-1rem',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Slide in from bottom
+      rules.push({
+        pattern: 'starting-slide-up',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-translate-y': '1rem',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Slide in from left
+      rules.push({
+        pattern: 'starting-slide-right',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-translate-x': '-1rem',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Slide in from right
+      rules.push({
+        pattern: 'starting-slide-left',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-translate-x': '1rem',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Zoom in (scale from smaller with opacity)
+      rules.push({
+        pattern: 'starting-zoom',
+        properties: {
+          '--starting-opacity': '0',
+          '--starting-scale': '0.5',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Flip in (3D rotation)
+      rules.push({
+        pattern: 'starting-flip-x',
+        properties: {
+          '--starting-opacity': '0',
+          transition: 'opacity var(--starting-duration, 500ms) var(--starting-easing, ease-out), transform var(--starting-duration, 500ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      rules.push({
+        pattern: 'starting-flip-y',
+        properties: {
+          '--starting-opacity': '0',
+          transition: 'opacity var(--starting-duration, 500ms) var(--starting-easing, ease-out), transform var(--starting-duration, 500ms) var(--starting-easing, ease-out)',
+        },
+      })
+
+      // Blur in
+      rules.push({
+        pattern: 'starting-blur',
+        properties: {
+          '--starting-opacity': '0',
+          transition: 'opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), filter var(--starting-duration, 300ms) var(--starting-easing, ease-out)',
+        },
+      })
+
       // Register all rules
       for (const rule of rules) {
         ctx.addRule(rule)
@@ -458,6 +820,83 @@ export function getAnimationKeyframes(options: AnimationsPluginOptions = {}): st
  */
 export function generateAnimationCSS(options: AnimationsPluginOptions = {}): string {
   return getAnimationKeyframes(options)
+}
+
+/**
+ * Generate @starting-style CSS for entry animations
+ * This enables CSS-only entry animations without JavaScript
+ */
+export function generateStartingStyleCSS(): string {
+  return `/* @starting-style - CSS-only entry animations */
+@starting-style {
+  .starting {
+    opacity: var(--starting-opacity, 0);
+    transform: scale(var(--starting-scale, 0.95)) translateX(var(--starting-translate-x, 0)) translateY(var(--starting-translate-y, 0));
+  }
+  .starting-fade {
+    opacity: 0;
+  }
+  .starting-scale {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  .starting-slide-down {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  .starting-slide-up {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  .starting-slide-right {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+  .starting-slide-left {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+  .starting-zoom {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  .starting-flip-x {
+    opacity: 0;
+    transform: perspective(400px) rotateX(90deg);
+  }
+  .starting-flip-y {
+    opacity: 0;
+    transform: perspective(400px) rotateY(90deg);
+  }
+  .starting-blur {
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+/* Starting style base classes */
+.starting {
+  transition: opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out);
+}
+.starting-fade {
+  transition: opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out);
+}
+.starting-scale,
+.starting-slide-down,
+.starting-slide-up,
+.starting-slide-right,
+.starting-slide-left,
+.starting-zoom {
+  transition: opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), transform var(--starting-duration, 300ms) var(--starting-easing, ease-out);
+}
+.starting-flip-x,
+.starting-flip-y {
+  transition: opacity var(--starting-duration, 500ms) var(--starting-easing, ease-out), transform var(--starting-duration, 500ms) var(--starting-easing, ease-out);
+}
+.starting-blur {
+  transition: opacity var(--starting-duration, 300ms) var(--starting-easing, ease-out), filter var(--starting-duration, 300ms) var(--starting-easing, ease-out);
+}
+`
 }
 
 /**

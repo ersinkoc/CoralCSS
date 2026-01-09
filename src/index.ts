@@ -4,7 +4,7 @@
  * A modern, zero-dependency CSS framework with utility-first classes,
  * headless components, and first-class support for modern CSS features.
  *
- * @module @coralcss/core
+ * @module @coral-css/core
  * @license MIT
  */
 

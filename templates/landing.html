@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page - CoralCSS Template</title>
+  <link rel="stylesheet" href="../dist/coral.min.css">
+  <script src="../dist/coral.min.global.js" defer></script>
+  <style>
+    /* Landing page specific styles */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: var(--spacing-8);
+      background: linear-gradient(135deg,
+        hsl(var(--primary) / 0.1) 0%,
+        transparent 50%,
+        hsl(var(--secondary) / 0.1) 100%
+      );
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: var(--font-black);
+      line-height: 1.1;
+      margin-bottom: var(--spacing-4);
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: var(--text-xl);
+      color: var(--color-muted);
+      max-width: 600px;
+      margin-bottom: var(--spacing-8);
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: var(--spacing-4);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-6);
+      padding: var(--spacing-8);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: var(--spacing-8);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto var(--spacing-4);
+      background: hsl(var(--primary) / 0.1);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: hsl(var(--primary));
+    }
+
+    .feature-title {
+      font-size: var(--text-xl);
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .feature-desc {
+      color: var(--color-muted);
+    }
+
+    .section {
+      padding: var(--spacing-16) var(--spacing-8);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: var(--text-4xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--color-muted);
+      font-size: var(--text-lg);
+      max-width: 600px;
+      margin: 0 auto var(--spacing-12);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: var(--spacing-6);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonial {
+      padding: var(--spacing-6);
+    }
+
+    .testimonial-text {
+      font-size: var(--text-lg);
+      font-style: italic;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    }
+
+    .testimonial-name {
+      font-weight: var(--font-semibold);
+    }
+
+    .testimonial-role {
+      font-size: var(--text-sm);
+      color: var(--color-muted);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-6);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      text-align: center;
+      padding: var(--spacing-8);
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border: 2px solid hsl(var(--primary));
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .pricing-name {
+      font-size: var(--text-xl);
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .pricing-price {
+      font-size: var(--text-4xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .pricing-price span {
+      font-size: var(--text-base);
+      font-weight: var(--font-normal);
+      color: var(--color-muted);
+    }
+
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 var(--spacing-6);
+      text-align: left;
+    }
+
+    .pricing-features li {
+      padding: var(--spacing-2) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .pricing-features svg {
+      color: hsl(var(--primary));
+      flex-shrink: 0;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+      color: white;
+      text-align: center;
+      padding: var(--spacing-16) var(--spacing-8);
+    }
+
+    .cta-title {
+      font-size: var(--text-3xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .cta-subtitle {
+      opacity: 0.9;
+      margin-bottom: var(--spacing-8);
+      font-size: var(--text-lg);
+    }
+
+    footer {
+      background: var(--color-muted-background);
+      padding: var(--spacing-12) var(--spacing-8);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: var(--spacing-8);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footer-brand {
+      font-size: var(--text-xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-desc {
+      color: var(--color-muted);
+      max-width: 300px;
+    }
+
+    .footer-title {
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: var(--spacing-2);
+    }
+
+    .footer-links a {
+      color: var(--color-muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-foreground);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--spacing-8);
+      padding-top: var(--spacing-8);
+      text-align: center;
+      color: var(--color-muted);
+      font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav data-coral-navbar data-sticky style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: hsl(var(--background) / 0.8); backdrop-filter: blur(12px);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: var(--spacing-4) var(--spacing-8); display: flex; justify-content: space-between; align-items: center;">
+      <a href="#" style="font-size: var(--text-xl); font-weight: var(--font-bold); color: hsl(var(--primary)); text-decoration: none;">
+        CoralCSS
+      </a>
+
+      <div style="display: flex; gap: var(--spacing-6); align-items: center;">
+        <a href="#features" style="color: var(--color-foreground); text-decoration: none;">Features</a>
+        <a href="#testimonials" style="color: var(--color-foreground); text-decoration: none;">Testimonials</a>
+        <a href="#pricing" style="color: var(--color-foreground); text-decoration: none;">Pricing</a>
+        <button data-coral-button data-variant="primary" data-size="sm">Get Started</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <span data-coral-badge data-variant="secondary" style="margin-bottom: var(--spacing-4);">Now in v2.0</span>
+    <h1>Build Beautiful Interfaces with CoralCSS</h1>
+    <p>A modern, utility-first CSS framework with headless components and JIT compilation. Create stunning websites faster than ever before.</p>
+    <div class="hero-buttons">
+      <button data-coral-button data-variant="primary" data-size="lg">
+        Get Started Free
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+      <button data-coral-button data-variant="outline" data-size="lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        View on GitHub
+      </button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="section">
+    <h2 class="section-title">Everything You Need</h2>
+    <p class="section-subtitle">CoralCSS provides all the building blocks to create modern, accessible web applications.</p>
+
+    <div class="feature-grid">
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Utility-First</h3>
+        <p class="feature-desc">Build complex designs with simple utility classes. No more fighting with CSS specificity.</p>
+      </div>
+
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">JIT Compilation</h3>
+        <p class="feature-desc">Generate CSS on-demand with zero runtime overhead. Only ship the styles you actually use.</p>
+      </div>
+
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Headless Components</h3>
+        <p class="feature-desc">Fully accessible UI components with complete styling freedom. Works with any framework.</p>
+      </div>
+
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Dark Mode</h3>
+        <p class="feature-desc">Built-in dark mode support with automatic theme detection and smooth transitions.</p>
+      </div>
+
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Modern CSS</h3>
+        <p class="feature-desc">Container queries, anchor positioning, scroll-driven animations, and wide-gamut colors.</p>
+      </div>
+
+      <div data-coral-card class="feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="9" y1="21" x2="9" y2="9"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Flexible Layout</h3>
+        <p class="feature-desc">Powerful grid and flexbox utilities for building any layout you can imagine.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="section" style="background: var(--color-muted-background);">
+    <h2 class="section-title">Loved by Developers</h2>
+    <p class="section-subtitle">See what developers are saying about CoralCSS.</p>
+
+    <div class="testimonial-grid">
+      <div data-coral-card class="testimonial">
+        <p class="testimonial-text">"CoralCSS has completely transformed how I build websites. The JIT compilation is incredibly fast, and the components are beautiful out of the box."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"></div>
+          <div>
+            <div class="testimonial-name">Sarah Chen</div>
+            <div class="testimonial-role">Senior Frontend Developer at Vercel</div>
+          </div>
+        </div>
+      </div>
+
+      <div data-coral-card class="testimonial">
+        <p class="testimonial-text">"The headless component architecture is brilliant. I can style everything exactly how I want while keeping perfect accessibility."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"></div>
+          <div>
+            <div class="testimonial-name">Marcus Johnson</div>
+            <div class="testimonial-role">UI Engineer at Stripe</div>
+          </div>
+        </div>
+      </div>
+
+      <div data-coral-card class="testimonial">
+        <p class="testimonial-text">"Moving from Tailwind to CoralCSS was seamless. The modern CSS features like container queries give us so much more power."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"></div>
+          <div>
+            <div class="testimonial-name">Emily Rodriguez</div>
+            <div class="testimonial-role">Design Systems Lead at Shopify</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="section">
+    <h2 class="section-title">Simple, Transparent Pricing</h2>
+    <p class="section-subtitle">Start free, upgrade when you need more.</p>
+
+    <div class="pricing-grid">
+      <div data-coral-card class="pricing-card">
+        <div class="pricing-name">Free</div>
+        <div class="pricing-price">$0 <span>/month</span></div>
+        <ul class="pricing-features">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            All core utilities
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Basic components
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Community support
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            MIT License
+          </li>
+        </ul>
+        <button data-coral-button data-variant="outline" style="width: 100%;">Get Started</button>
+      </div>
+
+      <div data-coral-card class="pricing-card featured">
+        <span data-coral-badge data-variant="default" class="pricing-badge">Most Popular</span>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">$29 <span>/month</span></div>
+        <ul class="pricing-features">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Everything in Free
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Premium components
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Figma design files
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Priority support
+          </li>
+        </ul>
+        <button data-coral-button data-variant="primary" style="width: 100%;">Start Free Trial</button>
+      </div>
+
+      <div data-coral-card class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <ul class="pricing-features">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Everything in Pro
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Custom integrations
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Dedicated support
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            SLA guarantee
+          </li>
+        </ul>
+        <button data-coral-button data-variant="outline" style="width: 100%;">Contact Sales</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2 class="cta-title">Ready to Get Started?</h2>
+    <p class="cta-subtitle">Join thousands of developers building beautiful interfaces with CoralCSS.</p>
+    <button data-coral-button data-variant="secondary" data-size="lg" style="background: white; color: hsl(var(--primary));">
+      Start Building Now
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">CoralCSS</div>
+        <p class="footer-desc">A modern CSS framework for building beautiful, accessible web applications.</p>
+      </div>
+
+      <div>
+        <div class="footer-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Components</a></li>
+          <li><a href="#">Templates</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Examples</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 CoralCSS. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize CoralCSS components
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.Coral) {
+        window.Coral.init()
+      }
+    })
+  </script>
+</body>
+</html>

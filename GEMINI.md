@@ -1,7 +1,7 @@
 # CoralCSS Project Context
 
 ## Overview
-**CoralCSS** (`@coralcss/core`) is a modern, zero-dependency, utility-first CSS framework written in TypeScript. It features a micro-kernel architecture where core functionality, utilities, and variants are implemented as plugins. It supports both build-time generation (via Vite/PostCSS) and runtime usage (via CDN).
+**CoralCSS** (`@coral-css/core`) is a modern, zero-dependency, utility-first CSS framework written in TypeScript. It features a micro-kernel architecture where core functionality, utilities, and variants are implemented as plugins. It supports both build-time generation (via Vite/PostCSS) and runtime usage (via CDN).
 
 **Key Features:**
 *   **Utility-First:** Comprehensive utility classes (similar to Tailwind CSS).

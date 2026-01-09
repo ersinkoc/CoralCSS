@@ -598,6 +598,850 @@ export function stateVariantsPlugin(): Plugin {
         handler: (selector) => `${selector}:has([data-state="checked"])`,
       })
 
+      // ========================================
+      // group-has-* Variants (Tailwind 4 parity)
+      // Style based on whether group contains matching descendants
+      // ========================================
+
+      // group-has-* pseudo-class variants
+      variants.push({
+        name: 'group-has-hover',
+        handler: (selector) => `.group:has(:hover) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-focus',
+        handler: (selector) => `.group:has(:focus) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-focus-visible',
+        handler: (selector) => `.group:has(:focus-visible) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-active',
+        handler: (selector) => `.group:has(:active) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-checked',
+        handler: (selector) => `.group:has(:checked) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-disabled',
+        handler: (selector) => `.group:has(:disabled) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-invalid',
+        handler: (selector) => `.group:has(:invalid) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-valid',
+        handler: (selector) => `.group:has(:valid) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-required',
+        handler: (selector) => `.group:has(:required) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-placeholder-shown',
+        handler: (selector) => `.group:has(:placeholder-shown) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-empty',
+        handler: (selector) => `.group:has(:empty) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-indeterminate',
+        handler: (selector) => `.group:has(:indeterminate) ${selector}`,
+      })
+
+      // group-has-* element/selector variants
+      variants.push({
+        name: 'group-has-input',
+        handler: (selector) => `.group:has(input) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-textarea',
+        handler: (selector) => `.group:has(textarea) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-select',
+        handler: (selector) => `.group:has(select) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-checkbox',
+        handler: (selector) => `.group:has(input[type="checkbox"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-radio',
+        handler: (selector) => `.group:has(input[type="radio"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-img',
+        handler: (selector) => `.group:has(img) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-svg',
+        handler: (selector) => `.group:has(svg) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-video',
+        handler: (selector) => `.group:has(video) ${selector}`,
+      })
+
+      // group-has-* ARIA/data variants
+      variants.push({
+        name: 'group-has-aria-expanded',
+        handler: (selector) => `.group:has([aria-expanded="true"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-aria-checked',
+        handler: (selector) => `.group:has([aria-checked="true"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-aria-selected',
+        handler: (selector) => `.group:has([aria-selected="true"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-aria-disabled',
+        handler: (selector) => `.group:has([aria-disabled="true"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-data-open',
+        handler: (selector) => `.group:has([data-state="open"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-data-active',
+        handler: (selector) => `.group:has([data-state="active"]) ${selector}`,
+      })
+      variants.push({
+        name: 'group-has-data-checked',
+        handler: (selector) => `.group:has([data-state="checked"]) ${selector}`,
+      })
+
+      // ========================================
+      // peer-has-* Variants (Tailwind 4 parity)
+      // Style based on whether sibling contains matching descendants
+      // ========================================
+
+      // peer-has-* pseudo-class variants
+      variants.push({
+        name: 'peer-has-hover',
+        handler: (selector) => `.peer:has(:hover) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-focus',
+        handler: (selector) => `.peer:has(:focus) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-focus-visible',
+        handler: (selector) => `.peer:has(:focus-visible) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-active',
+        handler: (selector) => `.peer:has(:active) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-checked',
+        handler: (selector) => `.peer:has(:checked) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-disabled',
+        handler: (selector) => `.peer:has(:disabled) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-invalid',
+        handler: (selector) => `.peer:has(:invalid) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-valid',
+        handler: (selector) => `.peer:has(:valid) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-required',
+        handler: (selector) => `.peer:has(:required) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-placeholder-shown',
+        handler: (selector) => `.peer:has(:placeholder-shown) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-empty',
+        handler: (selector) => `.peer:has(:empty) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-indeterminate',
+        handler: (selector) => `.peer:has(:indeterminate) ~ ${selector}`,
+      })
+
+      // peer-has-* element/selector variants
+      variants.push({
+        name: 'peer-has-input',
+        handler: (selector) => `.peer:has(input) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-textarea',
+        handler: (selector) => `.peer:has(textarea) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-select',
+        handler: (selector) => `.peer:has(select) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-checkbox',
+        handler: (selector) => `.peer:has(input[type="checkbox"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-radio',
+        handler: (selector) => `.peer:has(input[type="radio"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-img',
+        handler: (selector) => `.peer:has(img) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-svg',
+        handler: (selector) => `.peer:has(svg) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-video',
+        handler: (selector) => `.peer:has(video) ~ ${selector}`,
+      })
+
+      // peer-has-* ARIA/data variants
+      variants.push({
+        name: 'peer-has-aria-expanded',
+        handler: (selector) => `.peer:has([aria-expanded="true"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-aria-checked',
+        handler: (selector) => `.peer:has([aria-checked="true"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-aria-selected',
+        handler: (selector) => `.peer:has([aria-selected="true"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-aria-disabled',
+        handler: (selector) => `.peer:has([aria-disabled="true"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-data-open',
+        handler: (selector) => `.peer:has([data-state="open"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-data-active',
+        handler: (selector) => `.peer:has([data-state="active"]) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-has-data-checked',
+        handler: (selector) => `.peer:has([data-state="checked"]) ~ ${selector}`,
+      })
+
+      // ========================================
+      // :not() combination variants
+      // ========================================
+
+      variants.push({
+        name: 'group-not-has-checked',
+        handler: (selector) => `.group:not(:has(:checked)) ${selector}`,
+      })
+      variants.push({
+        name: 'group-not-has-focus',
+        handler: (selector) => `.group:not(:has(:focus)) ${selector}`,
+      })
+      variants.push({
+        name: 'peer-not-has-checked',
+        handler: (selector) => `.peer:not(:has(:checked)) ~ ${selector}`,
+      })
+      variants.push({
+        name: 'peer-not-has-focus',
+        handler: (selector) => `.peer:not(:has(:focus)) ~ ${selector}`,
+      })
+
+      // ========================================
+      // Forced Colors Mode Variants (Tailwind 4 parity)
+      // ========================================
+      variants.push({
+        name: 'forced-colors',
+        handler: (selector) => `@media (forced-colors: active) { ${selector} }`,
+      })
+      variants.push({
+        name: 'forced-colors-none',
+        handler: (selector) => `@media (forced-colors: none) { ${selector} }`,
+      })
+
+      // ========================================
+      // Contrast Preference Variants
+      // ========================================
+      variants.push({
+        name: 'contrast-more',
+        handler: (selector) => `@media (prefers-contrast: more) { ${selector} }`,
+      })
+      variants.push({
+        name: 'contrast-less',
+        handler: (selector) => `@media (prefers-contrast: less) { ${selector} }`,
+      })
+      variants.push({
+        name: 'contrast-custom',
+        handler: (selector) => `@media (prefers-contrast: custom) { ${selector} }`,
+      })
+
+      // ========================================
+      // Transparency Preference Variants
+      // ========================================
+      variants.push({
+        name: 'reduce-transparency',
+        handler: (selector) => `@media (prefers-reduced-transparency: reduce) { ${selector} }`,
+      })
+
+      // ========================================
+      // Color Scheme Preference Variants
+      // ========================================
+      variants.push({
+        name: 'color-srgb',
+        handler: (selector) => `@media (color-gamut: srgb) { ${selector} }`,
+      })
+      variants.push({
+        name: 'color-p3',
+        handler: (selector) => `@media (color-gamut: p3) { ${selector} }`,
+      })
+      variants.push({
+        name: 'color-rec2020',
+        handler: (selector) => `@media (color-gamut: rec2020) { ${selector} }`,
+      })
+
+      // ========================================
+      // Display Mode Variants (for PWA)
+      // ========================================
+      variants.push({
+        name: 'standalone',
+        handler: (selector) => `@media (display-mode: standalone) { ${selector} }`,
+      })
+      variants.push({
+        name: 'fullscreen',
+        handler: (selector) => `@media (display-mode: fullscreen) { ${selector} }`,
+      })
+      variants.push({
+        name: 'minimal-ui',
+        handler: (selector) => `@media (display-mode: minimal-ui) { ${selector} }`,
+      })
+      variants.push({
+        name: 'browser',
+        handler: (selector) => `@media (display-mode: browser) { ${selector} }`,
+      })
+      variants.push({
+        name: 'picture-in-picture',
+        handler: (selector) => `@media (display-mode: picture-in-picture) { ${selector} }`,
+      })
+
+      // ========================================
+      // Inverted Colors Variant
+      // ========================================
+      variants.push({
+        name: 'inverted-colors',
+        handler: (selector) => `@media (inverted-colors: inverted) { ${selector} }`,
+      })
+
+      // ========================================
+      // Scripting Variants
+      // ========================================
+      variants.push({
+        name: 'scripting-enabled',
+        handler: (selector) => `@media (scripting: enabled) { ${selector} }`,
+      })
+      variants.push({
+        name: 'scripting-none',
+        handler: (selector) => `@media (scripting: none) { ${selector} }`,
+      })
+      variants.push({
+        name: 'scripting-initial-only',
+        handler: (selector) => `@media (scripting: initial-only) { ${selector} }`,
+      })
+
+      // ========================================
+      // Pointer/Hover Capability Variants
+      // ========================================
+      variants.push({
+        name: 'pointer-fine',
+        handler: (selector) => `@media (pointer: fine) { ${selector} }`,
+      })
+      variants.push({
+        name: 'pointer-coarse',
+        handler: (selector) => `@media (pointer: coarse) { ${selector} }`,
+      })
+      variants.push({
+        name: 'pointer-none',
+        handler: (selector) => `@media (pointer: none) { ${selector} }`,
+      })
+      variants.push({
+        name: 'any-pointer-fine',
+        handler: (selector) => `@media (any-pointer: fine) { ${selector} }`,
+      })
+      variants.push({
+        name: 'any-pointer-coarse',
+        handler: (selector) => `@media (any-pointer: coarse) { ${selector} }`,
+      })
+      variants.push({
+        name: 'hover-hover',
+        handler: (selector) => `@media (hover: hover) { ${selector} }`,
+      })
+      variants.push({
+        name: 'hover-none',
+        handler: (selector) => `@media (hover: none) { ${selector} }`,
+      })
+      variants.push({
+        name: 'any-hover-hover',
+        handler: (selector) => `@media (any-hover: hover) { ${selector} }`,
+      })
+      variants.push({
+        name: 'any-hover-none',
+        handler: (selector) => `@media (any-hover: none) { ${selector} }`,
+      })
+
+      // ========================================
+      // Update Frequency Variants
+      // ========================================
+      variants.push({
+        name: 'update-fast',
+        handler: (selector) => `@media (update: fast) { ${selector} }`,
+      })
+      variants.push({
+        name: 'update-slow',
+        handler: (selector) => `@media (update: slow) { ${selector} }`,
+      })
+      variants.push({
+        name: 'update-none',
+        handler: (selector) => `@media (update: none) { ${selector} }`,
+      })
+
+      // ========================================
+      // DIRECTION VARIANTS (RTL/LTR Support)
+      // ========================================
+
+      variants.push({
+        name: 'rtl',
+        handler: (selector) => `[dir="rtl"] ${selector}, ${selector}:dir(rtl)`,
+      })
+      variants.push({
+        name: 'ltr',
+        handler: (selector) => `[dir="ltr"] ${selector}, ${selector}:dir(ltr)`,
+      })
+
+      // ========================================
+      // OPEN/CLOSED STATE (HTML Details/Dialog)
+      // ========================================
+
+      variants.push({
+        name: 'open',
+        handler: (selector) => `${selector}[open], ${selector}:open`,
+      })
+      variants.push({
+        name: 'closed',
+        handler: (selector) => `${selector}:not([open]), ${selector}:closed`,
+      })
+
+      // Details/summary specific
+      variants.push({
+        name: 'details-open',
+        handler: (selector) => `details[open] ${selector}`,
+      })
+      variants.push({
+        name: 'dialog-open',
+        handler: (selector) => `dialog[open] ${selector}`,
+      })
+
+      // ========================================
+      // SELECTION VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'selection',
+        handler: (selector) => `${selector}::selection`,
+      })
+      variants.push({
+        name: 'first-letter',
+        handler: (selector) => `${selector}::first-letter`,
+      })
+      variants.push({
+        name: 'first-line',
+        handler: (selector) => `${selector}::first-line`,
+      })
+
+      // ========================================
+      // MODAL BACKDROP VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'backdrop',
+        handler: (selector) => `${selector}::backdrop`,
+      })
+
+      // ========================================
+      // ACCENT COLOR SCHEME VARIANTS (Beyond Tailwind 4)
+      // ========================================
+
+      // User color scheme preference
+      variants.push({
+        name: 'prefer-light',
+        handler: (selector) => `@media (prefers-color-scheme: light) { ${selector} }`,
+      })
+      variants.push({
+        name: 'prefer-dark',
+        handler: (selector) => `@media (prefers-color-scheme: dark) { ${selector} }`,
+      })
+
+      // High dynamic range displays
+      variants.push({
+        name: 'hdr',
+        handler: (selector) => `@media (dynamic-range: high) { ${selector} }`,
+      })
+      variants.push({
+        name: 'sdr',
+        handler: (selector) => `@media (dynamic-range: standard) { ${selector} }`,
+      })
+
+      // Video dynamic range
+      variants.push({
+        name: 'video-hdr',
+        handler: (selector) => `@media (video-dynamic-range: high) { ${selector} }`,
+      })
+      variants.push({
+        name: 'video-sdr',
+        handler: (selector) => `@media (video-dynamic-range: standard) { ${selector} }`,
+      })
+
+      // ========================================
+      // FORM STATE VARIANTS (Extended)
+      // ========================================
+
+      variants.push({
+        name: 'autofill',
+        handler: (selector) => `${selector}:autofill`,
+      })
+      variants.push({
+        name: '-webkit-autofill',
+        handler: (selector) => `${selector}:-webkit-autofill`,
+      })
+      variants.push({
+        name: 'blank',
+        handler: (selector) => `${selector}:blank`,
+      })
+      variants.push({
+        name: 'user-invalid',
+        handler: (selector) => `${selector}:user-invalid`,
+      })
+      variants.push({
+        name: 'user-valid',
+        handler: (selector) => `${selector}:user-valid`,
+      })
+
+      // ========================================
+      // LINK STATE VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'any-link',
+        handler: (selector) => `${selector}:any-link`,
+      })
+      variants.push({
+        name: 'local-link',
+        handler: (selector) => `${selector}:local-link`,
+      })
+
+      // ========================================
+      // FULLSCREEN VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'fullscreen',
+        handler: (selector) => `${selector}:fullscreen`,
+      })
+      variants.push({
+        name: '-webkit-fullscreen',
+        handler: (selector) => `${selector}:-webkit-full-screen`,
+      })
+
+      // ========================================
+      // POPOVER VARIANTS (HTML Popover API)
+      // ========================================
+
+      variants.push({
+        name: 'popover-open',
+        handler: (selector) => `${selector}:popover-open`,
+      })
+
+      // ========================================
+      // PICTURE-IN-PICTURE VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'pip',
+        handler: (selector) => `${selector}:picture-in-picture`,
+      })
+
+      // ========================================
+      // PAUSED/PLAYING VARIANTS (Media)
+      // ========================================
+
+      variants.push({
+        name: 'playing',
+        handler: (selector) => `${selector}:playing`,
+      })
+      variants.push({
+        name: 'paused',
+        handler: (selector) => `${selector}:paused`,
+      })
+      variants.push({
+        name: 'seeking',
+        handler: (selector) => `${selector}:seeking`,
+      })
+      variants.push({
+        name: 'buffering',
+        handler: (selector) => `${selector}:buffering`,
+      })
+      variants.push({
+        name: 'stalled',
+        handler: (selector) => `${selector}:stalled`,
+      })
+      variants.push({
+        name: 'muted',
+        handler: (selector) => `${selector}:muted`,
+      })
+      variants.push({
+        name: 'volume-locked',
+        handler: (selector) => `${selector}:volume-locked`,
+      })
+
+      // ========================================
+      // PAST/CURRENT/FUTURE VARIANTS (Timeline)
+      // ========================================
+
+      variants.push({
+        name: 'past',
+        handler: (selector) => `${selector}:past`,
+      })
+      variants.push({
+        name: 'current',
+        handler: (selector) => `${selector}:current`,
+      })
+      variants.push({
+        name: 'future',
+        handler: (selector) => `${selector}:future`,
+      })
+
+      // ========================================
+      // STRUCTURAL VARIANTS (Extended)
+      // ========================================
+
+      variants.push({
+        name: 'only',
+        handler: (selector) => `${selector}:only-child`,
+      })
+      variants.push({
+        name: 'first-of-type',
+        handler: (selector) => `${selector}:first-of-type`,
+      })
+      variants.push({
+        name: 'last-of-type',
+        handler: (selector) => `${selector}:last-of-type`,
+      })
+      variants.push({
+        name: 'only-of-type',
+        handler: (selector) => `${selector}:only-of-type`,
+      })
+
+      // Nth-child variants
+      variants.push({
+        name: 'nth-2',
+        handler: (selector) => `${selector}:nth-child(2)`,
+      })
+      variants.push({
+        name: 'nth-3',
+        handler: (selector) => `${selector}:nth-child(3)`,
+      })
+      variants.push({
+        name: 'nth-4',
+        handler: (selector) => `${selector}:nth-child(4)`,
+      })
+      variants.push({
+        name: 'nth-5',
+        handler: (selector) => `${selector}:nth-child(5)`,
+      })
+
+      // Nth-last-child variants
+      variants.push({
+        name: 'nth-last-2',
+        handler: (selector) => `${selector}:nth-last-child(2)`,
+      })
+      variants.push({
+        name: 'nth-last-3',
+        handler: (selector) => `${selector}:nth-last-child(3)`,
+      })
+
+      // ========================================
+      // TARGET VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'target',
+        handler: (selector) => `${selector}:target`,
+      })
+      variants.push({
+        name: 'target-within',
+        handler: (selector) => `${selector}:target-within`,
+      })
+
+      // ========================================
+      // SCOPE VARIANT
+      // ========================================
+
+      variants.push({
+        name: 'scope',
+        handler: (selector) => `${selector}:scope`,
+      })
+
+      // ========================================
+      // HOST VARIANTS (Shadow DOM)
+      // ========================================
+
+      variants.push({
+        name: 'host',
+        handler: (selector) => `:host(${selector})`,
+      })
+      variants.push({
+        name: 'host-context',
+        handler: (selector) => `:host-context(${selector})`,
+      })
+
+      // ========================================
+      // DEFINED VARIANT (Custom Elements)
+      // ========================================
+
+      variants.push({
+        name: 'defined',
+        handler: (selector) => `${selector}:defined`,
+      })
+
+      // ========================================
+      // STICKY STATE VARIANT (Intersection)
+      // ========================================
+
+      variants.push({
+        name: 'stuck',
+        handler: (selector) => `${selector}[data-stuck]`,
+      })
+      variants.push({
+        name: 'stuck-top',
+        handler: (selector) => `${selector}[data-stuck="top"]`,
+      })
+      variants.push({
+        name: 'stuck-bottom',
+        handler: (selector) => `${selector}[data-stuck="bottom"]`,
+      })
+
+      // ========================================
+      // FILE SELECTOR VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'file',
+        handler: (selector) => `${selector}::file-selector-button`,
+      })
+      variants.push({
+        name: 'file-hover',
+        handler: (selector) => `${selector}::file-selector-button:hover`,
+      })
+
+      // ========================================
+      // SLOT VARIANT (Shadow DOM)
+      // ========================================
+
+      variants.push({
+        name: 'slotted',
+        handler: (selector) => `::slotted(${selector})`,
+      })
+
+      // ========================================
+      // CUE VARIANTS (WebVTT)
+      // ========================================
+
+      variants.push({
+        name: 'cue',
+        handler: (selector) => `${selector}::cue`,
+      })
+      variants.push({
+        name: 'cue-region',
+        handler: (selector) => `${selector}::cue-region`,
+      })
+
+      // ========================================
+      // GRAMMAR/SPELLING VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'spelling-error',
+        handler: (selector) => `${selector}::spelling-error`,
+      })
+      variants.push({
+        name: 'grammar-error',
+        handler: (selector) => `${selector}::grammar-error`,
+      })
+
+      // ========================================
+      // VIEW TIMELINE VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'in-view',
+        handler: (selector) => `${selector}[data-in-view]`,
+      })
+      variants.push({
+        name: 'out-of-view',
+        handler: (selector) => `${selector}:not([data-in-view])`,
+      })
+
+      // ========================================
+      // ANIMATION STATE VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'animating',
+        handler: (selector) => `${selector}[data-animating]`,
+      })
+      variants.push({
+        name: 'animation-paused',
+        handler: (selector) => `${selector}[data-animation-state="paused"]`,
+      })
+      variants.push({
+        name: 'animation-running',
+        handler: (selector) => `${selector}[data-animation-state="running"]`,
+      })
+
+      // ========================================
+      // OVERFLOWING STATE VARIANTS
+      // ========================================
+
+      variants.push({
+        name: 'overflowing',
+        handler: (selector) => `${selector}[data-overflowing]`,
+      })
+      variants.push({
+        name: 'overflowing-x',
+        handler: (selector) => `${selector}[data-overflowing-x]`,
+      })
+      variants.push({
+        name: 'overflowing-y',
+        handler: (selector) => `${selector}[data-overflowing-y]`,
+      })
+
+      // ========================================
+      // TRUNCATED STATE VARIANT
+      // ========================================
+
+      variants.push({
+        name: 'truncated',
+        handler: (selector) => `${selector}[data-truncated]`,
+      })
+
       // Register all variants
       for (const variant of variants) {
         ctx.addVariant(variant)

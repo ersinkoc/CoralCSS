@@ -39,7 +39,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@coralcss/core': resolve(__dirname, './src/index.ts'),
+      '@coral-css/core': resolve(__dirname, './src/index.ts'),
     },
   },
 })

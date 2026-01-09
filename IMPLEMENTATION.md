@@ -7,7 +7,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        User Code                             │
-│    import { createCoral, presetCoral } from '@coralcss/core' │
+│    import { createCoral, presetCoral } from '@coral-css/core' │
 ├─────────────────────────────────────────────────────────────┤
 │                     Public API Layer                         │
 │      createCoral() · generate() · use() · theme()           │
@@ -629,7 +629,7 @@ export default function coralPostCSS(options: PostCSSOptions): PostCSSPlugin {
     postcssPlugin: 'coralcss',
 
     Once(root, { result }) {
-      // Find @coralcss directive
+      // Find @coral-css directive
       root.walkAtRules('coralcss', (rule) => {
         // Generate and replace
         const css = generateCSS(options)
@@ -853,7 +853,7 @@ const coral = createCoral({
 })
 
 // Later, add icons plugin
-import { iconsPlugin } from '@coralcss/core/plugins/icons'
+import { iconsPlugin } from '@coral-css/core/plugins/icons'
 coral.use(iconsPlugin())
 ```
 
@@ -863,16 +863,16 @@ coral.use(iconsPlugin())
 // Entry points for tree shaking:
 
 // Main (minimal)
-import { createCoral } from '@coralcss/core'
+import { createCoral } from '@coral-css/core'
 
 // Presets (pick one)
-import { presetCoral } from '@coralcss/core/presets'
+import { presetCoral } from '@coral-css/core/presets'
 
 // Plugins (pick needed)
-import { iconsPlugin } from '@coralcss/core/plugins/icons'
+import { iconsPlugin } from '@coral-css/core/plugins/icons'
 
 // Components (pick needed)
-import { Dialog } from '@coralcss/core/components'
+import { Dialog } from '@coral-css/core/components'
 ```
 
 ---

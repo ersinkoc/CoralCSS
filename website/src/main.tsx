@@ -5,7 +5,7 @@ import App from './App'
 import './styles.css'
 
 // Note: In a production app, you would use the CoralCSS runtime:
-// import { createCoralCDN } from '@coralcss/core/runtime'
+// import { createCoralCDN } from '@coral-css/core/runtime'
 // const coral = createCoralCDN({ autoStart: true, autoInitComponents: true })
 //
 // For this demo website, we use pre-defined CSS classes in styles.css

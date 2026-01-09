@@ -71,6 +71,12 @@ export function spacingPlugin(): Plugin {
       rules.push(...createSpacingRules('ps', ['padding-inline-start'], spacing))
       rules.push(...createSpacingRules('pe', ['padding-inline-end'], spacing))
 
+      // Comprehensive Logical Properties for Padding (Tailwind 4 parity)
+      rules.push(...createSpacingRules('pbs', ['padding-block-start'], spacing))
+      rules.push(...createSpacingRules('pbe', ['padding-block-end'], spacing))
+      rules.push(...createSpacingRules('pli', ['padding-inline'], spacing))
+      rules.push(...createSpacingRules('plb', ['padding-block'], spacing))
+
       // Margin
       rules.push(...createSpacingRules('m', ['margin'], spacing, true))
       rules.push(...createSpacingRules('mx', ['margin-left', 'margin-right'], spacing, true))
@@ -82,6 +88,12 @@ export function spacingPlugin(): Plugin {
       rules.push(...createSpacingRules('ms', ['margin-inline-start'], spacing, true))
       rules.push(...createSpacingRules('me', ['margin-inline-end'], spacing, true))
 
+      // Comprehensive Logical Properties for Margin (Tailwind 4 parity)
+      rules.push(...createSpacingRules('mbs', ['margin-block-start'], spacing, true))
+      rules.push(...createSpacingRules('mbe', ['margin-block-end'], spacing, true))
+      rules.push(...createSpacingRules('mli', ['margin-inline'], spacing, true))
+      rules.push(...createSpacingRules('mlb', ['margin-block'], spacing, true))
+
       // Auto margin
       rules.push({ pattern: 'm-auto', properties: { margin: 'auto' } })
       rules.push({ pattern: 'mx-auto', properties: { 'margin-left': 'auto', 'margin-right': 'auto' } })
@@ -92,6 +104,10 @@ export function spacingPlugin(): Plugin {
       rules.push({ pattern: 'ml-auto', properties: { 'margin-left': 'auto' } })
       rules.push({ pattern: 'ms-auto', properties: { 'margin-inline-start': 'auto' } })
       rules.push({ pattern: 'me-auto', properties: { 'margin-inline-end': 'auto' } })
+      rules.push({ pattern: 'mbs-auto', properties: { 'margin-block-start': 'auto' } })
+      rules.push({ pattern: 'mbe-auto', properties: { 'margin-block-end': 'auto' } })
+      rules.push({ pattern: 'mli-auto', properties: { 'margin-inline': 'auto' } })
+      rules.push({ pattern: 'mlb-auto', properties: { 'margin-block': 'auto' } })
 
       // Gap
       rules.push(...createSpacingRules('gap', ['gap'], spacing))

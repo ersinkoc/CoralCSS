@@ -40,8 +40,8 @@ export interface WindPresetOptions {
  *
  * @example
  * ```typescript
- * import { createCoral } from '@coralcss/core'
- * import { windPreset } from '@coralcss/core/presets'
+ * import { createCoral } from '@coral-css/core'
+ * import { windPreset } from '@coral-css/core/presets'
  *
  * const coral = createCoral({
  *   presets: [windPreset()],

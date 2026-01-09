@@ -243,6 +243,264 @@ export function bordersPlugin(): Plugin {
         },
       })
 
+      // ========================================
+      // LOGICAL BORDER PROPERTIES (Beyond Tailwind 4)
+      // ========================================
+
+      // Border block (top/bottom in horizontal writing mode)
+      for (const [key, value] of Object.entries(borderWidth)) {
+        const suffix = key === 'DEFAULT' ? '' : `-${key}`
+        rules.push({ pattern: `border-block${suffix}`, properties: { 'border-block-width': value } })
+        rules.push({ pattern: `border-block-start${suffix}`, properties: { 'border-block-start-width': value } })
+        rules.push({ pattern: `border-block-end${suffix}`, properties: { 'border-block-end-width': value } })
+        rules.push({ pattern: `border-inline${suffix}`, properties: { 'border-inline-width': value } })
+        rules.push({ pattern: `border-inline-start${suffix}`, properties: { 'border-inline-start-width': value } })
+        rules.push({ pattern: `border-inline-end${suffix}`, properties: { 'border-inline-end-width': value } })
+      }
+
+      // Logical border radius (extended)
+      for (const [key, value] of Object.entries(borderRadius)) {
+        const suffix = key === 'DEFAULT' ? '' : `-${key}`
+        rules.push({ pattern: `rounded-bs${suffix}`, properties: { 'border-start-start-radius': value, 'border-start-end-radius': value } })
+        rules.push({ pattern: `rounded-be${suffix}`, properties: { 'border-end-start-radius': value, 'border-end-end-radius': value } })
+      }
+
+      // ========================================
+      // BORDER IMAGE (Beyond Tailwind 4)
+      // ========================================
+
+      // Border image source
+      rules.push({ pattern: 'border-image-none', properties: { 'border-image-source': 'none' } })
+
+      // Border image slice
+      rules.push({ pattern: 'border-image-slice-0', properties: { 'border-image-slice': '0' } })
+      rules.push({ pattern: 'border-image-slice-1', properties: { 'border-image-slice': '1' } })
+      rules.push({ pattern: 'border-image-slice-fill', properties: { 'border-image-slice': '1 fill' } })
+      rules.push({ pattern: 'border-image-slice-10', properties: { 'border-image-slice': '10' } })
+      rules.push({ pattern: 'border-image-slice-20', properties: { 'border-image-slice': '20' } })
+      rules.push({ pattern: 'border-image-slice-30', properties: { 'border-image-slice': '30%' } })
+
+      rules.push({
+        pattern: /^border-image-slice-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'border-image-slice': v } }
+        },
+      })
+
+      // Border image width
+      rules.push({ pattern: 'border-image-width-0', properties: { 'border-image-width': '0' } })
+      rules.push({ pattern: 'border-image-width-1', properties: { 'border-image-width': '1' } })
+      rules.push({ pattern: 'border-image-width-2', properties: { 'border-image-width': '2' } })
+      rules.push({ pattern: 'border-image-width-auto', properties: { 'border-image-width': 'auto' } })
+
+      rules.push({
+        pattern: /^border-image-width-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'border-image-width': v } }
+        },
+      })
+
+      // Border image outset
+      rules.push({ pattern: 'border-image-outset-0', properties: { 'border-image-outset': '0' } })
+      rules.push({ pattern: 'border-image-outset-1', properties: { 'border-image-outset': '1' } })
+      rules.push({ pattern: 'border-image-outset-2', properties: { 'border-image-outset': '2' } })
+
+      rules.push({
+        pattern: /^border-image-outset-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'border-image-outset': v } }
+        },
+      })
+
+      // Border image repeat
+      rules.push({ pattern: 'border-image-repeat-stretch', properties: { 'border-image-repeat': 'stretch' } })
+      rules.push({ pattern: 'border-image-repeat-repeat', properties: { 'border-image-repeat': 'repeat' } })
+      rules.push({ pattern: 'border-image-repeat-round', properties: { 'border-image-repeat': 'round' } })
+      rules.push({ pattern: 'border-image-repeat-space', properties: { 'border-image-repeat': 'space' } })
+
+      // Gradient border image presets
+      rules.push({
+        pattern: 'border-gradient-to-r',
+        properties: {
+          'border-image-source': 'linear-gradient(to right, var(--coral-gradient-from, #ff6b6b), var(--coral-gradient-to, #4ecdc4))',
+          'border-image-slice': '1',
+        },
+      })
+      rules.push({
+        pattern: 'border-gradient-to-b',
+        properties: {
+          'border-image-source': 'linear-gradient(to bottom, var(--coral-gradient-from, #ff6b6b), var(--coral-gradient-to, #4ecdc4))',
+          'border-image-slice': '1',
+        },
+      })
+      rules.push({
+        pattern: 'border-gradient-to-br',
+        properties: {
+          'border-image-source': 'linear-gradient(to bottom right, var(--coral-gradient-from, #ff6b6b), var(--coral-gradient-to, #4ecdc4))',
+          'border-image-slice': '1',
+        },
+      })
+      rules.push({
+        pattern: 'border-gradient-conic',
+        properties: {
+          'border-image-source': 'conic-gradient(from 0deg, var(--coral-gradient-from, #ff6b6b), var(--coral-gradient-via, #ffd93d), var(--coral-gradient-to, #4ecdc4), var(--coral-gradient-from, #ff6b6b))',
+          'border-image-slice': '1',
+        },
+      })
+
+      // Arbitrary border-image
+      rules.push({
+        pattern: /^border-image-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'border-image': v } }
+        },
+      })
+
+      // ========================================
+      // BORDER SPACING (Table)
+      // ========================================
+
+      const borderSpacingValues = ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20']
+      for (const value of borderSpacingValues) {
+        const size = value === '0' ? '0px' : `${parseInt(value, 10) * 0.25}rem`
+        rules.push({ pattern: `border-spacing-${value}`, properties: { 'border-spacing': size } })
+        rules.push({ pattern: `border-spacing-x-${value}`, properties: { 'border-spacing': `${size} 0` } })
+        rules.push({ pattern: `border-spacing-y-${value}`, properties: { 'border-spacing': `0 ${size}` } })
+      }
+
+      rules.push({
+        pattern: /^border-spacing-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'border-spacing': v } }
+        },
+      })
+
+      // Border collapse
+      rules.push({ pattern: 'border-collapse', properties: { 'border-collapse': 'collapse' } })
+      rules.push({ pattern: 'border-separate', properties: { 'border-collapse': 'separate' } })
+
+      // ========================================
+      // TEXT EMPHASIS (Beyond Tailwind 4)
+      // ========================================
+
+      // Text emphasis style
+      rules.push({ pattern: 'text-emphasis-none', properties: { 'text-emphasis-style': 'none' } })
+      rules.push({ pattern: 'text-emphasis-filled', properties: { 'text-emphasis-style': 'filled' } })
+      rules.push({ pattern: 'text-emphasis-open', properties: { 'text-emphasis-style': 'open' } })
+      rules.push({ pattern: 'text-emphasis-dot', properties: { 'text-emphasis-style': 'dot' } })
+      rules.push({ pattern: 'text-emphasis-circle', properties: { 'text-emphasis-style': 'circle' } })
+      rules.push({ pattern: 'text-emphasis-double-circle', properties: { 'text-emphasis-style': 'double-circle' } })
+      rules.push({ pattern: 'text-emphasis-triangle', properties: { 'text-emphasis-style': 'triangle' } })
+      rules.push({ pattern: 'text-emphasis-sesame', properties: { 'text-emphasis-style': 'sesame' } })
+      rules.push({ pattern: 'text-emphasis-filled-dot', properties: { 'text-emphasis-style': 'filled dot' } })
+      rules.push({ pattern: 'text-emphasis-open-dot', properties: { 'text-emphasis-style': 'open dot' } })
+      rules.push({ pattern: 'text-emphasis-filled-circle', properties: { 'text-emphasis-style': 'filled circle' } })
+      rules.push({ pattern: 'text-emphasis-open-circle', properties: { 'text-emphasis-style': 'open circle' } })
+      rules.push({ pattern: 'text-emphasis-filled-triangle', properties: { 'text-emphasis-style': 'filled triangle' } })
+      rules.push({ pattern: 'text-emphasis-open-triangle', properties: { 'text-emphasis-style': 'open triangle' } })
+      rules.push({ pattern: 'text-emphasis-filled-sesame', properties: { 'text-emphasis-style': 'filled sesame' } })
+      rules.push({ pattern: 'text-emphasis-open-sesame', properties: { 'text-emphasis-style': 'open sesame' } })
+
+      // Arbitrary text emphasis
+      rules.push({
+        pattern: /^text-emphasis-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'text-emphasis-style': `"${v}"` } }
+        },
+      })
+
+      // Text emphasis color
+      rules.push({ pattern: 'text-emphasis-current', properties: { 'text-emphasis-color': 'currentColor' } })
+      rules.push({ pattern: 'text-emphasis-transparent', properties: { 'text-emphasis-color': 'transparent' } })
+
+      rules.push({
+        pattern: /^text-emphasis-color-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'text-emphasis-color': v } }
+        },
+      })
+
+      // Text emphasis position
+      rules.push({ pattern: 'text-emphasis-position-over', properties: { 'text-emphasis-position': 'over right' } })
+      rules.push({ pattern: 'text-emphasis-position-under', properties: { 'text-emphasis-position': 'under right' } })
+      rules.push({ pattern: 'text-emphasis-position-over-left', properties: { 'text-emphasis-position': 'over left' } })
+      rules.push({ pattern: 'text-emphasis-position-under-left', properties: { 'text-emphasis-position': 'under left' } })
+
+      // ========================================
+      // OUTLINE EXTENDED
+      // ========================================
+
+      // Outline color
+      rules.push({ pattern: 'outline-current', properties: { 'outline-color': 'currentColor' } })
+      rules.push({ pattern: 'outline-transparent', properties: { 'outline-color': 'transparent' } })
+
+      rules.push({
+        pattern: /^outline-color-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'outline-color': v } }
+        },
+      })
+
+      // ========================================
+      // DIVIDE REVERSE (For flex-reverse layouts)
+      // ========================================
+
+      rules.push({
+        pattern: 'divide-x-reverse',
+        selector: (s) => `${s} > * + *`,
+        properties: {
+          '--coral-divide-x-reverse': '1',
+          'border-right-width': 'calc(1px * var(--coral-divide-x-reverse))',
+          'border-left-width': 'calc(1px * calc(1 - var(--coral-divide-x-reverse)))',
+        },
+      })
+      rules.push({
+        pattern: 'divide-y-reverse',
+        selector: (s) => `${s} > * + *`,
+        properties: {
+          '--coral-divide-y-reverse': '1',
+          'border-bottom-width': 'calc(1px * var(--coral-divide-y-reverse))',
+          'border-top-width': 'calc(1px * calc(1 - var(--coral-divide-y-reverse)))',
+        },
+      })
+
+      // ========================================
+      // CAPTION SIDE (Table)
+      // ========================================
+
+      rules.push({ pattern: 'caption-top', properties: { 'caption-side': 'top' } })
+      rules.push({ pattern: 'caption-bottom', properties: { 'caption-side': 'bottom' } })
+
+      // ========================================
+      // TABLE LAYOUT
+      // ========================================
+
+      rules.push({ pattern: 'table-auto', properties: { 'table-layout': 'auto' } })
+      rules.push({ pattern: 'table-fixed', properties: { 'table-layout': 'fixed' } })
+
+      // ========================================
+      // EMPTY CELLS (Table)
+      // ========================================
+
+      rules.push({ pattern: 'empty-cells-show', properties: { 'empty-cells': 'show' } })
+      rules.push({ pattern: 'empty-cells-hide', properties: { 'empty-cells': 'hide' } })
+
       // Register all rules
       for (const rule of rules) {
         ctx.addRule(rule)

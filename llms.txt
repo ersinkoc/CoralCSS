@@ -4,12 +4,12 @@
 
 ## Installation
 ```bash
-npm install @coralcss/core
+npm install @coral-css/core
 ```
 
 ## Quick Start
 ```typescript
-import { createCoral, coralPreset } from '@coralcss/core'
+import { createCoral, coralPreset } from '@coral-css/core'
 
 const coral = createCoral()
 coralPreset().forEach(p => coral.use(p))
@@ -110,7 +110,7 @@ Colors: coral, slate, gray, red, orange, amber, yellow, lime, green, emerald, te
 ## Headless Components
 
 ```typescript
-import { createDialog, createDropdown, createTabs } from '@coralcss/core/components'
+import { createDialog, createDropdown, createTabs } from '@coral-css/core/components'
 
 // Dialog
 const dialog = createDialog('#modal', { closeOnBackdrop: true, trapFocus: true })
@@ -132,20 +132,20 @@ tabs.selectTab(1)
 
 ### Vite
 ```typescript
-import coral from '@coralcss/core/vite'
+import coral from '@coral-css/core/vite'
 export default { plugins: [coral({ darkMode: 'class' })] }
 ```
 
 ### PostCSS
 ```javascript
 module.exports = {
-  plugins: [require('@coralcss/core/postcss')({ content: ['./src/**/*.html'] })]
+  plugins: [require('@coral-css/core/postcss')({ content: ['./src/**/*.html'] })]
 }
 ```
 
 ### CDN
 ```html
-<script src="https://unpkg.com/@coralcss/core/dist/cdn.iife.js"></script>
+<script src="https://unpkg.com/@coral-css/core/dist/cdn.iife.js"></script>
 <script>const coral = window.CoralCSS.getCoralCDN()</script>
 ```
 
@@ -154,10 +154,10 @@ module.exports = {
 
 ## TypeScript Types
 ```typescript
-import type { Coral, Plugin, Rule, Variant, Theme, ComponentConfig } from '@coralcss/core'
+import type { Coral, Plugin, Rule, Variant, Theme, ComponentConfig } from '@coral-css/core'
 ```
 
 ## Links
 - Docs: https://coralcss.dev
 - GitHub: https://github.com/coralcss/core
-- npm: https://npmjs.com/package/@coralcss/core
+- npm: https://npmjs.com/package/@coral-css/core

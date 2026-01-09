@@ -16,7 +16,7 @@
     <!-- Installation -->
     <section class="mb-12">
       <h2 class="text-xl font-semibold mb-4">1. Installation</h2>
-      <pre class="bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm">npm install @coralcss/core postcss</pre>
+      <pre class="bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm">npm install @coral-css/core postcss</pre>
     </section>
 
     <!-- PostCSS Config -->
@@ -26,7 +26,7 @@
         <p class="text-sm text-slate-500 mb-2">postcss.config.js</p>
         <pre class="bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm">module.exports = {
   plugins: [
-    require('@coralcss/core/postcss')({
+    require('@coral-css/core/postcss')({
       // Content paths for class extraction
       content: [
         './index.html',
@@ -140,7 +140,7 @@
           <pre class="bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm">// postcss.config.js (same config works!)
 module.exports = {
   plugins: {
-    '@coralcss/core/postcss': {
+    '@coral-css/core/postcss': {
       content: ['./pages/**/*.{js,tsx}', './components/**/*.{js,tsx}'],
     },
   },
@@ -153,7 +153,7 @@ module.exports = {
 export default defineNuxtConfig({
   postcss: {
     plugins: {
-      '@coralcss/core/postcss': {
+      '@coral-css/core/postcss': {
         content: ['./components/**/*.vue', './pages/**/*.vue'],
       },
     },

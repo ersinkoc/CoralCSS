@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce - CoralCSS Template</title>
+  <link rel="stylesheet" href="../dist/coral.min.css">
+  <script src="../dist/coral.min.global.js" defer></script>
+  <style>
+    /* E-commerce specific styles */
+    .shop-header {
+      background: hsl(var(--background));
+      border-bottom: 1px solid hsl(var(--border));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .shop-header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-4) var(--spacing-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-8);
+    }
+
+    .shop-logo {
+      font-size: var(--text-xl);
+      font-weight: var(--font-bold);
+      color: hsl(var(--primary));
+      text-decoration: none;
+    }
+
+    .shop-search {
+      flex: 1;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .shop-search input {
+      width: 100%;
+      padding: var(--spacing-3) var(--spacing-4);
+      padding-left: var(--spacing-10);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--coral-radius-full);
+      background: hsl(var(--muted) / 0.3);
+      transition: all var(--coral-duration-fast) var(--coral-ease-default);
+    }
+
+    .shop-search input:focus {
+      outline: none;
+      border-color: hsl(var(--primary));
+      background: hsl(var(--background));
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+    }
+
+    .shop-search-icon {
+      position: absolute;
+      left: var(--spacing-3);
+      top: 50%;
+      transform: translateY(-50%);
+      color: hsl(var(--muted-foreground));
+    }
+
+    .shop-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+
+    .shop-categories {
+      background: hsl(var(--muted) / 0.3);
+      padding: var(--spacing-3) 0;
+    }
+
+    .shop-categories-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-6);
+      display: flex;
+      gap: var(--spacing-6);
+      overflow-x: auto;
+    }
+
+    .shop-categories a {
+      color: hsl(var(--foreground));
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: var(--text-sm);
+      padding: var(--spacing-2) 0;
+      border-bottom: 2px solid transparent;
+      transition: all var(--coral-duration-fast);
+    }
+
+    .shop-categories a:hover,
+    .shop-categories a.active {
+      color: hsl(var(--primary));
+      border-color: hsl(var(--primary));
+    }
+
+    .shop-hero {
+      background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--secondary) / 0.1) 100%);
+      padding: var(--spacing-12) var(--spacing-6);
+    }
+
+    .shop-hero-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-8);
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .shop-hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .shop-hero h1 {
+      font-size: var(--text-4xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .shop-hero p {
+      color: hsl(var(--muted-foreground));
+      font-size: var(--text-lg);
+      margin-bottom: var(--spacing-6);
+    }
+
+    .shop-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-8) var(--spacing-6);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .section-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-bold);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--spacing-6);
+    }
+
+    .product-card {
+      overflow: hidden;
+      transition: all var(--coral-duration-normal) var(--coral-ease-default);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--coral-shadow-lg);
+    }
+
+    .product-image {
+      position: relative;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.5) 100%);
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: var(--spacing-3);
+      left: var(--spacing-3);
+    }
+
+    .product-actions {
+      position: absolute;
+      top: var(--spacing-3);
+      right: var(--spacing-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all var(--coral-duration-normal) var(--coral-ease-default);
+    }
+
+    .product-card:hover .product-actions {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .product-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--coral-radius-full);
+      background: hsl(var(--background));
+      border: 1px solid hsl(var(--border));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--coral-duration-fast);
+    }
+
+    .product-action-btn:hover {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border-color: hsl(var(--primary));
+    }
+
+    .product-info {
+      padding: var(--spacing-4);
+    }
+
+    .product-category {
+      font-size: var(--text-xs);
+      color: hsl(var(--muted-foreground));
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .product-name {
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .product-name a {
+      color: hsl(var(--foreground));
+      text-decoration: none;
+    }
+
+    .product-name a:hover {
+      color: hsl(var(--primary));
+    }
+
+    .product-price {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .product-price-current {
+      font-weight: var(--font-bold);
+      font-size: var(--text-lg);
+      color: hsl(var(--primary));
+    }
+
+    .product-price-original {
+      font-size: var(--text-sm);
+      color: hsl(var(--muted-foreground));
+      text-decoration: line-through;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+      margin-top: var(--spacing-2);
+    }
+
+    .product-rating svg {
+      width: 14px;
+      height: 14px;
+      fill: hsl(var(--warning));
+    }
+
+    .product-rating span {
+      font-size: var(--text-sm);
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Featured Products Carousel */
+    .featured-products {
+      display: flex;
+      gap: var(--spacing-4);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: var(--spacing-4);
+    }
+
+    .featured-products > * {
+      scroll-snap-align: start;
+      flex: 0 0 300px;
+    }
+
+    /* Newsletter */
+    .newsletter-section {
+      background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+      color: white;
+      padding: var(--spacing-12) var(--spacing-6);
+      text-align: center;
+      margin-top: var(--spacing-12);
+    }
+
+    .newsletter-section h2 {
+      font-size: var(--text-3xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .newsletter-section p {
+      opacity: 0.9;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: var(--spacing-3);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: var(--spacing-3) var(--spacing-4);
+      border: none;
+      border-radius: var(--coral-radius-md);
+      font-size: var(--text-base);
+    }
+
+    /* Cart Sidebar */
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      min-width: 20px;
+      height: 20px;
+      background: hsl(var(--destructive));
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: var(--font-bold);
+      border-radius: var(--coral-radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Footer */
+    .shop-footer {
+      background: hsl(var(--muted) / 0.5);
+      padding: var(--spacing-12) var(--spacing-6);
+    }
+
+    .shop-footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: var(--spacing-8);
+    }
+
+    @media (max-width: 768px) {
+      .shop-footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .footer-brand {
+      font-size: var(--text-xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-desc {
+      color: hsl(var(--muted-foreground));
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: var(--spacing-3);
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--coral-radius-full);
+      background: hsl(var(--muted));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: hsl(var(--foreground));
+      transition: all var(--coral-duration-fast);
+    }
+
+    .footer-social a:hover {
+      background: hsl(var(--primary));
+      color: white;
+    }
+
+    .footer-title {
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: var(--spacing-2);
+    }
+
+    .footer-links a {
+      color: hsl(var(--muted-foreground));
+      text-decoration: none;
+      font-size: var(--text-sm);
+    }
+
+    .footer-links a:hover {
+      color: hsl(var(--primary));
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-top: var(--spacing-8);
+      margin-top: var(--spacing-8);
+      border-top: 1px solid hsl(var(--border));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--text-sm);
+      color: hsl(var(--muted-foreground));
+    }
+
+    .payment-methods {
+      display: flex;
+      gap: var(--spacing-2);
+    }
+
+    .payment-method {
+      padding: var(--spacing-1) var(--spacing-2);
+      background: hsl(var(--background));
+      border-radius: var(--coral-radius-sm);
+      font-size: var(--text-xs);
+      font-weight: var(--font-medium);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="shop-header">
+    <div class="shop-header-inner">
+      <a href="#" class="shop-logo">ShopCoral</a>
+
+      <div class="shop-search">
+        <svg class="shop-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" placeholder="Search products...">
+      </div>
+
+      <div class="shop-nav">
+        <button data-coral-button data-variant="ghost" data-size="icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+        <button data-coral-button data-variant="ghost" data-size="icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+        <button data-coral-button data-variant="ghost" data-size="icon" style="position: relative;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span class="cart-count">3</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Categories Nav -->
+  <nav class="shop-categories">
+    <div class="shop-categories-inner">
+      <a href="#" class="active">All</a>
+      <a href="#">New Arrivals</a>
+      <a href="#">Best Sellers</a>
+      <a href="#">Electronics</a>
+      <a href="#">Clothing</a>
+      <a href="#">Home & Garden</a>
+      <a href="#">Sports</a>
+      <a href="#">Beauty</a>
+      <a href="#">Sale</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="shop-hero">
+    <div class="shop-hero-inner">
+      <div>
+        <span data-coral-badge data-variant="secondary" style="margin-bottom: var(--spacing-4); display: inline-block;">New Season</span>
+        <h1>Summer Collection 2026</h1>
+        <p>Discover our latest arrivals with up to 40% off on selected items. Free shipping on orders over $50.</p>
+        <div style="display: flex; gap: var(--spacing-3); flex-wrap: wrap;">
+          <button data-coral-button data-variant="primary" data-size="lg">Shop Now</button>
+          <button data-coral-button data-variant="outline" data-size="lg">View Lookbook</button>
+        </div>
+      </div>
+      <div style="background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--secondary) / 0.2)); border-radius: var(--coral-radius-xl); height: 400px; display: flex; align-items: center; justify-content: center; color: hsl(var(--muted-foreground));">
+        Hero Image Placeholder
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="shop-container">
+    <div class="section-header">
+      <h2 class="section-title">Featured Products</h2>
+      <button data-coral-button data-variant="ghost">View All</button>
+    </div>
+
+    <div class="product-grid">
+      <!-- Product 1 -->
+      <div data-coral-card class="product-card">
+        <div class="product-image">
+          <span data-coral-badge data-variant="destructive" class="product-badge">-30%</span>
+          <div class="product-actions">
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3 class="product-name"><a href="#">Wireless Noise-Canceling Headphones</a></h3>
+          <div class="product-price">
+            <span class="product-price-current">$199.99</span>
+            <span class="product-price-original">$285.99</span>
+          </div>
+          <div class="product-rating">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" style="opacity: 0.3;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>(128)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div data-coral-card class="product-card">
+        <div class="product-image">
+          <span data-coral-badge data-variant="success" class="product-badge">New</span>
+          <div class="product-actions">
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Clothing</div>
+          <h3 class="product-name"><a href="#">Premium Cotton T-Shirt</a></h3>
+          <div class="product-price">
+            <span class="product-price-current">$49.99</span>
+          </div>
+          <div class="product-rating">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>(256)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div data-coral-card class="product-card">
+        <div class="product-image">
+          <div class="product-actions">
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Home & Garden</div>
+          <h3 class="product-name"><a href="#">Modern Ceramic Vase Set</a></h3>
+          <div class="product-price">
+            <span class="product-price-current">$79.99</span>
+          </div>
+          <div class="product-rating">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" style="opacity: 0.3;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>(64)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div data-coral-card class="product-card">
+        <div class="product-image">
+          <span data-coral-badge data-variant="warning" class="product-badge">Hot</span>
+          <div class="product-actions">
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            <button class="product-action-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Sports</div>
+          <h3 class="product-name"><a href="#">Professional Running Shoes</a></h3>
+          <div class="product-price">
+            <span class="product-price-current">$129.99</span>
+          </div>
+          <div class="product-rating">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>(512)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter-section">
+    <h2>Subscribe to Our Newsletter</h2>
+    <p>Get 10% off your first order and stay updated with new arrivals and exclusive offers.</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Enter your email">
+      <button data-coral-button data-variant="secondary" style="background: white; color: hsl(var(--primary));">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="shop-footer">
+    <div class="shop-footer-grid">
+      <div>
+        <div class="footer-brand">ShopCoral</div>
+        <p class="footer-desc">Your destination for premium products at affordable prices. Free shipping worldwide.</p>
+        <div class="footer-social">
+          <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+          <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+          <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-title">Shop</div>
+        <ul class="footer-links">
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Best Sellers</a></li>
+          <li><a href="#">Sale</a></li>
+          <li><a href="#">All Products</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 ShopCoral. All rights reserved.</p>
+      <div class="payment-methods">
+        <span class="payment-method">Visa</span>
+        <span class="payment-method">Mastercard</span>
+        <span class="payment-method">PayPal</span>
+        <span class="payment-method">Apple Pay</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.Coral) {
+        window.Coral.init()
+      }
+    })
+  </script>
+</body>
+</html>

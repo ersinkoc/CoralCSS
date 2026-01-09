@@ -230,15 +230,89 @@ export function getCoralCDN(): CoralCDN {
   return globalInstance
 }
 
+/**
+ * Simple Coral API for CDN usage
+ */
+export interface CoralAPI {
+  /** Initialize CoralCSS (called automatically) */
+  init(config?: CDNConfig): CoralCDN
+  /** Get the current instance */
+  getInstance(): CoralCDN | null
+  /** Create a new instance with custom config */
+  create(config?: CDNConfig): CoralCDN
+  /** Generate CSS for specific classes */
+  generate(classes: string[]): string
+  /** Generate CSS from HTML string */
+  generateFromHTML(html: string): string
+  /** Get all generated CSS */
+  getCSS(): string
+  /** Reset and clear all generated CSS */
+  reset(): void
+  /** Initialize components manually */
+  initComponents(): void
+  /** Stop observing DOM changes */
+  stop(): void
+  /** Start observing DOM changes */
+  start(): void
+}
+
 // Expose to window for CDN usage
 if (typeof window !== 'undefined') {
+  // Legacy CoralCSS API
   (window as unknown as { CoralCSS: { createCoralCDN: typeof createCoralCDN; getCoralCDN: typeof getCoralCDN } }).CoralCSS = {
     createCoralCDN,
     getCoralCDN,
   }
+
+  // Simple Coral API
+  const CoralAPI: CoralAPI = {
+    init(config?: CDNConfig): CoralCDN {
+      if (!globalInstance) {
+        globalInstance = createCoralCDN(config)
+      }
+      return globalInstance
+    },
+    getInstance(): CoralCDN | null {
+      return globalInstance
+    },
+    create(config?: CDNConfig): CoralCDN {
+      return createCoralCDN(config)
+    },
+    generate(classes: string[]): string {
+      return getCoralCDN().generate(classes)
+    },
+    generateFromHTML(html: string): string {
+      return getCoralCDN().generateFromHTML(html)
+    },
+    getCSS(): string {
+      return getCoralCDN().getCSS()
+    },
+    reset(): void {
+      getCoralCDN().reset()
+    },
+    initComponents(): void {
+      getCoralCDN().initComponents()
+    },
+    stop(): void {
+      getCoralCDN().stop()
+    },
+    start(): void {
+      getCoralCDN().start()
+    },
+  };
+
+  (window as unknown as { Coral: CoralAPI }).Coral = CoralAPI
+
+  // Auto-initialize on script load (not deferred)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      CoralAPI.init()
+    })
+  } else {
+    // DOM already loaded, initialize immediately
+    CoralAPI.init()
+  }
 }
 
-// Export createCoralCDN as CoralCDN for convenience
-export { createCoralCDN as CoralCDN }
 
 export default createCoralCDN

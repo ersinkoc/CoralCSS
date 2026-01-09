@@ -205,6 +205,80 @@ export function interactivityPlugin(): Plugin {
       rules.push({ pattern: 'forced-color-adjust-auto', properties: { 'forced-color-adjust': 'auto' } })
       rules.push({ pattern: 'forced-color-adjust-none', properties: { 'forced-color-adjust': 'none' } })
 
+      // ========================================
+      // Field Sizing (Tailwind 4 feature)
+      // Enables auto-growing textareas and inputs
+      // ========================================
+      rules.push({ pattern: 'field-sizing-content', properties: { 'field-sizing': 'content' } })
+      rules.push({ pattern: 'field-sizing-fixed', properties: { 'field-sizing': 'fixed' } })
+
+      // ========================================
+      // Inert Attribute Styling
+      // ========================================
+      rules.push({
+        pattern: 'inert',
+        properties: {
+          'pointer-events': 'none',
+          'user-select': 'none',
+          opacity: '0.5',
+        },
+      })
+
+      // ========================================
+      // Content Visibility (Performance)
+      // ========================================
+      rules.push({ pattern: 'content-visibility-auto', properties: { 'content-visibility': 'auto' } })
+      rules.push({ pattern: 'content-visibility-hidden', properties: { 'content-visibility': 'hidden' } })
+      rules.push({ pattern: 'content-visibility-visible', properties: { 'content-visibility': 'visible' } })
+
+      // Contain-intrinsic-size for content-visibility
+      rules.push({ pattern: 'contain-intrinsic-auto', properties: { 'contain-intrinsic-size': 'auto' } })
+      rules.push({ pattern: 'contain-intrinsic-none', properties: { 'contain-intrinsic-size': 'none' } })
+      rules.push({
+        pattern: /^contain-intrinsic-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'contain-intrinsic-size': v } }
+        },
+      })
+
+      // ========================================
+      // Color Scheme (for native controls)
+      // ========================================
+      rules.push({ pattern: 'color-scheme-light', properties: { 'color-scheme': 'light' } })
+      rules.push({ pattern: 'color-scheme-dark', properties: { 'color-scheme': 'dark' } })
+      rules.push({ pattern: 'color-scheme-normal', properties: { 'color-scheme': 'normal' } })
+      rules.push({ pattern: 'color-scheme-only-light', properties: { 'color-scheme': 'only light' } })
+      rules.push({ pattern: 'color-scheme-only-dark', properties: { 'color-scheme': 'only dark' } })
+      rules.push({ pattern: 'color-scheme-light-dark', properties: { 'color-scheme': 'light dark' } })
+
+      // ========================================
+      // Interpolate Size (for smooth size transitions)
+      // ========================================
+      rules.push({ pattern: 'interpolate-size-allow', properties: { 'interpolate-size': 'allow-keywords' } })
+      rules.push({ pattern: 'interpolate-size-numeric', properties: { 'interpolate-size': 'numeric-only' } })
+
+      // ========================================
+      // Overscroll Behavior Inline/Block
+      // ========================================
+      rules.push({ pattern: 'overscroll-inline-auto', properties: { 'overscroll-behavior-inline': 'auto' } })
+      rules.push({ pattern: 'overscroll-inline-contain', properties: { 'overscroll-behavior-inline': 'contain' } })
+      rules.push({ pattern: 'overscroll-inline-none', properties: { 'overscroll-behavior-inline': 'none' } })
+      rules.push({ pattern: 'overscroll-block-auto', properties: { 'overscroll-behavior-block': 'auto' } })
+      rules.push({ pattern: 'overscroll-block-contain', properties: { 'overscroll-behavior-block': 'contain' } })
+      rules.push({ pattern: 'overscroll-block-none', properties: { 'overscroll-behavior-block': 'none' } })
+
+      // ========================================
+      // Scrollbar Styling
+      // ========================================
+      rules.push({ pattern: 'scrollbar-auto', properties: { 'scrollbar-width': 'auto' } })
+      rules.push({ pattern: 'scrollbar-thin', properties: { 'scrollbar-width': 'thin' } })
+      rules.push({ pattern: 'scrollbar-none', properties: { 'scrollbar-width': 'none' } })
+      rules.push({ pattern: 'scrollbar-gutter-auto', properties: { 'scrollbar-gutter': 'auto' } })
+      rules.push({ pattern: 'scrollbar-gutter-stable', properties: { 'scrollbar-gutter': 'stable' } })
+      rules.push({ pattern: 'scrollbar-gutter-both-edges', properties: { 'scrollbar-gutter': 'stable both-edges' } })
+
       // Arbitrary values
       rules.push({
         pattern: /^cursor-\[(.+)\]$/,
@@ -217,6 +291,138 @@ export function interactivityPlugin(): Plugin {
       rules.push({
         pattern: /^scroll-p-\[(.+)\]$/,
         handler: (match) => { const v = match[1]; if (!v) return null; return { properties: { 'scroll-padding': v } } },
+      })
+
+      // ========================================
+      // TOUCH ACTION (Beyond Tailwind 4)
+      // ========================================
+
+      rules.push({ pattern: 'touch-auto', properties: { 'touch-action': 'auto' } })
+      rules.push({ pattern: 'touch-none', properties: { 'touch-action': 'none' } })
+      rules.push({ pattern: 'touch-pan-x', properties: { 'touch-action': 'pan-x' } })
+      rules.push({ pattern: 'touch-pan-y', properties: { 'touch-action': 'pan-y' } })
+      rules.push({ pattern: 'touch-pan-left', properties: { 'touch-action': 'pan-left' } })
+      rules.push({ pattern: 'touch-pan-right', properties: { 'touch-action': 'pan-right' } })
+      rules.push({ pattern: 'touch-pan-up', properties: { 'touch-action': 'pan-up' } })
+      rules.push({ pattern: 'touch-pan-down', properties: { 'touch-action': 'pan-down' } })
+      rules.push({ pattern: 'touch-pinch-zoom', properties: { 'touch-action': 'pinch-zoom' } })
+      rules.push({ pattern: 'touch-manipulation', properties: { 'touch-action': 'manipulation' } })
+
+      // Combined touch actions
+      rules.push({ pattern: 'touch-pan-x-pan-y', properties: { 'touch-action': 'pan-x pan-y' } })
+      rules.push({ pattern: 'touch-pan-x-pinch-zoom', properties: { 'touch-action': 'pan-x pinch-zoom' } })
+      rules.push({ pattern: 'touch-pan-y-pinch-zoom', properties: { 'touch-action': 'pan-y pinch-zoom' } })
+
+      rules.push({
+        pattern: /^touch-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'touch-action': v } }
+        },
+      })
+
+      // ========================================
+      // DRAG & DROP (Beyond Tailwind 4)
+      // ========================================
+
+      rules.push({ pattern: 'draggable', properties: { '-webkit-user-drag': 'element' } })
+      rules.push({ pattern: 'draggable-none', properties: { '-webkit-user-drag': 'none' } })
+      rules.push({ pattern: 'draggable-auto', properties: { '-webkit-user-drag': 'auto' } })
+
+      // ========================================
+      // IMAGE RENDERING (Beyond Tailwind 4)
+      // ========================================
+
+      rules.push({ pattern: 'image-render-auto', properties: { 'image-rendering': 'auto' } })
+      rules.push({ pattern: 'image-render-crisp', properties: { 'image-rendering': 'crisp-edges' } })
+      rules.push({ pattern: 'image-render-pixelated', properties: { 'image-rendering': 'pixelated' } })
+      rules.push({ pattern: 'image-render-smooth', properties: { 'image-rendering': '-webkit-optimize-contrast' } })
+
+      // ========================================
+      // ZOOM (Beyond Tailwind 4)
+      // ========================================
+
+      rules.push({ pattern: 'zoom-normal', properties: { zoom: 'normal' } })
+      rules.push({ pattern: 'zoom-reset', properties: { zoom: 'reset' } })
+      rules.push({ pattern: 'zoom-50', properties: { zoom: '0.5' } })
+      rules.push({ pattern: 'zoom-75', properties: { zoom: '0.75' } })
+      rules.push({ pattern: 'zoom-90', properties: { zoom: '0.9' } })
+      rules.push({ pattern: 'zoom-100', properties: { zoom: '1' } })
+      rules.push({ pattern: 'zoom-110', properties: { zoom: '1.1' } })
+      rules.push({ pattern: 'zoom-125', properties: { zoom: '1.25' } })
+      rules.push({ pattern: 'zoom-150', properties: { zoom: '1.5' } })
+      rules.push({ pattern: 'zoom-200', properties: { zoom: '2' } })
+
+      rules.push({
+        pattern: /^zoom-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { zoom: v } }
+        },
+      })
+
+      // ========================================
+      // SCROLL SNAP (Extended - Beyond Tailwind 4)
+      // ========================================
+
+      // Additional scroll-snap utilities
+      rules.push({ pattern: 'scroll-snap-type-none', properties: { 'scroll-snap-type': 'none' } })
+      rules.push({ pattern: 'scroll-snap-type-x-mandatory', properties: { 'scroll-snap-type': 'x mandatory' } })
+      rules.push({ pattern: 'scroll-snap-type-y-mandatory', properties: { 'scroll-snap-type': 'y mandatory' } })
+      rules.push({ pattern: 'scroll-snap-type-both-mandatory', properties: { 'scroll-snap-type': 'both mandatory' } })
+      rules.push({ pattern: 'scroll-snap-type-x-proximity', properties: { 'scroll-snap-type': 'x proximity' } })
+      rules.push({ pattern: 'scroll-snap-type-y-proximity', properties: { 'scroll-snap-type': 'y proximity' } })
+      rules.push({ pattern: 'scroll-snap-type-both-proximity', properties: { 'scroll-snap-type': 'both proximity' } })
+
+      // ========================================
+      // RESIZE (Extended)
+      // ========================================
+
+      rules.push({ pattern: 'resize-none', properties: { resize: 'none' } })
+      rules.push({ pattern: 'resize-y', properties: { resize: 'vertical' } })
+      rules.push({ pattern: 'resize-x', properties: { resize: 'horizontal' } })
+      rules.push({ pattern: 'resize', properties: { resize: 'both' } })
+      rules.push({ pattern: 'resize-block', properties: { resize: 'block' } })
+      rules.push({ pattern: 'resize-inline', properties: { resize: 'inline' } })
+
+      // ========================================
+      // FOCUS WITHIN/VISIBLE (Accessibility)
+      // ========================================
+
+      // These are typically handled via variants, but utility support
+      rules.push({
+        pattern: 'focus-visible-ring',
+        properties: {
+          outline: '2px solid var(--coral-ring-color, #3b82f6)',
+          'outline-offset': '2px',
+        },
+      })
+      rules.push({
+        pattern: 'focus-visible-ring-inset',
+        properties: {
+          outline: '2px solid var(--coral-ring-color, #3b82f6)',
+          'outline-offset': '-2px',
+        },
+      })
+
+      // ========================================
+      // SCROLL START (CSS Scroll Start)
+      // ========================================
+
+      rules.push({ pattern: 'scroll-start-auto', properties: { 'scroll-start': 'auto' } })
+      rules.push({ pattern: 'scroll-start-0', properties: { 'scroll-start': '0' } })
+      rules.push({ pattern: 'scroll-start-center', properties: { 'scroll-start': 'center' } })
+      rules.push({ pattern: 'scroll-start-end', properties: { 'scroll-start': 'end' } })
+
+      rules.push({
+        pattern: /^scroll-start-\[(.+)\]$/,
+        handler: (match) => {
+          const v = match[1]
+          if (!v) return null
+          return { properties: { 'scroll-start': v } }
+        },
       })
 
       // Register all rules

@@ -9,7 +9,7 @@ Execute tasks sequentially. Do not skip tasks unless marked as optional.
 
 ### Task 1.1: Initialize Package
 - [ ] Create `package.json` with all metadata
-- [ ] Set name: `@coralcss/core`
+- [ ] Set name: `@coral-css/core`
 - [ ] Set version: `1.0.0`
 - [ ] Configure exports for all entry points
 - [ ] Add all scripts
@@ -813,7 +813,7 @@ Execute tasks sequentially. Do not skip tasks unless marked as optional.
 
 ### Task 15.2: PostCSS Plugin
 - [ ] Create `src/build/postcss.ts`
-- [ ] Implement @coralcss directive handling
+- [ ] Implement @coral-css directive handling
 - [ ] Implement CSS generation and replacement
 - [ ] Write tests: `tests/integration/postcss.test.ts`
 

@@ -1,0 +1,688 @@
+/* ========================================
+   CoralCSS UI Style Presets
+   Different visual approaches for components
+   ======================================== */
+
+/* ==========================================
+   DEFAULT / CORAL STYLE
+   Modern, balanced, slightly rounded
+   ========================================== */
+:root,
+.ui-coral {
+  --ui-style: 'coral';
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  --radius: var(--radius-md);
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Component Specific */
+  --btn-radius: var(--radius-md);
+  --btn-padding-x: 1rem;
+  --btn-padding-y: 0.5rem;
+  --btn-font-weight: 500;
+  --btn-shadow: var(--shadow-sm);
+  --btn-shadow-hover: var(--shadow-md);
+
+  --card-radius: var(--radius-lg);
+  --card-shadow: var(--shadow-md);
+  --card-padding: 1.5rem;
+  --card-border-width: 1px;
+
+  --input-radius: var(--radius-md);
+  --input-padding-x: 0.75rem;
+  --input-padding-y: 0.5rem;
+  --input-border-width: 1px;
+
+  --badge-radius: var(--radius-full);
+  --badge-padding-x: 0.625rem;
+  --badge-padding-y: 0.125rem;
+
+  --modal-radius: var(--radius-xl);
+  --modal-shadow: var(--shadow-2xl);
+
+  --tooltip-radius: var(--radius-md);
+
+  /* Animation */
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================
+   MATERIAL DESIGN STYLE
+   Google Material Design 3 inspired
+   Rounded corners, elevation shadows, ripple
+   ========================================== */
+.ui-material {
+  --ui-style: 'material';
+
+  /* Border Radius - Material uses more rounded corners */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+  --radius: var(--radius-lg);
+
+  /* Material Elevation Shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 1px rgb(0 0 0 / 0.15);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
+  --shadow-md: 0 4px 8px 3px rgb(0 0 0 / 0.15), 0 1px 3px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 6px 10px 4px rgb(0 0 0 / 0.15), 0 2px 3px rgb(0 0 0 / 0.3);
+  --shadow-xl: 0 8px 12px 6px rgb(0 0 0 / 0.15), 0 4px 4px rgb(0 0 0 / 0.3);
+  --shadow-2xl: 0 12px 16px 8px rgb(0 0 0 / 0.15), 0 6px 6px rgb(0 0 0 / 0.3);
+
+  /* Material Motion */
+  --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Component Specific */
+  --btn-radius: var(--radius-full);
+  --btn-padding-x: 1.5rem;
+  --btn-padding-y: 0.625rem;
+  --btn-font-weight: 500;
+  --btn-shadow: var(--shadow-sm);
+  --btn-shadow-hover: var(--shadow-lg);
+
+  --card-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-md);
+  --card-padding: 1rem;
+  --card-border-width: 0;
+
+  --input-radius: var(--radius-sm);
+  --input-padding-x: 1rem;
+  --input-padding-y: 0.75rem;
+  --input-border-width: 0;
+
+  --badge-radius: var(--radius-sm);
+  --badge-padding-x: 0.5rem;
+  --badge-padding-y: 0.25rem;
+
+  --modal-radius: var(--radius-2xl);
+  --modal-shadow: var(--shadow-2xl);
+
+  --tooltip-radius: var(--radius-sm);
+
+  /* Animation */
+  --animation-bounce: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --animation-smooth: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Material filled button style */
+.ui-material [data-coral-button] {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+}
+
+/* Material FAB style */
+.ui-material [data-coral-button][data-size="icon"] {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Material card style */
+.ui-material [data-coral-card] {
+  border: none;
+  background: hsl(var(--card));
+}
+
+/* Material input - underlined style */
+.ui-material [data-coral-input] {
+  border: none;
+  border-bottom: 2px solid hsl(var(--border));
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: hsl(var(--muted) / 0.5);
+}
+
+.ui-material [data-coral-input]:focus {
+  border-bottom-color: hsl(var(--primary));
+  background: hsl(var(--muted) / 0.7);
+}
+
+/* ==========================================
+   BOOTSTRAP STYLE
+   Classic Bootstrap 5 inspired
+   Subtle rounding, familiar shadows
+   ========================================== */
+.ui-bootstrap {
+  --ui-style: 'bootstrap';
+
+  /* Border Radius - Bootstrap uses moderate rounding */
+  --radius-none: 0;
+  --radius-sm: 0.2rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 2rem;
+  --radius-full: 50rem;
+  --radius: var(--radius-md);
+
+  /* Bootstrap Shadows */
+  --shadow-xs: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+  --shadow-sm: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+  --shadow-md: 0 0.5rem 1rem rgb(0 0 0 / 0.15);
+  --shadow-lg: 0 1rem 3rem rgb(0 0 0 / 0.175);
+  --shadow-xl: 0 1rem 3rem rgb(0 0 0 / 0.175);
+  --shadow-2xl: 0 1rem 3rem rgb(0 0 0 / 0.25);
+
+  /* Bootstrap Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 150ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* Component Specific */
+  --btn-radius: var(--radius-md);
+  --btn-padding-x: 0.75rem;
+  --btn-padding-y: 0.375rem;
+  --btn-font-weight: 400;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+
+  --card-radius: var(--radius-md);
+  --card-shadow: none;
+  --card-padding: 1rem;
+  --card-border-width: 1px;
+
+  --input-radius: var(--radius-md);
+  --input-padding-x: 0.75rem;
+  --input-padding-y: 0.375rem;
+  --input-border-width: 1px;
+
+  --badge-radius: var(--radius-md);
+  --badge-padding-x: 0.65em;
+  --badge-padding-y: 0.35em;
+
+  --modal-radius: var(--radius-lg);
+  --modal-shadow: var(--shadow-lg);
+
+  --tooltip-radius: var(--radius-md);
+
+  /* Animation */
+  --animation-bounce: ease-in-out;
+  --animation-smooth: ease-in-out;
+}
+
+/* Bootstrap button style */
+.ui-bootstrap [data-coral-button] {
+  font-weight: 400;
+  line-height: 1.5;
+  border-width: 1px;
+}
+
+.ui-bootstrap [data-coral-button]:hover {
+  filter: brightness(0.9);
+}
+
+.ui-bootstrap [data-coral-button]:active {
+  filter: brightness(0.85);
+}
+
+/* Bootstrap card */
+.ui-bootstrap [data-coral-card] {
+  border: 1px solid hsl(var(--border));
+  box-shadow: none;
+}
+
+/* Bootstrap form controls */
+.ui-bootstrap [data-coral-input] {
+  border: 1px solid hsl(var(--border));
+  box-shadow: none;
+}
+
+.ui-bootstrap [data-coral-input]:focus {
+  border-color: hsl(var(--primary) / 0.5);
+  box-shadow: 0 0 0 0.25rem hsl(var(--primary) / 0.25);
+}
+
+/* ==========================================
+   MINIMAL STYLE
+   Clean, sharp, no shadows
+   ========================================== */
+.ui-minimal {
+  --ui-style: 'minimal';
+
+  /* Border Radius - Minimal uses small or no rounding */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
+  --radius-full: 9999px;
+  --radius: var(--radius-sm);
+
+  /* No Shadows */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
+
+  /* Snappy Transitions */
+  --transition-fast: 100ms linear;
+  --transition-normal: 150ms linear;
+  --transition-slow: 200ms linear;
+
+  /* Component Specific */
+  --btn-radius: var(--radius-sm);
+  --btn-padding-x: 1rem;
+  --btn-padding-y: 0.5rem;
+  --btn-font-weight: 500;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+
+  --card-radius: var(--radius-md);
+  --card-shadow: none;
+  --card-padding: 1.5rem;
+  --card-border-width: 1px;
+
+  --input-radius: var(--radius-sm);
+  --input-padding-x: 0.75rem;
+  --input-padding-y: 0.5rem;
+  --input-border-width: 1px;
+
+  --badge-radius: var(--radius-sm);
+  --badge-padding-x: 0.5rem;
+  --badge-padding-y: 0.125rem;
+
+  --modal-radius: var(--radius-md);
+  --modal-shadow: 0 0 0 1px hsl(var(--border));
+
+  --tooltip-radius: var(--radius-sm);
+
+  /* Animation */
+  --animation-bounce: linear;
+  --animation-smooth: linear;
+}
+
+/* Minimal button style */
+.ui-minimal [data-coral-button] {
+  border: 1px solid currentColor;
+  box-shadow: none;
+}
+
+.ui-minimal [data-coral-button]:hover {
+  opacity: 0.8;
+}
+
+.ui-minimal [data-coral-button][data-variant="primary"] {
+  border-color: transparent;
+}
+
+/* Minimal card */
+.ui-minimal [data-coral-card] {
+  border: 1px solid hsl(var(--border));
+  box-shadow: none;
+}
+
+/* Minimal inputs */
+.ui-minimal [data-coral-input] {
+  border: 1px solid hsl(var(--border));
+}
+
+.ui-minimal [data-coral-input]:focus {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: -1px;
+}
+
+/* ==========================================
+   BRUTALIST STYLE
+   Raw, bold, high contrast
+   ========================================== */
+.ui-brutalist {
+  --ui-style: 'brutalist';
+
+  /* Border Radius - Brutalist uses no rounding */
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-full: 0;
+  --radius: 0;
+
+  /* Hard Shadows */
+  --shadow-xs: 2px 2px 0 currentColor;
+  --shadow-sm: 3px 3px 0 currentColor;
+  --shadow-md: 4px 4px 0 currentColor;
+  --shadow-lg: 6px 6px 0 currentColor;
+  --shadow-xl: 8px 8px 0 currentColor;
+  --shadow-2xl: 10px 10px 0 currentColor;
+
+  /* Instant Transitions */
+  --transition-fast: 0ms;
+  --transition-normal: 0ms;
+  --transition-slow: 0ms;
+
+  /* Component Specific */
+  --btn-radius: 0;
+  --btn-padding-x: 1.25rem;
+  --btn-padding-y: 0.75rem;
+  --btn-font-weight: 700;
+  --btn-shadow: var(--shadow-md);
+  --btn-shadow-hover: var(--shadow-sm);
+
+  --card-radius: 0;
+  --card-shadow: var(--shadow-lg);
+  --card-padding: 1.5rem;
+  --card-border-width: 3px;
+
+  --input-radius: 0;
+  --input-padding-x: 0.75rem;
+  --input-padding-y: 0.5rem;
+  --input-border-width: 3px;
+
+  --badge-radius: 0;
+  --badge-padding-x: 0.5rem;
+  --badge-padding-y: 0.25rem;
+
+  --modal-radius: 0;
+  --modal-shadow: var(--shadow-2xl);
+
+  --tooltip-radius: 0;
+
+  /* Animation */
+  --animation-bounce: steps(1);
+  --animation-smooth: steps(1);
+}
+
+/* Brutalist button style */
+.ui-brutalist [data-coral-button] {
+  border: 3px solid currentColor;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: var(--shadow-md);
+}
+
+.ui-brutalist [data-coral-button]:hover {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.ui-brutalist [data-coral-button]:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* Brutalist card */
+.ui-brutalist [data-coral-card] {
+  border: 3px solid hsl(var(--foreground));
+  box-shadow: var(--shadow-lg);
+}
+
+/* Brutalist inputs */
+.ui-brutalist [data-coral-input] {
+  border: 3px solid hsl(var(--foreground));
+}
+
+.ui-brutalist [data-coral-input]:focus {
+  outline: 3px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Brutalist tables */
+.ui-brutalist table {
+  border: 3px solid hsl(var(--foreground));
+}
+
+.ui-brutalist th,
+.ui-brutalist td {
+  border: 2px solid hsl(var(--foreground));
+}
+
+/* ==========================================
+   NEUMORPHISM STYLE
+   Soft, embossed, 3D-like
+   ========================================== */
+.ui-neumorphism {
+  --ui-style: 'neumorphism';
+
+  /* Border Radius - Neumorphism uses generous rounding */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 3rem;
+  --radius-full: 9999px;
+  --radius: var(--radius-lg);
+
+  /* Neumorphism Shadows */
+  --shadow-xs: 2px 2px 4px hsl(var(--foreground) / 0.1), -2px -2px 4px hsl(var(--background) / 0.7);
+  --shadow-sm: 4px 4px 8px hsl(var(--foreground) / 0.1), -4px -4px 8px hsl(var(--background) / 0.7);
+  --shadow-md: 6px 6px 12px hsl(var(--foreground) / 0.1), -6px -6px 12px hsl(var(--background) / 0.7);
+  --shadow-lg: 10px 10px 20px hsl(var(--foreground) / 0.1), -10px -10px 20px hsl(var(--background) / 0.7);
+  --shadow-xl: 15px 15px 30px hsl(var(--foreground) / 0.1), -15px -15px 30px hsl(var(--background) / 0.7);
+  --shadow-2xl: 20px 20px 40px hsl(var(--foreground) / 0.15), -20px -20px 40px hsl(var(--background) / 0.7);
+  --shadow-inset: inset 4px 4px 8px hsl(var(--foreground) / 0.1), inset -4px -4px 8px hsl(var(--background) / 0.7);
+
+  /* Soft Transitions */
+  --transition-fast: 200ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Component Specific */
+  --btn-radius: var(--radius-lg);
+  --btn-padding-x: 1.5rem;
+  --btn-padding-y: 0.75rem;
+  --btn-font-weight: 500;
+  --btn-shadow: var(--shadow-md);
+  --btn-shadow-hover: var(--shadow-sm);
+
+  --card-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-lg);
+  --card-padding: 2rem;
+  --card-border-width: 0;
+
+  --input-radius: var(--radius-md);
+  --input-padding-x: 1rem;
+  --input-padding-y: 0.75rem;
+  --input-border-width: 0;
+
+  --badge-radius: var(--radius-full);
+  --badge-padding-x: 0.75rem;
+  --badge-padding-y: 0.25rem;
+
+  --modal-radius: var(--radius-2xl);
+  --modal-shadow: var(--shadow-2xl);
+
+  --tooltip-radius: var(--radius-md);
+
+  /* Animation */
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-smooth: ease;
+}
+
+/* Neumorphism button style */
+.ui-neumorphism [data-coral-button] {
+  border: none;
+  background: hsl(var(--background));
+  box-shadow: var(--shadow-md);
+}
+
+.ui-neumorphism [data-coral-button]:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.ui-neumorphism [data-coral-button]:active {
+  box-shadow: var(--shadow-inset);
+}
+
+.ui-neumorphism [data-coral-button][data-variant="primary"] {
+  background: linear-gradient(145deg, hsl(var(--primary) / 0.9), hsl(var(--primary)));
+  color: hsl(var(--primary-foreground));
+}
+
+/* Neumorphism card */
+.ui-neumorphism [data-coral-card] {
+  border: none;
+  background: hsl(var(--background));
+  box-shadow: var(--shadow-lg);
+}
+
+/* Neumorphism inputs - inset shadow */
+.ui-neumorphism [data-coral-input] {
+  border: none;
+  background: hsl(var(--background));
+  box-shadow: var(--shadow-inset);
+}
+
+.ui-neumorphism [data-coral-input]:focus {
+  box-shadow: var(--shadow-inset), 0 0 0 2px hsl(var(--primary) / 0.3);
+}
+
+/* ==========================================
+   GLASSMORPHISM STYLE
+   Frosted glass, blur, transparency
+   ========================================== */
+.ui-glass {
+  --ui-style: 'glass';
+
+  /* Border Radius - Glass uses elegant rounding */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  --radius: var(--radius-lg);
+
+  /* Glass Shadows */
+  --shadow-xs: 0 2px 8px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 4px 16px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 8px 32px rgb(0 0 0 / 0.12);
+  --shadow-lg: 0 12px 48px rgb(0 0 0 / 0.15);
+  --shadow-xl: 0 20px 60px rgb(0 0 0 / 0.18);
+  --shadow-2xl: 0 32px 80px rgb(0 0 0 / 0.22);
+
+  /* Glass Variables */
+  --glass-blur: 16px;
+  --glass-opacity: 0.7;
+  --glass-border-opacity: 0.2;
+
+  /* Smooth Transitions */
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+
+  /* Component Specific */
+  --btn-radius: var(--radius-lg);
+  --btn-padding-x: 1.25rem;
+  --btn-padding-y: 0.625rem;
+  --btn-font-weight: 500;
+  --btn-shadow: var(--shadow-sm);
+  --btn-shadow-hover: var(--shadow-md);
+
+  --card-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-lg);
+  --card-padding: 1.5rem;
+  --card-border-width: 1px;
+
+  --input-radius: var(--radius-md);
+  --input-padding-x: 1rem;
+  --input-padding-y: 0.625rem;
+  --input-border-width: 1px;
+
+  --badge-radius: var(--radius-full);
+  --badge-padding-x: 0.75rem;
+  --badge-padding-y: 0.25rem;
+
+  --modal-radius: var(--radius-2xl);
+  --modal-shadow: var(--shadow-2xl);
+
+  --tooltip-radius: var(--radius-md);
+
+  /* Animation */
+  --animation-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animation-smooth: ease-out;
+}
+
+/* Glass button style */
+.ui-glass [data-coral-button] {
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: hsl(var(--background) / var(--glass-opacity));
+  border: 1px solid hsl(var(--foreground) / var(--glass-border-opacity));
+}
+
+.ui-glass [data-coral-button][data-variant="primary"] {
+  background: hsl(var(--primary) / 0.8);
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.ui-glass [data-coral-button]:hover {
+  background: hsl(var(--background) / 0.85);
+}
+
+/* Glass card */
+.ui-glass [data-coral-card] {
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: hsl(var(--background) / var(--glass-opacity));
+  border: 1px solid hsl(var(--foreground) / var(--glass-border-opacity));
+}
+
+/* Glass inputs */
+.ui-glass [data-coral-input] {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: hsl(var(--background) / 0.6);
+  border: 1px solid hsl(var(--foreground) / var(--glass-border-opacity));
+}
+
+.ui-glass [data-coral-input]:focus {
+  background: hsl(var(--background) / 0.8);
+  border-color: hsl(var(--primary) / 0.5);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+}
+
+/* ==========================================
+   DARK MODE ADJUSTMENTS
+   ========================================== */
+.dark.ui-neumorphism {
+  --shadow-xs: 2px 2px 4px hsl(0 0% 0% / 0.3), -2px -2px 4px hsl(0 0% 100% / 0.05);
+  --shadow-sm: 4px 4px 8px hsl(0 0% 0% / 0.3), -4px -4px 8px hsl(0 0% 100% / 0.05);
+  --shadow-md: 6px 6px 12px hsl(0 0% 0% / 0.3), -6px -6px 12px hsl(0 0% 100% / 0.05);
+  --shadow-lg: 10px 10px 20px hsl(0 0% 0% / 0.3), -10px -10px 20px hsl(0 0% 100% / 0.05);
+  --shadow-xl: 15px 15px 30px hsl(0 0% 0% / 0.3), -15px -15px 30px hsl(0 0% 100% / 0.05);
+  --shadow-inset: inset 4px 4px 8px hsl(0 0% 0% / 0.3), inset -4px -4px 8px hsl(0 0% 100% / 0.05);
+}
+
+.dark.ui-glass {
+  --glass-opacity: 0.3;
+  --glass-border-opacity: 0.15;
+}
+
+.dark.ui-brutalist [data-coral-card] {
+  border-color: hsl(var(--foreground));
+}
+
+.dark.ui-brutalist [data-coral-input] {
+  border-color: hsl(var(--foreground));
+}

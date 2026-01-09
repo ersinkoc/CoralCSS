@@ -57,8 +57,8 @@ export interface MiniPresetOptions {
  *
  * @example
  * ```typescript
- * import { createCoral } from '@coralcss/core'
- * import { miniPreset } from '@coralcss/core/presets'
+ * import { createCoral } from '@coral-css/core'
+ * import { miniPreset } from '@coral-css/core/presets'
  *
  * const coral = createCoral({
  *   presets: [miniPreset()],

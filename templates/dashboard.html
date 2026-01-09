@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - CoralCSS Template</title>
+  <link rel="stylesheet" href="../dist/coral.min.css">
+  <script src="../dist/coral.min.global.js" defer></script>
+  <style>
+    /* Custom dashboard styles */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--spacing-6);
+    }
+
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
+
+    .stat-value {
+      font-size: var(--text-3xl);
+      font-weight: var(--font-bold);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: var(--text-sm);
+      color: var(--color-muted);
+    }
+
+    .stat-change {
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+
+    .stat-change.positive {
+      color: var(--color-success);
+    }
+
+    .stat-change.negative {
+      color: var(--color-destructive);
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: var(--color-muted-background);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+    }
+
+    .activity-item {
+      display: flex;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary-foreground);
+      font-weight: var(--font-semibold);
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-title {
+      font-weight: var(--font-medium);
+    }
+
+    .activity-time {
+      font-size: var(--text-sm);
+      color: var(--color-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside data-coral-sidebar data-variant="default" data-position="left">
+    <div style="padding: var(--spacing-4);">
+      <a href="#" style="display: flex; align-items: center; gap: var(--spacing-2); font-weight: var(--font-bold); font-size: var(--text-xl); color: var(--color-primary);">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+          <circle cx="16" cy="16" r="14" opacity="0.2"/>
+          <circle cx="16" cy="16" r="8"/>
+        </svg>
+        CoralCSS
+      </a>
+    </div>
+
+    <nav style="flex: 1; padding: var(--spacing-4);">
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--spacing-1);">
+        <li>
+          <a href="#" data-coral-button data-variant="ghost" style="width: 100%; justify-content: flex-start;" data-active>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#" data-coral-button data-variant="ghost" style="width: 100%; justify-content: flex-start;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Users
+          </a>
+        </li>
+        <li>
+          <a href="#" data-coral-button data-variant="ghost" style="width: 100%; justify-content: flex-start;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            Documents
+          </a>
+        </li>
+        <li>
+          <a href="#" data-coral-button data-variant="ghost" style="width: 100%; justify-content: flex-start;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Analytics
+          </a>
+        </li>
+        <li>
+          <a href="#" data-coral-button data-variant="ghost" style="width: 100%; justify-content: flex-start;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Settings
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div style="padding: var(--spacing-4); border-top: 1px solid var(--color-border);">
+      <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+        <div class="activity-avatar">JD</div>
+        <div>
+          <div style="font-weight: var(--font-medium);">John Doe</div>
+          <div style="font-size: var(--text-sm); color: var(--color-muted);">Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main style="margin-left: 280px; min-height: 100vh;">
+    <!-- Header -->
+    <header data-coral-navbar data-sticky style="background: var(--color-background); border-bottom: 1px solid var(--color-border);">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-4) var(--spacing-6); max-width: 100%;">
+        <div>
+          <h1 style="font-size: var(--text-2xl); font-weight: var(--font-bold); margin: 0;">Dashboard</h1>
+          <p style="color: var(--color-muted); margin: 0; font-size: var(--text-sm);">Welcome back, John</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+          <button data-coral-button data-variant="ghost" data-size="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <button data-coral-button data-variant="primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            New Project
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div style="padding: var(--spacing-6);">
+      <!-- Stats Grid -->
+      <div class="dashboard-grid" style="margin-bottom: var(--spacing-6);">
+        <div data-coral-card>
+          <div data-coral-card-content class="stat-card">
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value">$45,231</span>
+            <span class="stat-change positive">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              </svg>
+              +20.1% from last month
+            </span>
+          </div>
+        </div>
+
+        <div data-coral-card>
+          <div data-coral-card-content class="stat-card">
+            <span class="stat-label">Active Users</span>
+            <span class="stat-value">2,350</span>
+            <span class="stat-change positive">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              </svg>
+              +180 new users
+            </span>
+          </div>
+        </div>
+
+        <div data-coral-card>
+          <div data-coral-card-content class="stat-card">
+            <span class="stat-label">Sales</span>
+            <span class="stat-value">12,234</span>
+            <span class="stat-change negative">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+              </svg>
+              -4.3% from last month
+            </span>
+          </div>
+        </div>
+
+        <div data-coral-card>
+          <div data-coral-card-content class="stat-card">
+            <span class="stat-label">Conversion Rate</span>
+            <span class="stat-value">3.2%</span>
+            <span class="stat-change positive">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              </svg>
+              +1.2% from last month
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6); margin-bottom: var(--spacing-6);">
+        <div data-coral-card>
+          <div data-coral-card-header>
+            <h3 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">Revenue Overview</h3>
+          </div>
+          <div data-coral-card-content>
+            <div class="chart-placeholder">
+              Chart placeholder - integrate with Chart.js, Recharts, etc.
+            </div>
+          </div>
+        </div>
+
+        <div data-coral-card>
+          <div data-coral-card-header>
+            <h3 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">Recent Activity</h3>
+          </div>
+          <div data-coral-card-content>
+            <div class="activity-item">
+              <div class="activity-avatar">AB</div>
+              <div class="activity-content">
+                <div class="activity-title">Alice Brown completed a purchase</div>
+                <div class="activity-time">2 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">CS</div>
+              <div class="activity-content">
+                <div class="activity-title">Charlie Smith signed up</div>
+                <div class="activity-time">15 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">DM</div>
+              <div class="activity-content">
+                <div class="activity-title">Diana Martinez left a review</div>
+                <div class="activity-time">1 hour ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">EW</div>
+              <div class="activity-content">
+                <div class="activity-title">Eric Wilson updated profile</div>
+                <div class="activity-time">3 hours ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div data-coral-card>
+        <div data-coral-card-header style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">Recent Orders</h3>
+          <button data-coral-button data-variant="outline" data-size="sm">View All</button>
+        </div>
+        <div data-coral-card-content style="padding: 0;">
+          <table data-coral-table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#3210</td>
+                <td>Olivia Martin</td>
+                <td><span data-coral-badge data-variant="success">Completed</span></td>
+                <td>$250.00</td>
+                <td>Jan 8, 2026</td>
+              </tr>
+              <tr>
+                <td>#3209</td>
+                <td>Jackson Lee</td>
+                <td><span data-coral-badge data-variant="warning">Pending</span></td>
+                <td>$150.00</td>
+                <td>Jan 8, 2026</td>
+              </tr>
+              <tr>
+                <td>#3208</td>
+                <td>Isabella Nguyen</td>
+                <td><span data-coral-badge data-variant="success">Completed</span></td>
+                <td>$350.00</td>
+                <td>Jan 7, 2026</td>
+              </tr>
+              <tr>
+                <td>#3207</td>
+                <td>William Kim</td>
+                <td><span data-coral-badge data-variant="destructive">Cancelled</span></td>
+                <td>$450.00</td>
+                <td>Jan 7, 2026</td>
+              </tr>
+              <tr>
+                <td>#3206</td>
+                <td>Sofia Davis</td>
+                <td><span data-coral-badge data-variant="success">Completed</span></td>
+                <td>$550.00</td>
+                <td>Jan 6, 2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Initialize CoralCSS components
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.Coral) {
+        window.Coral.init()
+      }
+    })
+  </script>
+</body>
+</html>

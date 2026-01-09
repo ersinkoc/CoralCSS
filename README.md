@@ -17,11 +17,11 @@ A modern, zero-dependency CSS framework with utility-first classes, headless com
 ## Installation
 
 ```bash
-npm install @coralcss/core
+npm install @coral-css/core
 # or
-pnpm add @coralcss/core
+pnpm add @coral-css/core
 # or
-yarn add @coralcss/core
+yarn add @coral-css/core
 ```
 
 ## Quick Start
@@ -31,7 +31,7 @@ yarn add @coralcss/core
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
-import coral from '@coralcss/core/vite'
+import coral from '@coral-css/core/vite'
 
 export default defineConfig({
   plugins: [
@@ -55,7 +55,7 @@ export default defineConfig({
 ### CDN Usage
 
 ```html
-<script src="https://unpkg.com/@coralcss/core/dist/cdn.iife.js"></script>
+<script src="https://unpkg.com/@coral-css/core/dist/cdn.iife.js"></script>
 <script>
   // CoralCSS auto-initializes and watches for class changes
   const coral = window.CoralCSS.getCoralCDN()
@@ -65,7 +65,7 @@ export default defineConfig({
 ### Programmatic Usage
 
 ```typescript
-import { createCoral, coralPreset } from '@coralcss/core'
+import { createCoral, coralPreset } from '@coral-css/core'
 
 const coral = createCoral()
 coralPreset().forEach(plugin => coral.use(plugin))
@@ -191,7 +191,7 @@ Apply styles conditionally:
 Accessible, unstyled components with full keyboard navigation:
 
 ```typescript
-import { createDialog, createDropdown, createTabs } from '@coralcss/core/components'
+import { createDialog, createDropdown, createTabs } from '@coral-css/core/components'
 
 // Dialog
 const dialog = createDialog('#my-dialog', {
@@ -207,7 +207,7 @@ dropdown.element.addEventListener('coral:dropdown:select', (e) => {
 })
 
 // Auto-initialize all components
-import { initComponents } from '@coralcss/core/components'
+import { initComponents } from '@coral-css/core/components'
 document.addEventListener('DOMContentLoaded', initComponents)
 ```
 
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', initComponents)
 ## Configuration
 
 ```typescript
-import { createCoral, coralPreset, fullPreset } from '@coralcss/core'
+import { createCoral, coralPreset, fullPreset } from '@coral-css/core'
 
 const coral = createCoral({
   prefix: 'tw-',        // Class prefix
@@ -242,7 +242,7 @@ fullPreset()                        // Everything
 ### Vite Plugin
 
 ```typescript
-import coral from '@coralcss/core/vite'
+import coral from '@coral-css/core/vite'
 
 export default {
   plugins: [coral()]
@@ -255,7 +255,7 @@ export default {
 // postcss.config.js
 module.exports = {
   plugins: [
-    require('@coralcss/core/postcss')({
+    require('@coral-css/core/postcss')({
       content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
     }),
   ],
@@ -292,7 +292,7 @@ import type {
   Variant,
   Theme,
   ComponentConfig,
-} from '@coralcss/core'
+} from '@coral-css/core'
 ```
 
 ## License
@@ -303,4 +303,4 @@ MIT © CoralCSS
 
 - [Documentation](https://coralcss.dev)
 - [GitHub](https://github.com/coralcss/core)
-- [npm](https://www.npmjs.com/package/@coralcss/core)
+- [npm](https://www.npmjs.com/package/@coral-css/core)

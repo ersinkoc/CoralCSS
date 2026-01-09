@@ -44,8 +44,8 @@ export interface CoralPresetOptions {
  *
  * @example
  * ```typescript
- * import { createCoral } from '@coralcss/core'
- * import { coralPreset } from '@coralcss/core/presets'
+ * import { createCoral } from '@coral-css/core'
+ * import { coralPreset } from '@coral-css/core/presets'
  *
  * const coral = createCoral({
  *   presets: [coralPreset()],

@@ -117,6 +117,7 @@ export {
   generateBreakpointsCSS,
   generateResetCSS,
   generateBaseCSS,
+  generateComponentsCSS,
   generateThemeCSSComplete,
   defaultThemeCSS,
   minimalThemeCSS,

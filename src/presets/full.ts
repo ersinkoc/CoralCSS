@@ -46,8 +46,8 @@ export interface FullPresetOptions {
  *
  * @example
  * ```typescript
- * import { createCoral } from '@coralcss/core'
- * import { fullPreset } from '@coralcss/core/presets'
+ * import { createCoral } from '@coral-css/core'
+ * import { fullPreset } from '@coral-css/core/presets'
  *
  * const coral = createCoral({
  *   presets: [fullPreset()],

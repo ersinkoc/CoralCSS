@@ -10,6 +10,9 @@ export { BaseComponent, createComponentFactory, autoInit } from './base'
 import { autoInit } from './base'
 
 // Core Components
+export { Button, createButton, ButtonGroup, createButtonGroup } from './button'
+export type { ButtonConfig, ButtonState, ButtonVariant, ButtonSize, ButtonGroupConfig, ButtonGroupState } from './button'
+
 export { Dialog, createDialog } from './dialog'
 export type { DialogConfig, DialogState } from './dialog'
 
@@ -190,7 +193,18 @@ export type { RangeSliderConfig, RangeSliderState } from './range-slider'
 export { DataTable, createDataTable } from './data-table'
 export type { DataTableConfig, DataTableState, DataTableColumn } from './data-table'
 
+// Layout Components
+export { Navbar, createNavbar } from './navbar'
+export type { NavbarConfig, NavbarState } from './navbar'
+
+export { Sidebar, createSidebar } from './sidebar'
+export type { SidebarConfig, SidebarState, SidebarVariant, SidebarPosition } from './sidebar'
+
+export { Footer, createFooter } from './footer'
+export type { FooterConfig, FooterState, FooterVariant } from './footer'
+
 // Imports for initComponents and registries
+import { Button, ButtonGroup } from './button'
 import { Dialog } from './dialog'
 import { Dropdown } from './dropdown'
 import { Tabs } from './tabs'
@@ -252,6 +266,7 @@ import { ImageGallery } from './image-gallery'
 import { RangeSlider } from './range-slider'
 import { DataTable } from './data-table'
 
+import { createButton, createButtonGroup } from './button'
 import { createDialog } from './dialog'
 import { createDropdown } from './dropdown'
 import { createTabs } from './tabs'
@@ -312,13 +327,20 @@ import { createMarquee } from './marquee'
 import { createImageGallery } from './image-gallery'
 import { createRangeSlider } from './range-slider'
 import { createDataTable } from './data-table'
+// Layout
+import { Navbar } from './navbar'
+import { Sidebar } from './sidebar'
+import { Footer } from './footer'
+import { createNavbar } from './navbar'
+import { createSidebar } from './sidebar'
+import { createFooter } from './footer'
 
 /**
  * Auto-initialize all components from data attributes
  *
  * @example
  * ```typescript
- * import { initComponents } from '@coralcss/core/components'
+ * import { initComponents } from '@coral-css/core/components'
  *
  * // Initialize all components on page load
  * document.addEventListener('DOMContentLoaded', () => {
@@ -328,6 +350,8 @@ import { createDataTable } from './data-table'
  */
 export function initComponents(): void {
   // Core components
+  autoInit('[data-coral-button]', Button as never)
+  autoInit('[data-coral-button-group]', ButtonGroup as never)
   autoInit('[data-coral-dialog]', Dialog as never)
   autoInit('[data-coral-dropdown]', Dropdown as never)
   autoInit('[data-coral-tabs]', Tabs as never)
@@ -394,6 +418,11 @@ export function initComponents(): void {
   autoInit('[data-coral-image-gallery]', ImageGallery as never)
   autoInit('[data-coral-range-slider]', RangeSlider as never)
   autoInit('[data-coral-data-table]', DataTable as never)
+
+  // Layout components
+  autoInit('[data-coral-navbar]', Navbar as never)
+  autoInit('[data-coral-sidebar]', Sidebar as never)
+  autoInit('[data-coral-footer]', Footer as never)
 }
 
 /**
@@ -401,6 +430,8 @@ export function initComponents(): void {
  */
 export const components = {
   // Core
+  Button,
+  ButtonGroup,
   Dialog,
   Dropdown,
   Tabs,
@@ -464,6 +495,10 @@ export const components = {
   ImageGallery,
   RangeSlider,
   DataTable,
+  // Layout
+  Navbar,
+  Sidebar,
+  Footer,
 }
 
 /**
@@ -471,6 +506,8 @@ export const components = {
  */
 export const factories = {
   // Core
+  createButton,
+  createButtonGroup,
   createDialog,
   createDropdown,
   createTabs,
@@ -535,6 +572,10 @@ export const factories = {
   createImageGallery,
   createRangeSlider,
   createDataTable,
+  // Layout
+  createNavbar,
+  createSidebar,
+  createFooter,
 }
 
 export default components

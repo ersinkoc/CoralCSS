@@ -330,6 +330,93 @@ export function modernCSSPlugin(): Plugin {
         }),
       })
 
+      // ============================================
+      // Container Style Queries (Tailwind 4 feature)
+      // Style based on container's CSS custom properties
+      // ============================================
+      rules.push({
+        name: 'container-style-arb',
+        pattern: /^@style-\[(.+)\]$/,
+        handler: (match) => {
+          const value = match[1]
+          if (!value) return null
+          // For style queries like @container style(--variant: primary)
+          return { properties: { '--coral-style-query': value } }
+        },
+      })
+
+      // ============================================
+      // CSS Nesting Support
+      // ============================================
+      rules.push({ name: 'nest', pattern: 'nest', properties: { '--coral-nesting': 'enabled' } })
+
+      // ============================================
+      // CSS Scope
+      // ============================================
+      rules.push({
+        name: 'scope-start-arb',
+        pattern: /^scope-start-\[(.+)\]$/,
+        handler: (match) => {
+          const value = match[1]
+          if (!value) return null
+          return { properties: { '--coral-scope-start': value } }
+        },
+      })
+      rules.push({
+        name: 'scope-end-arb',
+        pattern: /^scope-end-\[(.+)\]$/,
+        handler: (match) => {
+          const value = match[1]
+          if (!value) return null
+          return { properties: { '--coral-scope-end': value } }
+        },
+      })
+
+      // ============================================
+      // CSS Layers
+      // ============================================
+      rules.push({ name: 'layer-base', pattern: 'layer-base', properties: { '--coral-layer': 'base' } })
+      rules.push({ name: 'layer-components', pattern: 'layer-components', properties: { '--coral-layer': 'components' } })
+      rules.push({ name: 'layer-utilities', pattern: 'layer-utilities', properties: { '--coral-layer': 'utilities' } })
+      rules.push({ name: 'layer-reset', pattern: 'layer-reset', properties: { '--coral-layer': 'reset' } })
+
+      // ============================================
+      // Reading Flow (CSS Display 4)
+      // ============================================
+      rules.push({ name: 'reading-flow-normal', pattern: 'reading-flow-normal', properties: { 'reading-flow': 'normal' } })
+      rules.push({ name: 'reading-flow-grid-rows', pattern: 'reading-flow-grid-rows', properties: { 'reading-flow': 'grid-rows' } })
+      rules.push({ name: 'reading-flow-grid-columns', pattern: 'reading-flow-grid-columns', properties: { 'reading-flow': 'grid-columns' } })
+      rules.push({ name: 'reading-flow-grid-order', pattern: 'reading-flow-grid-order', properties: { 'reading-flow': 'grid-order' } })
+      rules.push({ name: 'reading-flow-flex-visual', pattern: 'reading-flow-flex-visual', properties: { 'reading-flow': 'flex-visual' } })
+      rules.push({ name: 'reading-flow-flex-flow', pattern: 'reading-flow-flex-flow', properties: { 'reading-flow': 'flex-flow' } })
+
+      // ============================================
+      // Text Box Trim (CSS Inline 3)
+      // ============================================
+      rules.push({ name: 'text-box-trim-none', pattern: 'text-box-trim-none', properties: { 'text-box-trim': 'none' } })
+      rules.push({ name: 'text-box-trim-start', pattern: 'text-box-trim-start', properties: { 'text-box-trim': 'start' } })
+      rules.push({ name: 'text-box-trim-end', pattern: 'text-box-trim-end', properties: { 'text-box-trim': 'end' } })
+      rules.push({ name: 'text-box-trim-both', pattern: 'text-box-trim-both', properties: { 'text-box-trim': 'both' } })
+
+      // Text box edge
+      rules.push({ name: 'text-box-edge-leading', pattern: 'text-box-edge-leading', properties: { 'text-box-edge': 'leading' } })
+      rules.push({ name: 'text-box-edge-text', pattern: 'text-box-edge-text', properties: { 'text-box-edge': 'text' } })
+      rules.push({ name: 'text-box-edge-cap', pattern: 'text-box-edge-cap', properties: { 'text-box-edge': 'cap' } })
+      rules.push({ name: 'text-box-edge-ex', pattern: 'text-box-edge-ex', properties: { 'text-box-edge': 'ex' } })
+      rules.push({ name: 'text-box-edge-ideographic', pattern: 'text-box-edge-ideographic', properties: { 'text-box-edge': 'ideographic' } })
+      rules.push({ name: 'text-box-edge-ideographic-ink', pattern: 'text-box-edge-ideographic-ink', properties: { 'text-box-edge': 'ideographic-ink' } })
+
+      // ============================================
+      // Math Styles
+      // ============================================
+      rules.push({ name: 'math-style-normal', pattern: 'math-style-normal', properties: { 'math-style': 'normal' } })
+      rules.push({ name: 'math-style-compact', pattern: 'math-style-compact', properties: { 'math-style': 'compact' } })
+
+      // ============================================
+      // Display Contents
+      // ============================================
+      rules.push({ name: 'display-contents', pattern: 'display-contents', properties: { display: 'contents' } })
+
       // Register all rules
       for (const rule of rules) {
         ctx.addRule(rule)
