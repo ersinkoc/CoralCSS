@@ -90,6 +90,22 @@ describe('Testing Render Utilities', () => {
       providedContainer.remove()
     })
 
+    it('should not remove provided style element on cleanup', () => {
+      const providedContainer = document.createElement('div')
+      const providedStyle = document.createElement('style')
+      providedStyle.id = 'provided-style'
+      document.head.appendChild(providedStyle)
+
+      wrapper = createTestWrapper({ container: providedContainer, styleElement: providedStyle })
+
+      // Should not remove provided style on cleanup
+      wrapper.cleanup()
+      expect(document.head.contains(providedStyle)).toBe(true)
+
+      providedContainer.remove()
+      providedStyle.remove()
+    })
+
     it('should process base classes', () => {
       wrapper = createTestWrapper({
         baseClasses: ['bg-slate-100', 'p-4'],

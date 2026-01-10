@@ -58,6 +58,15 @@ describe('Testing Mock Utilities', () => {
       expect(coral.getProcessedClasses()).toEqual([])
     })
 
+    it('should clear generation count on reset', () => {
+      const coral = createTestCoral()
+      coral.generate(['bg-red-500'])
+      coral.generate(['bg-red-500'])
+      expect(coral.getGenerationCount('bg-red-500')).toBe(2)
+      coral.reset()
+      expect(coral.getGenerationCount('bg-red-500')).toBe(0)
+    })
+
     it('should return empty CSS when emptyCSS option is true', () => {
       const coral = createTestCoral({ emptyCSS: true })
       const css = coral.generate(['bg-red-500'])

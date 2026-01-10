@@ -89,6 +89,12 @@ describe('Testing Helpers', () => {
       const snapshot = generateSnapshot(coral, 'bg-red-500 p-4')
       expect(snapshot.classes).toEqual(['bg-red-500', 'p-4'])
     })
+
+    it('should handle string with multiple spaces', () => {
+      const coral = createCoral()
+      const snapshot = generateSnapshot(coral, 'bg-red-500  p-4   m-2')
+      expect(snapshot.classes).toEqual(['bg-red-500', 'p-4', 'm-2'])
+    })
   })
 
   describe('compareCSS', () => {

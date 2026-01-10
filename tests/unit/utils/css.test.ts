@@ -107,6 +107,23 @@ describe('CSS Utilities', () => {
       expect(result).toContain('.a')
       expect(result).toContain('.b')
     })
+
+    it('should handle CSS with colon in values', () => {
+      const result = formatCSS('.test{background:url("http://example.com")}', { indent: 2, newlines: true })
+      expect(result).toContain('background')
+      expect(result).toContain('http')
+    })
+
+    it('should handle CSS with semicolon in values', () => {
+      const result = formatCSS('.test{content:";"}', { indent: 2, newlines: true })
+      expect(result).toContain('content')
+      expect(result).toContain(';')
+    })
+
+    it('should handle empty CSS', () => {
+      const result = formatCSS('', { indent: 2, newlines: true })
+      expect(result).toBe('')
+    })
   })
 
   describe('minifyCSS', () => {

@@ -486,6 +486,52 @@ describe('Typography Utilities Plugin', () => {
       expect(css).toContain('marker-primary')
       expect(css).toContain('color')
     })
+
+    it('should generate marker-[custom]', () => {
+      const css = coral.generate(['marker-[blue]'])
+      expect(css).toContain('color')
+    })
+  })
+
+  describe('Counter Utilities', () => {
+    it('should generate counter-reset-[custom]', () => {
+      const css = coral.generate(['counter-reset-[myCounter]'])
+      expect(css).toContain('counter-reset')
+    })
+
+    it('should generate counter-increment-[custom]', () => {
+      const css = coral.generate(['counter-increment-[myCounter]'])
+      expect(css).toContain('counter-increment')
+    })
+
+    it('should generate counter-set-[custom]', () => {
+      const css = coral.generate(['counter-set-[myCounter]'])
+      expect(css).toContain('counter-set')
+    })
+  })
+
+  describe('List Utilities', () => {
+    it('should generate list-[custom]', () => {
+      const css = coral.generate(['list-[emoji]'])
+      expect(css).toContain('list-style-type')
+    })
+  })
+
+  describe('Quotes Utilities', () => {
+    it('should generate quotes-none', () => {
+      const css = coral.generate(['quotes-none'])
+      expect(css).toContain('quotes')
+    })
+
+    it('should generate quotes-auto', () => {
+      const css = coral.generate(['quotes-auto'])
+      expect(css).toContain('quotes')
+    })
+
+    it('should generate quotes-english', () => {
+      const css = coral.generate(['quotes-english'])
+      expect(css).toContain('quotes')
+    })
   })
 
   describe('Default Export', () => {

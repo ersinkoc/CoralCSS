@@ -220,6 +220,45 @@ describe('Layout Utilities Plugin', () => {
     })
   })
 
+  describe('Z-Index Utilities', () => {
+    it('should generate z-0', () => {
+      const css = coral.generate(['z-0'])
+      expect(css).toContain('z-index')
+    })
+
+    it('should generate z-10', () => {
+      const css = coral.generate(['z-10'])
+      expect(css).toContain('z-index')
+    })
+
+    it('should generate z-auto', () => {
+      const css = coral.generate(['z-auto'])
+      expect(css).toContain('z-index')
+    })
+  })
+
+  describe('Overflow Utilities', () => {
+    it('should generate overflow-auto', () => {
+      const css = coral.generate(['overflow-auto'])
+      expect(css).toContain('overflow')
+    })
+
+    it('should generate overflow-hidden', () => {
+      const css = coral.generate(['overflow-hidden'])
+      expect(css).toContain('overflow')
+    })
+
+    it('should generate overflow-visible', () => {
+      const css = coral.generate(['overflow-visible'])
+      expect(css).toContain('overflow')
+    })
+
+    it('should generate overflow-scroll', () => {
+      const css = coral.generate(['overflow-scroll'])
+      expect(css).toContain('overflow')
+    })
+  })
+
   describe('Default Export', () => {
     it('should export default function', async () => {
       const { default: defaultExport } = await import(

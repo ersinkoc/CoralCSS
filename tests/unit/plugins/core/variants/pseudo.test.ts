@@ -401,6 +401,45 @@ describe('Pseudo Variants Plugin', () => {
       expect(css).toContain(':first-child')
       expect(css).toContain(':hover')
     })
+
+    it('should combine dark with hover', () => {
+      const css = coral.generate(['dark:hover:bg-gray-800'])
+      expect(css).toContain(':hover')
+    })
+
+    it('should combine responsive with hover', () => {
+      const css = coral.generate(['hover:md:bg-blue-500'])
+      expect(css).toContain(':hover')
+    })
+
+    it('should combine dark with group-hover', () => {
+      const css = coral.generate(['dark:group-hover:bg-gray-700'])
+      expect(css).toContain('.group:hover')
+    })
+  })
+
+  describe('Selection Variant', () => {
+    it('should generate selection variant', () => {
+      const css = coral.generate(['selection:bg-blue-500'])
+      expect(css).toContain('::selection')
+    })
+
+    it('should generate selection with text color', () => {
+      const css = coral.generate(['selection:text-white'])
+      expect(css).toContain('::selection')
+    })
+  })
+
+  describe('File Variant', () => {
+    it('should generate file variant', () => {
+      const css = coral.generate(['file:bg-blue-500'])
+      expect(css).toContain('::file-selector-button')
+    })
+
+    it('should generate file with text color', () => {
+      const css = coral.generate(['file:text-white'])
+      expect(css).toContain('::file-selector-button')
+    })
   })
 
   describe('Default Export', () => {

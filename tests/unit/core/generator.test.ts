@@ -1102,3 +1102,32 @@ describe('CSSGenerator', () => {
     expect(result).toBe('')
   })
 })
+
+describe('sortGeneratedCSS', () => {
+  it('should sort CSS items by priority', () => {
+    const items = [
+      { selector: '.a', properties: {}, layer: 'utilities' as const, priority: 5, className: '', variants: [] },
+      { selector: '.b', properties: {}, layer: 'utilities' as const, priority: 1, className: '', variants: [] },
+      { selector: '.c', properties: {}, layer: 'utilities' as const, priority: 3, className: '', variants: [] },
+    ]
+
+    const sorted = sortGeneratedCSS(items)
+    expect(sorted[0].priority).toBe(1)
+    expect(sorted[1].priority).toBe(3)
+    expect(sorted[2].priority).toBe(5)
+  })
+
+  it('should sort CSS items by layer first, then priority', () => {
+    const items = [
+      { selector: '.a', properties: {}, layer: 'base' as const, priority: 5, className: '', variants: [] },
+      { selector: '.b', properties: {}, layer: 'utilities' as const, priority: 1, className: '', variants: [] },
+      { selector: '.c', properties: {}, layer: 'components' as const, priority: 3, className: '', variants: [] },
+    ]
+
+    const sorted = sortGeneratedCSS(items)
+    // Base layer should come first (order: base=0, components=1, utilities=2)
+    expect(sorted[0].layer).toBe('base')
+    expect(sorted[1].layer).toBe('components')
+    expect(sorted[2].layer).toBe('utilities')
+  })
+})

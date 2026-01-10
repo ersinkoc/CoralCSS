@@ -44,9 +44,59 @@ describe('layoutPlugin', () => {
       expect(css).toContain('display: grid')
     })
 
+    it('should generate inline-grid', () => {
+      const css = coral.generate(['inline-grid'])
+      expect(css).toContain('display: inline-grid')
+    })
+
     it('should generate hidden', () => {
       const css = coral.generate(['hidden'])
       expect(css).toContain('display: none')
+    })
+
+    it('should generate table-caption', () => {
+      const css = coral.generate(['table-caption'])
+      expect(css).toContain('display: table-caption')
+    })
+
+    it('should generate table-cell', () => {
+      const css = coral.generate(['table-cell'])
+      expect(css).toContain('display: table-cell')
+    })
+
+    it('should generate table-column', () => {
+      const css = coral.generate(['table-column'])
+      expect(css).toContain('display: table-column')
+    })
+
+    it('should generate table-column-group', () => {
+      const css = coral.generate(['table-column-group'])
+      expect(css).toContain('display: table-column-group')
+    })
+
+    it('should generate table-footer-group', () => {
+      const css = coral.generate(['table-footer-group'])
+      expect(css).toContain('display: table-footer-group')
+    })
+
+    it('should generate table-header-group', () => {
+      const css = coral.generate(['table-header-group'])
+      expect(css).toContain('display: table-header-group')
+    })
+
+    it('should generate table-row-group', () => {
+      const css = coral.generate(['table-row-group'])
+      expect(css).toContain('display: table-row-group')
+    })
+
+    it('should generate flow-root', () => {
+      const css = coral.generate(['flow-root'])
+      expect(css).toContain('display: flow-root')
+    })
+
+    it('should generate list-item', () => {
+      const css = coral.generate(['list-item'])
+      expect(css).toContain('display: list-item')
     })
   })
 

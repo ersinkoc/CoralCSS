@@ -162,6 +162,22 @@ describe('Color Utilities', () => {
       expect(rgb.g).toBe(rgb.b)
       expect(rgb.r).toBe(128)
     })
+
+    it('should handle HSL with high lightness', () => {
+      const rgb = hslToRgb({ h: 120, s: 100, l: 90 })
+      expect(rgb).toBeDefined()
+      expect(rgb.r).toBeGreaterThan(0)
+      expect(rgb.g).toBeGreaterThan(0)
+      expect(rgb.b).toBeGreaterThan(0)
+    })
+
+    it('should handle HSL with low lightness', () => {
+      const rgb = hslToRgb({ h: 240, s: 100, l: 10 })
+      expect(rgb).toBeDefined()
+      // Dark colors should have low RGB values
+      const avg = (rgb.r + rgb.g + rgb.b) / 3
+      expect(avg).toBeLessThan(100)
+    })
   })
 
   describe('adjustAlpha', () => {

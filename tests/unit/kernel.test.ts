@@ -491,6 +491,31 @@ describe('Kernel', () => {
 
       expect(eventFired).toBe(true)
     })
+
+    it('should execute multiple event handlers when event is emitted', () => {
+      let callCount = 0
+
+      coral.on('rule:added', () => {
+        callCount++
+      })
+
+      coral.on('rule:added', () => {
+        callCount++
+      })
+
+      coral.use({
+        name: 'test-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          ctx.addRule({
+            pattern: 'test-rule',
+            properties: { display: 'block' },
+          })
+        },
+      })
+
+      expect(callCount).toBe(2)
+    })
   })
 
   describe('plugin lifecycle', () => {

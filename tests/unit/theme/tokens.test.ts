@@ -124,6 +124,16 @@ describe('Theme Tokens', () => {
       const css = generateTokensCSS(defaultDesignTokens, { includeDescriptions: true })
       expect(css).toContain('/*')
     })
+
+    it('should handle categorize option', () => {
+      const css = generateTokensCSS(defaultDesignTokens, { categorize: true })
+      expect(css).toContain(':root')
+    })
+
+    it('should handle empty prefix', () => {
+      const css = generateTokensCSS(defaultDesignTokens, { prefix: '' })
+      expect(css).toContain('--color-coral-500')
+    })
   })
 
   describe('generateDarkTokensCSS', () => {

@@ -81,6 +81,32 @@ Theme values defined in `src/theme/`:
 - `default.ts` - Complete default theme
 - `dark.ts` - Dark mode CSS generation
 
+### Configuration Options
+
+**Safelist/Blocklist** - Control which classes are generated:
+```typescript
+const coral = createCoral({
+  safelist: [
+    'bg-red-500',           // Always include this class
+    /^text-/,               // Include all text- utilities
+    { pattern: /^bg-/, variants: ['hover', 'dark'] }  // With variants
+  ],
+  blocklist: [
+    'opacity-0',            // Never generate this
+    /^hidden$/              // Block exact match
+  ]
+})
+```
+
+**Key Options:**
+- `darkMode` - 'class' | 'media' | 'selector' | 'auto'
+- `prefix` - Add prefix to all classes (e.g., 'tw-')
+- `features.variantGroups` - Enable `hover:(class1 class2)` syntax
+- `features.attributify` - Enable attributify mode
+- `content` - File paths for class extraction
+- `safelist` - Always-include patterns
+- `blocklist` - Never-generate patterns
+
 ### Headless Components
 
 Accessible UI components in `src/components/`:
@@ -88,17 +114,41 @@ Accessible UI components in `src/components/`:
 - All extend `BaseComponent` class with state management
 - Auto-initialize via `data-coral-*` attributes
 
+### Framework Integrations
+
+CoralCSS includes first-class integrations for major frameworks:
+- `src/react/` - React components and hooks
+- `src/vue/` - Vue components and composables
+- `src/angular/` - Angular directives, pipes, and services
+- `src/svelte/` - Svelte components and actions
+- `src/solid/` - SolidJS components and signals
+- `src/preact/` - Preact components and hooks
+- `src/templates/` - HTML templates and patterns
+- `src/ui-kit/` - Comprehensive UI component library
+
+### Build Tool Ecosystem
+
+Multiple build tool plugins available (`src/build/`):
+- `vite.ts` - Vite plugin with virtual module `virtual:coral.css`
+- `postcss.ts` - PostCSS plugin for `@coral` directives
+- `cli.ts` - CLI for static CSS generation
+- `webpack.ts` - Webpack plugin
+- `rollup.ts` - Rollup plugin
+- `esbuild.ts` - ESBuild plugin
+- `nextjs.ts` - Next.js integration
+- `nuxt.ts` - Nuxt.js integration
+- `astro.ts` - Astro integration
+- `remix.ts` - Remix integration
+- `sveltekit.ts` - SvelteKit integration
+- `parcel.ts` - Parcel plugin
+- `qwik.ts` - Qwik integration
+
 ### Runtime & Build Integration
 
 **Runtime** (`src/runtime/`):
 - `observer.ts` - MutationObserver for DOM class changes
 - `injector.ts` - Injects generated CSS into `<style>` tags
 - `cdn.ts` - Auto-initializing CDN bundle (outputs to `dist/coral.min.global.js`)
-
-**Build Tools** (`src/build/`):
-- `vite.ts` - Vite plugin with virtual module `virtual:coral.css`
-- `postcss.ts` - PostCSS plugin for `@coral` directives
-- `cli.ts` - CLI for static CSS generation
 
 ### Key Type Definitions
 
@@ -108,6 +158,8 @@ All types in `src/types.ts`:
 - `Rule`, `Variant` - CSS generation primitives
 - `Theme` - Complete theme structure
 - Component prop/state types
+- `CoralOptions` - Configuration options including safelist/blocklist
+- `DarkModeStrategy` - Dark mode strategies
 
 ## Project Structure
 
@@ -123,7 +175,22 @@ src/
 ├── presets/           # Plugin bundles
 ├── components/        # Headless UI components
 ├── runtime/           # Browser runtime (observer, injector)
-├── build/             # Vite, PostCSS, CLI integrations
+├── build/             # Build tool integrations (Vite, Webpack, Rollup, etc.)
+├── react/             # React integration
+├── vue/               # Vue integration
+├── angular/           # Angular integration
+├── svelte/            # Svelte integration
+├── solid/             # SolidJS integration
+├── preact/            # Preact integration
+├── templates/         # HTML templates
+├── ui-kit/            # Comprehensive UI components
+├── tokens/            # Design tokens
+├── cva/               # Component variants
+├── testing/           # Testing utilities
+├── eslint/            # ESLint plugin
+├── prettier/          # Prettier plugin
+├── intellisense/      # TypeScript intellisense
+├── storybook/         # Storybook integration
 └── utils/             # Shared utilities
 tests/
 ├── unit/              # Unit tests by module

@@ -420,6 +420,120 @@ describe('Colors Utilities Plugin', () => {
     })
   })
 
+  describe('Gradient Utilities', () => {
+    it('should generate from-red-500', () => {
+      const css = coral.generate(['from-red-500'])
+      expect(css).toContain('--coral-gradient-from')
+    })
+
+    it('should generate via-red-500', () => {
+      const css = coral.generate(['via-red-500'])
+      expect(css).toContain('--coral-gradient-via')
+    })
+
+    it('should generate to-red-500', () => {
+      const css = coral.generate(['to-red-500'])
+      expect(css).toContain('--coral-gradient-to')
+    })
+
+    it('should generate to-red-500/50 with opacity', () => {
+      const css = coral.generate(['to-red-500/50'])
+      expect(css).toContain('--coral-gradient-to')
+      expect(css).toContain('red-500')
+    })
+
+    it('should generate gradient from-*, via-*, to-*', () => {
+      const css = coral.generate(['from-blue-400', 'via-purple-500', 'to-pink-500'])
+      expect(css).toContain('--coral-gradient-from')
+      expect(css).toContain('--coral-gradient-via')
+      expect(css).toContain('--coral-gradient-to')
+    })
+  })
+
+  describe('Text Gradient', () => {
+    it('should generate text-gradient', () => {
+      const css = coral.generate(['text-gradient'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('linear-gradient')
+      expect(css).toContain('background-clip')
+      expect(css).toContain('text')
+    })
+
+    it('should generate text-gradient-radial', () => {
+      const css = coral.generate(['text-gradient-radial'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('radial-gradient')
+      expect(css).toContain('background-clip')
+      expect(css).toContain('text')
+    })
+
+    it('should generate text-gradient-conic', () => {
+      const css = coral.generate(['text-gradient-conic'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('conic-gradient')
+      expect(css).toContain('background-clip')
+      expect(css).toContain('text')
+    })
+  })
+
+  describe('Border Gradient', () => {
+    it('should generate border-gradient', () => {
+      const css = coral.generate(['border-gradient'])
+      expect(css).toContain('border-image')
+      expect(css).toContain('linear-gradient')
+    })
+
+    it('should generate border-gradient-radial', () => {
+      const css = coral.generate(['border-gradient-radial'])
+      expect(css).toContain('border-image')
+      expect(css).toContain('radial-gradient')
+    })
+
+    it('should generate border-gradient-conic', () => {
+      const css = coral.generate(['border-gradient-conic'])
+      expect(css).toContain('border-image')
+      expect(css).toContain('conic-gradient')
+    })
+  })
+
+  describe('OKLCH Gradient Presets', () => {
+    it('should generate bg-gradient-vivid-sunset', () => {
+      const css = coral.generate(['bg-gradient-vivid-sunset'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+
+    it('should generate bg-gradient-vivid-ocean', () => {
+      const css = coral.generate(['bg-gradient-vivid-ocean'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+
+    it('should generate bg-gradient-vivid-aurora', () => {
+      const css = coral.generate(['bg-gradient-vivid-aurora'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+
+    it('should generate bg-gradient-vivid-neon', () => {
+      const css = coral.generate(['bg-gradient-vivid-neon'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+
+    it('should generate bg-gradient-rainbow', () => {
+      const css = coral.generate(['bg-gradient-rainbow'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+
+    it('should generate bg-gradient-rainbow-vivid', () => {
+      const css = coral.generate(['bg-gradient-rainbow-vivid'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('oklch')
+    })
+  })
+
   describe('Default Export', () => {
     it('should export default function', async () => {
       const { default: defaultExport } = await import(

@@ -93,6 +93,12 @@ describe('Theme CSS', () => {
       const css = generateTypographyCSS()
       expect(css).toContain('--tracking-')
     })
+
+    it('should generate text with line height when provided', () => {
+      const css = generateTypographyCSS()
+      expect(css).toContain('--text-')
+      expect(css).toContain('-line-height')
+    })
   })
 
   describe('generateEffectsCSS', () => {
@@ -158,6 +164,17 @@ describe('Theme CSS', () => {
     it('should generate theme CSS with media dark mode', () => {
       const css = generateThemeCSSComplete({ darkMode: 'media' })
       expect(css).toContain('prefers-color-scheme')
+    })
+
+    it('should include dark mode with selector strategy', () => {
+      const css = generateThemeCSSComplete({ darkMode: 'selector', includeBase: false, includeComponents: false })
+      expect(css).toContain('[data-theme="dark"]')
+    })
+
+    it('should include dark mode with auto strategy', () => {
+      const css = generateThemeCSSComplete({ darkMode: 'auto', includeBase: false, includeComponents: false })
+      expect(css).toContain('.dark')
+      expect(css).toContain('@media (prefers-color-scheme: dark)')
     })
 
     it('should include reset when requested', () => {
