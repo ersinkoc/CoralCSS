@@ -8,7 +8,6 @@ import Docs from './pages/Docs'
 import Examples from './pages/Examples'
 import Themes from './pages/Themes'
 import Showcase from './pages/Showcase'
-import Playground from './pages/Playground'
 
 // Component sub-pages
 import ComponentsIndex from './pages/components/index'
@@ -50,7 +49,6 @@ function App() {
             <Route path="/docs" element={<Docs />} />
             <Route path="/examples" element={<Examples />} />
             <Route path="/showcase" element={<Showcase />} />
-            <Route path="/playground" element={<Playground />} />
           </Routes>
         </main>
         <Footer />
