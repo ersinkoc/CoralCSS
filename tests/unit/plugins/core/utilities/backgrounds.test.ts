@@ -1141,4 +1141,81 @@ describe('backgroundsPlugin', () => {
     })
   })
 
+  describe('Gradient Edge Cases', () => {
+    it('should handle gradient with custom angle', () => {
+      const css = coral.generate(['bg-gradient-to-tl'])
+      expect(css).toContain('to top left')
+    })
+
+    it('should handle arbitrary gradient values', () => {
+      const css = coral.generate(['bg-[linear-gradient(45deg, red, blue)]'])
+      expect(css).toContain('background-image')
+      expect(css).toContain('linear-gradient')
+    })
+
+    it('should handle radial gradient at center', () => {
+      const css = coral.generate(['bg-radial-at-center'])
+      expect(css).toContain('radial-gradient')
+      expect(css).toContain('at center')
+    })
+
+    it('should handle repeating linear gradient', () => {
+      const css = coral.generate(['bg-repeating-linear-to-t'])
+      expect(css).toContain('repeating-linear-gradient')
+    })
+
+    it('should handle gradient blend modes', () => {
+      const css = coral.generate(['bg-gradient-blend-multiply'])
+      expect(css).toContain('background-blend-mode')
+      expect(css).toContain('multiply')
+    })
+
+    it('should handle gradient interpolation', () => {
+      const css = coral.generate(['gradient-in-srgb'])
+      expect(css).toContain('gradient')
+    })
+  })
+
+  describe('Background Size and Position', () => {
+    it('should generate background-size with multiple values', () => {
+      const css = coral.generate(['bg-[100px_200px]'])
+      expect(css).toContain('background-size')
+      expect(css).toContain('100px')
+      expect(css).toContain('200px')
+    })
+
+    it('should handle background-origin', () => {
+      const css = coral.generate(['bg-origin-border'])
+      expect(css).toContain('background-origin')
+      expect(css).toContain('border-box')
+    })
+  })
+
+  describe('Empty and Edge Case Values', () => {
+    it('should handle empty bg-[] gracefully', () => {
+      const css = coral.generate(['bg-[]'])
+      expect(css).not.toContain('background-')
+    })
+
+    it('should handle empty gradient-from-[]', () => {
+      const css = coral.generate(['gradient-from-[]'])
+      expect(css).not.toContain('--coral-gradient-position')
+    })
+
+    it('should handle empty via-[]', () => {
+      const css = coral.generate(['via-[]'])
+      expect(css).not.toContain('--coral-gradient-stops')
+    })
+
+    it('should handle empty to-[]', () => {
+      const css = coral.generate(['to-[]'])
+      expect(css).not.toContain('--coral-gradient-to')
+    })
+
+    it('should handle bg-[url()] with empty url', () => {
+      const css = coral.generate(['bg-[url()]'])
+      expect(css).toContain('url()')
+    })
+  })
+
 })
