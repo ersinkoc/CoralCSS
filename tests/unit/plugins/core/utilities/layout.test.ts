@@ -362,6 +362,114 @@ describe('Layout Utilities Plugin', () => {
     })
   })
 
+  describe('Table Display Utilities', () => {
+    it('should generate table', () => {
+      const css = coral.generate(['table'])
+      expect(css).toContain('display')
+      expect(css).toContain('table')
+    })
+
+    it('should generate table-caption', () => {
+      const css = coral.generate(['table-caption'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-caption')
+    })
+
+    it('should generate table-cell', () => {
+      const css = coral.generate(['table-cell'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-cell')
+    })
+
+    it('should generate table-column', () => {
+      const css = coral.generate(['table-column'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-column')
+    })
+
+    it('should generate table-column-group', () => {
+      const css = coral.generate(['table-column-group'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-column-group')
+    })
+
+    it('should generate table-footer-group', () => {
+      const css = coral.generate(['table-footer-group'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-footer-group')
+    })
+
+    it('should generate table-header-group', () => {
+      const css = coral.generate(['table-header-group'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-header-group')
+    })
+
+    it('should generate table-row', () => {
+      const css = coral.generate(['table-row'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-row')
+    })
+
+    it('should generate table-row-group', () => {
+      const css = coral.generate(['table-row-group'])
+      expect(css).toContain('display')
+      expect(css).toContain('table-row-group')
+    })
+
+    it('should generate flow-root', () => {
+      const css = coral.generate(['flow-root'])
+      expect(css).toContain('display')
+      expect(css).toContain('flow-root')
+    })
+
+    it('should generate list-item', () => {
+      const css = coral.generate(['list-item'])
+      expect(css).toContain('display')
+      expect(css).toContain('list-item')
+    })
+  })
+
+  describe('Display Contents Utilities', () => {
+    it('should generate contents', () => {
+      const css = coral.generate(['contents'])
+      expect(css).toContain('display')
+      expect(css).toContain('contents')
+    })
+  })
+
+  describe('Position Utilities', () => {
+    it('should generate static', () => {
+      const css = coral.generate(['static'])
+      expect(css).toContain('position')
+      expect(css).toContain('static')
+    })
+
+    it('should generate fixed', () => {
+      const css = coral.generate(['fixed'])
+      expect(css).toContain('position')
+      expect(css).toContain('fixed')
+    })
+
+    it('should generate absolute', () => {
+      const css = coral.generate(['absolute'])
+      expect(css).toContain('position')
+      expect(css).toContain('absolute')
+    })
+
+    it('should generate relative', () => {
+      const css = coral.generate(['relative'])
+      expect(css).toContain('position')
+      expect(css).toContain('relative')
+    })
+
+    it('should generate sticky', () => {
+      const css = coral.generate(['sticky'])
+      expect(css).toContain('position')
+      expect(css).toContain('sticky')
+    })
+  })
+
   describe('Default Export', () => {
     it('should export default function', async () => {
       const { default: defaultExport } = await import(
