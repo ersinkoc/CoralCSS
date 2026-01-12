@@ -188,6 +188,151 @@ export function modernVariantsPlugin(): Plugin {
         handler: (selector) => `${selector}[aria-selected="true"]`,
       })
 
+      // ========================================
+      // TAILWIND 4.1 MODERN VARIANTS
+      // ========================================
+
+      // User validation variants - only apply after user interaction
+      variants.push({
+        name: 'user-valid',
+        handler: (selector) => `${selector}:user-valid`,
+      })
+      variants.push({
+        name: 'user-invalid',
+        handler: (selector) => `${selector}:user-invalid`,
+      })
+      variants.push({
+        name: 'user-error',
+        handler: (selector) => `${selector}:user-invalid`,
+      })
+
+      // Pointer device detection variants
+      variants.push({
+        name: 'pointer-fine',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@media (pointer: fine) { ${css} }`,
+      })
+      variants.push({
+        name: 'pointer-coarse',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@media (pointer: coarse) { ${css} }`,
+      })
+      variants.push({
+        name: 'any-pointer-fine',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@media (any-pointer: fine) { ${css} }`,
+      })
+      variants.push({
+        name: 'any-pointer-coarse',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@media (any-pointer: coarse) { ${css} }`,
+      })
+      // Hover only for fine pointer devices (mouse)
+      variants.push({
+        name: 'hover-pointer',
+        handler: (sel) => `${sel}:hover`,
+        wrapper: (css: string) => `@media (pointer: fine) { ${css} }`,
+      })
+
+      // Inverted color mode variant (accessibility)
+      variants.push({
+        name: 'inverted-colors',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@media (inverted-colors: inverted) { ${css} }`,
+      })
+
+      // NoScript variant - JavaScript disabled detection
+      variants.push({
+        name: 'noscript',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@supports not (selector(:where(noscript))) { ${css} }`,
+      })
+
+      // Details content variant - targets the anonymous content wrapper
+      variants.push({
+        name: 'details-content',
+        handler: (selector) => `${selector}::details-content`,
+      })
+      // Details marker variant for the summary marker
+      variants.push({
+        name: 'details-marker',
+        handler: (selector) => `summary${selector}::marker`,
+      })
+      // Details open state variant
+      variants.push({
+        name: 'details-open',
+        handler: (selector) => `details[open] > summary${selector}`,
+      })
+
+      // ========================================
+      // CONTAINER QUERIES PLUS (Phase 3.2)
+      // ========================================
+
+      // Style-based container queries
+      variants.push({
+        name: 'container-style-grid',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container style(display: grid) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-style-flex',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container style(display: flex) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-style-block',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container style(display: block) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-style-inline',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container style(display: inline) { ${css} }`,
+      })
+
+      // State-based container queries
+      variants.push({
+        name: 'container-hovered',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container state(:hover) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-focused',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container state(:focus-within) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-active',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container state(:active) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-checked',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container state(:checked) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-disabled',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container state(:disabled) { ${css} }`,
+      })
+
+      // Orientation container queries
+      variants.push({
+        name: 'container-portrait',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container (orientation: portrait) { ${css} }`,
+      })
+      variants.push({
+        name: 'container-landscape',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container (orientation: landscape) { ${css} }`,
+      })
+
+      // ========================================
+      // END TAILWIND 4.1 MODERN VARIANTS
+      // ========================================
+
       // Register all variants
       for (const variant of variants) {
         ctx.addVariant(variant)

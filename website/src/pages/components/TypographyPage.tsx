@@ -264,10 +264,10 @@ function SmallPreview() {
         Regular text with <small data-coral-small>small text inline</small> for reference.
       </p>
       <small data-coral-small className="text-muted-foreground block">
-        © 2024 CoralCSS. All rights reserved.
+        © 2025 CoralCSS. All rights reserved.
       </small>
       <small data-coral-small data-variant="muted" className="block">
-        Last updated: January 2024
+        Last updated: January 2025
       </small>
     </div>
   )
@@ -718,8 +718,8 @@ const typographyComponents = [
     id: 'small',
     name: 'Small',
     description: 'Small text for footnotes, captions, and legal text.',
-    usage: `<small data-coral-small>© 2024 CoralCSS</small>
-<small data-coral-small data-variant="muted">Last updated: Jan 2024</small>`,
+    usage: `<small data-coral-small>© 2025 CoralCSS</small>
+<small data-coral-small data-variant="muted">Last updated: Jan 2025</small>`,
     props: [
       { name: 'data-variant', type: '"default" | "muted"', default: '"default"', description: 'Text style' },
     ],

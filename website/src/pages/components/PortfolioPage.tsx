@@ -332,7 +332,7 @@ export function PortfolioPageShowcase() {
         <div className="container">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 Portfolio. Built with CoralCSS.
+              © 2025 Portfolio. Built with CoralCSS.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">

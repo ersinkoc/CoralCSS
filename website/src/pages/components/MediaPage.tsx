@@ -479,7 +479,7 @@ function PosterPreview() {
       <div className="aspect-[2/3] bg-gradient-to-br from-primary to-accent relative">
         <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-foreground/80 to-transparent">
           <h4 className="text-background text-sm font-bold">Movie Title</h4>
-          <p className="text-background/70 text-xs">2024</p>
+          <p className="text-background/70 text-xs">2025</p>
         </div>
       </div>
     </div>

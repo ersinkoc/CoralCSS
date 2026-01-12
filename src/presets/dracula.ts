@@ -166,27 +166,33 @@ export function draculaPreset(options: DraculaPresetOptions = {}): Plugin[] {
     name: 'dracula-theme',
     version: '1.0.0',
     install(api) {
-      const colors = { ...draculaColors }
+      let colors = { ...draculaColors }
 
       // High contrast mode
       if (highContrast) {
-        (colors as any)['dracula-fg'] = '#ffffff'
-        (colors as any).foreground = '#ffffff'
+        colors = {
+          ...colors,
+          'dracula-fg': '#ffffff',
+          foreground: '#ffffff'
+        }
       }
 
       // Bold accents mode
       if (boldAccents) {
-        (colors as any)['dracula-purple'] = '#d6aaff'
-        (colors as any)['dracula-pink'] = '#ff99cc'
-        (colors as any)['dracula-cyan'] = '#a3ffff'
-        (colors as any)['dracula-green'] = '#70ff9a'
+        colors = {
+          ...colors,
+          'dracula-purple': '#d6aaff',
+          'dracula-pink': '#ff99cc',
+          'dracula-cyan': '#a3ffff',
+          'dracula-green': '#70ff9a'
+        }
       }
 
       api.extendTheme({
-        colors: colors as any,
-        spacing: draculaSpacing as any,
-        borderRadius: draculaBorderRadius as any,
-        boxShadow: draculaBoxShadow as any,
+        colors,
+        spacing: draculaSpacing,
+        borderRadius: draculaBorderRadius,
+        boxShadow: draculaBoxShadow,
       })
     },
   })

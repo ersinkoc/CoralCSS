@@ -199,10 +199,10 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
 
       // Color blind safe palette
       if (colorBlind) {
-        (colors as any).primary = '#0969da'
-        (colors as any).accent = '#1f883d'
-        (colors as any).warning = '#9a6700'
-        (colors as any).error = '#cf222e'
+        colors.primary = '#0969da'
+        colors.accent = '#1f883d'
+        colors.warning = '#9a6700'
+        colors.error = '#cf222e'
       }
 
       api.extendTheme({
@@ -229,10 +229,15 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
     name: 'github-dark-mode',
     version: '1.0.0',
     install(api) {
-      // Add dark mode colors
-      api.extendTheme({
-        dark: githubDarkColors as any,
-      })
+      // Add dark mode colors as theme extension
+      // Note: These are used by the dark mode variant system
+      for (const [key, value] of Object.entries(githubDarkColors)) {
+        api.extendTheme({
+          colors: {
+            [key]: value,
+          },
+        } as any)
+      }
     },
   })
 

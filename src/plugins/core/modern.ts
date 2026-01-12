@@ -744,7 +744,259 @@ export function modernCSSPlugin(): Plugin {
         },
       })
 
+      // ============================================
+      // CSS Trigonometric Functions
+      // ============================================
+
+      const trigFunctions = ['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2']
+      for (const fn of trigFunctions) {
+        rules.push({
+          name: `${fn}-arb`,
+          pattern: new RegExp(`^${fn}-\\[(.+?)\\]$`),
+          handler: (match) => ({
+            properties: { '--coral-trig': `${fn}(${match[1]})` },
+          }),
+        })
+      }
+
+      // ============================================
+      // CSS Exponential Functions
+      // ============================================
+
+      const expFunctions = ['exp', 'pow', 'sqrt', 'hypot', 'log', 'log10', 'log2']
+      for (const fn of expFunctions) {
+        rules.push({
+          name: `${fn}-arb`,
+          pattern: new RegExp(`^${fn}-\\[(.+?)\\]$`),
+          handler: (match) => ({
+            properties: { '--coral-exp': `${fn}(${match[1]})` },
+          }),
+        })
+      }
+
+      // ============================================
+      // CSS Sign-Modulated Functions
+      // ============================================
+
+      rules.push({
+        name: 'mod-arb',
+        pattern: /^mod-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-mod': `mod(${match[1]})` },
+        }),
+      })
+      rules.push({
+        name: 'rem-arb',
+        pattern: /^rem-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-rem': `rem(${match[1]})` },
+        }),
+      })
+
+      // ============================================
+      // CSS Numeric Constants
+      // ============================================
+
+      rules.push({ name: 'e-constant', pattern: 'e-constant', properties: { '--coral-e': '2.718281828459045' } })
+      rules.push({ name: 'pi-constant', pattern: 'pi-constant', properties: { '--coral-pi': '3.141592653589793' } })
+
+      // ============================================
+      // Absolute Color Functions (oklab, oklch)
+      // ============================================
+
+      rules.push({
+        name: 'oklab-arb',
+        pattern: /^oklab-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { color: `oklab(${match[1]})` },
+        }),
+      })
+      rules.push({
+        name: 'oklch-arb',
+        pattern: /^oklch-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { color: `oklch(${match[1]})` },
+        }),
+      })
+      rules.push({
+        name: 'bg-oklab-arb',
+        pattern: /^bg-oklab-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { 'background-color': `oklab(${match[1]})` },
+        }),
+      })
+      rules.push({
+        name: 'bg-oklch-arb',
+        pattern: /^bg-oklch-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { 'background-color': `oklch(${match[1]})` },
+        }),
+      })
+
+      // ============================================
+      // Color-contrast Function
+      // ============================================
+
+      rules.push({
+        name: 'text-contrast-arb',
+        pattern: /^text-contrast-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { color: `color-contrast(${match[1]})` },
+        }),
+      })
+      rules.push({
+        name: 'bg-contrast-arb',
+        pattern: /^bg-contrast-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { 'background-color': `color-contrast(${match[1]})` },
+        }),
+      })
+
+      // ============================================
+      // Color-adjust Function
+      // ============================================
+
+      rules.push({
+        name: 'text-adjust-arb',
+        pattern: /^text-adjust-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { color: `color-adjust(${match[1]})` },
+        }),
+      })
+
+      // ============================================
+      // Content-Visibility (Performance)
+      // ============================================
+
+      rules.push({
+        name: 'content-visibility-visible',
+        pattern: 'content-visibility-visible',
+        properties: { 'content-visibility': 'visible' },
+      })
+      rules.push({
+        name: 'content-visibility-auto',
+        pattern: 'content-visibility-auto',
+        properties: { 'content-visibility': 'auto' },
+      })
+      rules.push({
+        name: 'content-visibility-hidden',
+        pattern: 'content-visibility-hidden',
+        properties: { 'content-visibility': 'hidden' },
+      })
+
+      // ============================================
+      // Contain Property (Performance/Isolation)
+      // ============================================
+
+      rules.push({ name: 'contain-none', pattern: 'contain-none', properties: { contain: 'none' } })
+      rules.push({ name: 'contain-strict', pattern: 'contain-strict', properties: { contain: 'strict' } })
+      rules.push({ name: 'contain-content', pattern: 'contain-content', properties: { contain: 'content' } })
+      rules.push({ name: 'contain-size', pattern: 'contain-size', properties: { contain: 'size' } })
+      rules.push({ name: 'contain-inline-size', pattern: 'contain-inline-size', properties: { contain: 'inline-size' } })
+      rules.push({ name: 'contain-layout', pattern: 'contain-layout', properties: { contain: 'layout' } })
+      rules.push({ name: 'contain-style', pattern: 'contain-style', properties: { contain: 'style' } })
+      rules.push({ name: 'contain-paint', pattern: 'contain-paint', properties: { contain: 'paint' } })
+
+      // Combinations
+      rules.push({ name: 'contain-size-layout', pattern: 'contain-size-layout', properties: { contain: 'size layout' } })
+      rules.push({ name: 'contain-size-layout-paint', pattern: 'contain-size-layout-paint', properties: { contain: 'size layout paint' } })
+      rules.push({ name: 'contain-layout-paint', pattern: 'contain-layout-paint', properties: { contain: 'layout paint' } })
+      rules.push({ name: 'contain-layout-style', pattern: 'contain-layout-style', properties: { contain: 'layout style' } })
+      rules.push({ name: 'contain-paint-style', pattern: 'contain-paint-style', properties: { contain: 'paint style' } })
+
+      // ============================================
+      // Anchor Positioning Functions
+      // ============================================
+
+      // anchor() function for positioning
+      rules.push({
+        name: 'anchor-top-arb',
+        pattern: /^anchor-top-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-top': `anchor(${match[1]} top)` },
+        }),
+      })
+      rules.push({
+        name: 'anchor-left-arb',
+        pattern: /^anchor-left-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-left': `anchor(${match[1]} left)` },
+        }),
+      })
+      rules.push({
+        name: 'anchor-right-arb',
+        pattern: /^anchor-right-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-right': `anchor(${match[1]} right)` },
+        }),
+      })
+      rules.push({
+        name: 'anchor-bottom-arb',
+        pattern: /^anchor-bottom-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-bottom': `anchor(${match[1]} bottom)` },
+        }),
+      })
+      rules.push({
+        name: 'anchor-center-arb',
+        pattern: /^anchor-center-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-center': `anchor(${match[1]} center)` },
+        }),
+      })
+
+      // anchor-size() function for sizing
+      rules.push({
+        name: 'anchor-width-arb',
+        pattern: /^anchor-width-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-width': `anchor-size(${match[1]} width)` },
+        }),
+      })
+      rules.push({
+        name: 'anchor-height-arb',
+        pattern: /^anchor-height-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { '--coral-anchor-height': `anchor-size(${match[1]} height)` },
+        }),
+      })
+
+      // ============================================
+      // CSS View Transitions API Enhancements
+      // ============================================
+
+      // View transition types
+      rules.push({
+        name: 'view-transition-type-root',
+        pattern: 'view-transition-type-root',
+        properties: { 'view-transition-type': 'root' },
+      })
+      rules.push({
+        name: 'view-transition-type-arb',
+        pattern: /^view-transition-type-\[(.+?)\]$/,
+        handler: (match) => ({
+          properties: { 'view-transition-type': match[1] },
+        }),
+      })
+
+      // ============================================
+      // Transition Auto-Start Enhancement
+      // ============================================
+
+      rules.push({
+        name: 'transition-start-auto',
+        pattern: 'transition-start-auto',
+        properties: { 'transition-start': 'auto' },
+      })
+      rules.push({
+        name: 'transition-start-normal',
+        pattern: 'transition-start-normal',
+        properties: { 'transition-start': 'normal' },
+      })
+
+      // ============================================
       // Register all rules
+      // ============================================
       for (const rule of rules) {
         ctx.addRule(rule)
       }

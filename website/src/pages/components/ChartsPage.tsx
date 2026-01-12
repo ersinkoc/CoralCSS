@@ -412,10 +412,10 @@ function ScatterPlotPreview() {
 
 function TimelineChartPreview() {
   const timelineData = [
-    { date: '2024-01', label: 'Planning', value: 20, color: chartColors.primary },
-    { date: '2024-02', label: 'Development', value: 45, color: chartColors.secondary },
-    { date: '2024-03', label: 'Testing', value: 30, color: chartColors.success },
-    { date: '2024-04', label: 'Launch', value: 60, color: chartColors.warning },
+    { date: '2025-01', label: 'Planning', value: 20, color: chartColors.primary },
+    { date: '2025-02', label: 'Development', value: 45, color: chartColors.secondary },
+    { date: '2025-03', label: 'Testing', value: 30, color: chartColors.success },
+    { date: '2025-04', label: 'Launch', value: 60, color: chartColors.warning },
   ]
 
   return (
@@ -815,7 +815,7 @@ function GroupedBarChartPreview() {
         ))}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        {['2024', '2025'].map((name, i) => (
+        {['2025', '2025'].map((name, i) => (
           <div key={i} className="flex items-center gap-2">
             <div className="w-3 h-3 rounded" style={{ backgroundColor: colors[i] }} />
             <span className="text-xs text-muted-foreground">{name}</span>
@@ -1461,7 +1461,7 @@ const chartComponents = [
     name: 'Timeline Chart',
     description: 'Chronological visualizations for project progress.',
     usage: `<div data-coral-timeline>
-  <div data-coral-timeline-item data-date="2024-01" data-progress="20" />
+  <div data-coral-timeline-item data-date="2025-01" data-progress="20" />
 </div>`,
     props: [
       { name: 'data', type: 'TimelineItem[]', default: 'required', description: 'Array of timeline events' },
@@ -1578,7 +1578,7 @@ const chartComponents = [
     description: 'Bar charts with multiple data series displayed side by side.',
     usage: `<div data-coral-chart data-type="grouped-bar">
   <div data-coral-grouped-bar data-label="Jan">
-    <div data-coral-bar data-value="65" data-series="2024" />
+    <div data-coral-bar data-value="65" data-series="2025" />
     <div data-coral-bar data-value="45" data-series="2025" />
   </div>
 </div>`,
@@ -1739,7 +1739,7 @@ const chartComponents = [
     description: 'Date-based heatmaps showing activity levels over time.',
     usage: `<div data-coral-chart data-type="calendar-heatmap">
   <div data-coral-calendar-week>
-    <div data-coral-calendar-day data-date="2024-01-01" data-value="3" />
+    <div data-coral-calendar-day data-date="2025-01-01" data-value="3" />
   </div>
 </div>`,
     props: [

@@ -572,7 +572,7 @@ function FooterLayoutPreview() {
         ))}
       </div>
       <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
-        © 2024 Company
+        © 2025 Company
       </div>
     </footer>
   )

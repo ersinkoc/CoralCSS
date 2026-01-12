@@ -1030,6 +1030,68 @@ export interface CLIOptions {
 }
 
 // =============================================================================
+// CSS Configuration Types
+// =============================================================================
+
+/**
+ * Parsed CSS configuration from @coral directives
+ */
+export interface ParsedCSSConfig {
+  /** Theme variables from @coral theme */
+  theme?: Record<string, string>
+  /** Source paths from @coral source */
+  source?: string[]
+  /** Ignored source paths from @coral source not */
+  sourceNot?: string[]
+  /** Safelist patterns from @coral source inline() */
+  safelist?: string[]
+  /** Blocklist patterns */
+  blocklist?: string[]
+  /** Enabled plugins from @coral plugin */
+  plugins?: string[]
+  /** Disabled plugins from @coral plugin no */
+  disabledPlugins?: string[]
+  /** Plugin-specific options */
+  pluginOptions?: Record<string, any>
+  /** Presets from @coral preset */
+  presets?: string[]
+  /** Extended presets */
+  extends?: string[]
+}
+
+/**
+ * CSS Config Plugin Options
+ */
+export interface CSSConfigPluginOptions {
+  /** Path to CSS config file */
+  cssConfig?: string
+  /** Enable/disable CSS config parsing */
+  enabled?: boolean
+  /** Watch CSS config file for changes */
+  watch?: boolean
+  /** Inline CSS config (as string) */
+  inlineConfig?: string
+}
+
+/**
+ * Fallback configuration for browser compatibility
+ */
+export interface FallbackConfig {
+  /** Enable OKLAB color fallbacks */
+  oklabFallbacks?: boolean
+  /** Enable @property fallbacks */
+  propertyFallbacks?: boolean
+  /** Enable gradient fallbacks */
+  gradientFallbacks?: boolean
+  /** Target browsers for fallbacks */
+  targetBrowsers?: string[]
+  /** Minimum Safari version */
+  minSafariVersion?: number
+  /** Minimum Firefox version */
+  minFirefoxVersion?: number
+}
+
+// =============================================================================
 // Additional Plugin Types (Aliases for compatibility)
 // =============================================================================
 

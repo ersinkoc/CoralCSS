@@ -1,0 +1,299 @@
+/**
+ * Advanced Features Demo - Custom Styles
+ *
+ * This file contains custom animations and styles for the
+ * CoralCSS Advanced Features demonstration page.
+ */
+
+/* ========================================
+   SCROLL FADE IN ANIMATION
+   ======================================== */
+
+.scroll-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: scrollFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes scrollFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animations for multiple items */
+.scroll-fade-in:nth-child(1) { animation-delay: 0.1s; }
+.scroll-fade-in:nth-child(2) { animation-delay: 0.2s; }
+.scroll-fade-in:nth-child(3) { animation-delay: 0.3s; }
+.scroll-fade-in:nth-child(4) { animation-delay: 0.4s; }
+.scroll-fade-in:nth-child(5) { animation-delay: 0.5s; }
+
+/* ========================================
+   SPRING ANIMATIONS
+   ======================================== */
+
+@keyframes springBounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-20px) scale(1.1);
+  }
+  50% {
+    transform: translateY(0) scale(0.95);
+  }
+  70% {
+    transform: translateY(-10px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-spring-sm {
+  animation: springBounce 0.5s ease-out;
+}
+
+.animate-spring-md {
+  animation: springBounce 0.7s ease-out;
+}
+
+.animate-spring-lg {
+  animation: springBounce 1s ease-out;
+}
+
+/* ========================================
+   BOUNCE IN ANIMATION
+   ======================================== */
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
+
+/* ========================================
+   SCROLL-DRIVEN ANIMATIONS
+   ======================================== */
+
+@keyframes scrollFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-scroll-fade-in {
+  animation: scrollFadeIn 1s ease-out;
+}
+
+@keyframes scrollScale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-scroll-scale {
+  animation: scrollScale 2s ease-in-out infinite;
+}
+
+/* ========================================
+   SWIPE ANIMATIONS
+   ======================================== */
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-swipe-left:hover {
+  animation: swipeLeft 0.3s ease-out;
+}
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-swipe-right:hover {
+  animation: swipeRight 0.3s ease-out;
+}
+
+@keyframes swipeUp {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-swipe-up:hover {
+  animation: swipeUp 0.3s ease-out;
+}
+
+@keyframes swipeDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-swipe-down:hover {
+  animation: swipeDown 0.3s ease-out;
+}
+
+/* ========================================
+   SHAKE ANIMATION
+   ======================================== */
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-shake:hover {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ========================================
+   WIGGLE ANIMATION
+   ======================================== */
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+.animate-wiggle:hover {
+  animation: wiggle 0.3s ease-in-out;
+}
+
+/* ========================================
+   PULSE GLOW ANIMATION
+   ======================================== */
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(34, 197, 94, 0.3);
+  }
+}
+
+.animate-pulse-glow:hover {
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Smooth transitions */
+button {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Custom scrollbar for scroll container */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #f97316;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
+/* ========================================
+   INTERSECTION OBSERVER ANIMATIONS
+   ======================================== */
+
+/* These will be triggered when elements come into viewport */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

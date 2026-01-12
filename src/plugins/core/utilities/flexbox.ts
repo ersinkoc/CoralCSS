@@ -178,6 +178,18 @@ export function flexboxPlugin(): Plugin {
       rules.push({ pattern: 'items-baseline', properties: { 'align-items': 'baseline' } })
       rules.push({ pattern: 'items-stretch', properties: { 'align-items': 'stretch' } })
 
+      // SAFE ALIGNMENT (Tailwind 4.1+)
+      // Last baseline alignment - aligns to last baseline instead of first
+      rules.push({ pattern: 'items-baseline-last', properties: { 'align-items': 'last baseline' } })
+
+      // Safe alignment - auto-switch to start on overflow (prevents overflow in both directions)
+      rules.push({ pattern: 'justify-center-safe', properties: { 'justify-content': 'safe center' } })
+      rules.push({ pattern: 'justify-start-safe', properties: { 'justify-content': 'safe flex-start' } })
+      rules.push({ pattern: 'justify-end-safe', properties: { 'justify-content': 'safe flex-end' } })
+      rules.push({ pattern: 'items-center-safe', properties: { 'align-items': 'safe center' } })
+      rules.push({ pattern: 'items-start-safe', properties: { 'align-items': 'safe flex-start' } })
+      rules.push({ pattern: 'items-end-safe', properties: { 'align-items': 'safe flex-end' } })
+
       // Align self
       rules.push({ pattern: 'self-auto', properties: { 'align-self': 'auto' } })
       rules.push({ pattern: 'self-start', properties: { 'align-self': 'flex-start' } })
@@ -185,6 +197,12 @@ export function flexboxPlugin(): Plugin {
       rules.push({ pattern: 'self-center', properties: { 'align-self': 'center' } })
       rules.push({ pattern: 'self-stretch', properties: { 'align-self': 'stretch' } })
       rules.push({ pattern: 'self-baseline', properties: { 'align-self': 'baseline' } })
+
+      // Safe alignment for align-self
+      rules.push({ pattern: 'self-baseline-last', properties: { 'align-self': 'last baseline' } })
+      rules.push({ pattern: 'self-center-safe', properties: { 'align-self': 'safe center' } })
+      rules.push({ pattern: 'self-start-safe', properties: { 'align-self': 'safe flex-start' } })
+      rules.push({ pattern: 'self-end-safe', properties: { 'align-self': 'safe flex-end' } })
 
       // Place content
       rules.push({ pattern: 'place-content-center', properties: { 'place-content': 'center' } })

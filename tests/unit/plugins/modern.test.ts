@@ -739,4 +739,359 @@ describe('modernCSSPlugin', () => {
       expect(css).toContain('opacity')
     })
   })
+
+  describe('CSS Trigonometric Functions', () => {
+    it('should generate sin arbitrary', () => {
+      const css = coral.generate(['sin-[90deg]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('sin(')
+    })
+
+    it('should generate cos arbitrary', () => {
+      const css = coral.generate(['cos-[0deg]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('cos(')
+    })
+
+    it('should generate tan arbitrary', () => {
+      const css = coral.generate(['tan-[45deg]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('tan(')
+    })
+
+    it('should generate asin arbitrary', () => {
+      const css = coral.generate(['asin-[0.5]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('asin(')
+    })
+
+    it('should generate acos arbitrary', () => {
+      const css = coral.generate(['acos-[0.5]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('acos(')
+    })
+
+    it('should generate atan arbitrary', () => {
+      const css = coral.generate(['atan-[1]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('atan(')
+    })
+
+    it('should generate atan2 arbitrary', () => {
+      const css = coral.generate(['atan2-[10,_20]'])
+      expect(css).toContain('--coral-trig')
+      expect(css).toContain('atan2(')
+    })
+  })
+
+  describe('CSS Exponential Functions', () => {
+    it('should generate exp arbitrary', () => {
+      const css = coral.generate(['exp-[2]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('exp(')
+    })
+
+    it('should generate pow arbitrary', () => {
+      const css = coral.generate(['pow-[2,_3]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('pow(')
+    })
+
+    it('should generate sqrt arbitrary', () => {
+      const css = coral.generate(['sqrt-[25]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('sqrt(')
+    })
+
+    it('should generate hypot arbitrary', () => {
+      const css = coral.generate(['hypot-[3,_4]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('hypot(')
+    })
+
+    it('should generate log arbitrary', () => {
+      const css = coral.generate(['log-[10]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('log(')
+    })
+
+    it('should generate log10 arbitrary', () => {
+      const css = coral.generate(['log10-[100]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('log10(')
+    })
+
+    it('should generate log2 arbitrary', () => {
+      const css = coral.generate(['log2-[8]'])
+      expect(css).toContain('--coral-exp')
+      expect(css).toContain('log2(')
+    })
+  })
+
+  describe('CSS Sign-Modulated Functions', () => {
+    it('should generate mod arbitrary', () => {
+      const css = coral.generate(['mod-[10,_3]'])
+      expect(css).toContain('--coral-mod')
+      expect(css).toContain('mod(')
+    })
+
+    it('should generate rem arbitrary', () => {
+      const css = coral.generate(['rem-[10,_3]'])
+      expect(css).toContain('--coral-rem')
+      expect(css).toContain('rem(')
+    })
+  })
+
+  describe('CSS Numeric Constants', () => {
+    it('should generate e-constant', () => {
+      const css = coral.generate(['e-constant'])
+      expect(css).toContain('--coral-e')
+      expect(css).toContain('2.718281828459045')
+    })
+
+    it('should generate pi-constant', () => {
+      const css = coral.generate(['pi-constant'])
+      expect(css).toContain('--coral-pi')
+      expect(css).toContain('3.141592653589793')
+    })
+  })
+
+  describe('Absolute Color Functions', () => {
+    it('should generate oklab arbitrary', () => {
+      const css = coral.generate(['oklab-[0.5_0.2_0.1]'])
+      expect(css).toContain('color')
+      expect(css).toContain('oklab(')
+    })
+
+    it('should generate oklch arbitrary', () => {
+      const css = coral.generate(['oklch-[0.5_0.2_120]'])
+      expect(css).toContain('color')
+      expect(css).toContain('oklch(')
+    })
+
+    it('should generate bg-oklab arbitrary', () => {
+      const css = coral.generate(['bg-oklab-[0.5_0.2_0.1]'])
+      expect(css).toContain('background-color')
+      expect(css).toContain('oklab(')
+    })
+
+    it('should generate bg-oklch arbitrary', () => {
+      const css = coral.generate(['bg-oklch-[0.5_0.2_120]'])
+      expect(css).toContain('background-color')
+      expect(css).toContain('oklch(')
+    })
+  })
+
+  describe('Color-contrast Function', () => {
+    it('should generate text-contrast arbitrary', () => {
+      const css = coral.generate(['text-contrast-[white_vs_black]'])
+      expect(css).toContain('color')
+      expect(css).toContain('color-contrast(')
+    })
+
+    it('should generate bg-contrast arbitrary', () => {
+      const css = coral.generate(['bg-contrast-[white_vs_black]'])
+      expect(css).toContain('background-color')
+      expect(css).toContain('color-contrast(')
+    })
+  })
+
+  describe('Color-adjust Function', () => {
+    it('should generate text-adjust arbitrary', () => {
+      const css = coral.generate(['text-adjust-[red_hue(+30deg)]'])
+      expect(css).toContain('color')
+      expect(css).toContain('color-adjust(')
+    })
+  })
+
+  describe('Content-Visibility (Modern Plugin)', () => {
+    it('should generate content-visibility-visible', () => {
+      const css = coral.generate(['content-visibility-visible'])
+      expect(css).toContain('content-visibility')
+      expect(css).toContain('visible')
+    })
+
+    it('should generate content-visibility-auto', () => {
+      const css = coral.generate(['content-visibility-auto'])
+      expect(css).toContain('content-visibility')
+      expect(css).toContain('auto')
+    })
+
+    it('should generate content-visibility-hidden', () => {
+      const css = coral.generate(['content-visibility-hidden'])
+      expect(css).toContain('content-visibility')
+      expect(css).toContain('hidden')
+    })
+  })
+
+  describe('Contain Property (Modern Plugin)', () => {
+    it('should generate contain-none', () => {
+      const css = coral.generate(['contain-none'])
+      expect(css).toContain('contain')
+      expect(css).toContain('none')
+    })
+
+    it('should generate contain-strict', () => {
+      const css = coral.generate(['contain-strict'])
+      expect(css).toContain('contain')
+      expect(css).toContain('strict')
+    })
+
+    it('should generate contain-content', () => {
+      const css = coral.generate(['contain-content'])
+      expect(css).toContain('contain')
+      expect(css).toContain('content')
+    })
+
+    it('should generate contain-size', () => {
+      const css = coral.generate(['contain-size'])
+      expect(css).toContain('contain')
+      expect(css).toContain('size')
+    })
+
+    it('should generate contain-layout', () => {
+      const css = coral.generate(['contain-layout'])
+      expect(css).toContain('contain')
+      expect(css).toContain('layout')
+    })
+
+    it('should generate contain-style', () => {
+      const css = coral.generate(['contain-style'])
+      expect(css).toContain('contain')
+      expect(css).toContain('style')
+    })
+
+    it('should generate contain-paint', () => {
+      const css = coral.generate(['contain-paint'])
+      expect(css).toContain('contain')
+      expect(css).toContain('paint')
+    })
+
+    it('should generate contain-size-layout', () => {
+      const css = coral.generate(['contain-size-layout'])
+      expect(css).toContain('contain')
+      expect(css).toContain('size layout')
+    })
+
+    it('should generate contain-size-layout-paint', () => {
+      const css = coral.generate(['contain-size-layout-paint'])
+      expect(css).toContain('contain')
+      expect(css).toContain('size layout paint')
+    })
+
+    it('should generate contain-layout-paint', () => {
+      const css = coral.generate(['contain-layout-paint'])
+      expect(css).toContain('contain')
+      expect(css).toContain('layout paint')
+    })
+
+    it('should generate contain-layout-style', () => {
+      const css = coral.generate(['contain-layout-style'])
+      expect(css).toContain('contain')
+      expect(css).toContain('layout style')
+    })
+
+    it('should generate contain-paint-style', () => {
+      const css = coral.generate(['contain-paint-style'])
+      expect(css).toContain('contain')
+      expect(css).toContain('paint style')
+    })
+  })
+
+  describe('Anchor Positioning Functions', () => {
+    it('should generate anchor-top arbitrary', () => {
+      const css = coral.generate(['anchor-top-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-top')
+      expect(css).toContain('anchor(')
+      expect(css).toContain('top')
+    })
+
+    it('should generate anchor-left arbitrary', () => {
+      const css = coral.generate(['anchor-left-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-left')
+      expect(css).toContain('anchor(')
+      expect(css).toContain('left')
+    })
+
+    it('should generate anchor-right arbitrary', () => {
+      const css = coral.generate(['anchor-right-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-right')
+      expect(css).toContain('anchor(')
+      expect(css).toContain('right')
+    })
+
+    it('should generate anchor-bottom arbitrary', () => {
+      const css = coral.generate(['anchor-bottom-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-bottom')
+      expect(css).toContain('anchor(')
+      expect(css).toContain('bottom')
+    })
+
+    it('should generate anchor-center arbitrary', () => {
+      const css = coral.generate(['anchor-center-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-center')
+      expect(css).toContain('anchor(')
+      expect(css).toContain('center')
+    })
+
+    it('should generate anchor-width arbitrary', () => {
+      const css = coral.generate(['anchor-width-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-width')
+      expect(css).toContain('anchor-size(')
+      expect(css).toContain('width')
+    })
+
+    it('should generate anchor-height arbitrary', () => {
+      const css = coral.generate(['anchor-height-[--myAnchor]'])
+      expect(css).toContain('--coral-anchor-height')
+      expect(css).toContain('anchor-size(')
+      expect(css).toContain('height')
+    })
+  })
+
+  describe('View Transition Type', () => {
+    it('should generate view-transition-type-root', () => {
+      const css = coral.generate(['view-transition-type-root'])
+      expect(css).toContain('view-transition-type')
+      expect(css).toContain('root')
+    })
+
+    it('should generate view-transition-type arbitrary', () => {
+      const css = coral.generate(['view-transition-type-[slide]'])
+      expect(css).toContain('view-transition-type')
+      expect(css).toContain('slide')
+    })
+  })
+
+  describe('Transition Auto-Start', () => {
+    it('should generate transition-start-auto', () => {
+      const css = coral.generate(['transition-start-auto'])
+      expect(css).toContain('transition-start')
+      expect(css).toContain('auto')
+    })
+
+    it('should generate transition-start-normal', () => {
+      const css = coral.generate(['transition-start-normal'])
+      expect(css).toContain('transition-start')
+      expect(css).toContain('normal')
+    })
+  })
+
+  describe('Plugin Metadata', () => {
+    it('should have correct plugin name', () => {
+      const plugin = modernCSSPlugin()
+      expect(plugin.name).toBe('modern-css')
+    })
+
+    it('should have correct plugin version', () => {
+      const plugin = modernCSSPlugin()
+      expect(plugin.version).toBe('1.0.0')
+    })
+
+    it('should have install method', () => {
+      const plugin = modernCSSPlugin()
+      expect(plugin.install).toBeDefined()
+      expect(typeof plugin.install).toBe('function')
+    })
+  })
 })

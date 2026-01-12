@@ -232,6 +232,43 @@ export function typographyPlugin(): Plugin {
       rules.push({ pattern: 'break-all', properties: { 'word-break': 'break-all' } })
       rules.push({ pattern: 'break-keep', properties: { 'word-break': 'keep-all' } })
 
+      // ========================================
+      // OVERFLOW WRAP (Tailwind 4.1+)
+      // ========================================
+
+      // Overflow wrap utilities
+      rules.push({
+        pattern: 'wrap-normal',
+        generate: () => ({
+          properties: {
+            'overflow-wrap': 'normal',
+            'word-break': 'normal'
+          }
+        })
+      })
+
+      rules.push({
+        pattern: 'wrap-break-word',
+        generate: () => ({
+          properties: {
+            'overflow-wrap': 'break-word'
+          }
+        })
+      })
+
+      rules.push({
+        pattern: 'wrap-anywhere',
+        generate: () => ({
+          properties: {
+            'overflow-wrap': 'anywhere'
+          }
+        })
+      })
+
+      // ========================================
+      // END OVERFLOW WRAP
+      // ========================================
+
       // Hyphens
       rules.push({ pattern: 'hyphens-none', properties: { hyphens: 'none' } })
       rules.push({ pattern: 'hyphens-manual', properties: { hyphens: 'manual' } })

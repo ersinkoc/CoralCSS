@@ -367,7 +367,7 @@ export default defineConfig({
         <div className="container py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 CoralCSS. Built with ❤️ for the modern web.
+              © 2025 CoralCSS. Built with ❤️ for the modern web.
             </p>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">

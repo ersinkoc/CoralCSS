@@ -155,10 +155,10 @@ function AccordionPreview() {
 
 function TimelinePreview() {
   const events = [
-    { title: 'Project Started', date: 'Jan 15, 2024', completed: true },
-    { title: 'Design Phase', date: 'Feb 1, 2024', completed: true },
-    { title: 'Development', date: 'Mar 1, 2024', active: true },
-    { title: 'Launch', date: 'Apr 1, 2024' },
+    { title: 'Project Started', date: 'Jan 15, 2025', completed: true },
+    { title: 'Design Phase', date: 'Feb 1, 2025', completed: true },
+    { title: 'Development', date: 'Mar 1, 2025', active: true },
+    { title: 'Launch', date: 'Apr 1, 2025' },
   ]
   return (
     <div data-coral-timeline>
@@ -1554,7 +1554,7 @@ const dataDisplayComponents = [
     <div data-coral-timeline-marker data-completed></div>
     <div data-coral-timeline-content>
       <h4>Event Title</h4>
-      <time>Jan 15, 2024</time>
+      <time>Jan 15, 2025</time>
     </div>
   </div>
 </div>`,
@@ -1624,7 +1624,7 @@ const dataDisplayComponents = [
     name: 'Calendar',
     description: 'An interactive calendar component for date selection.',
     usage: `<div data-coral-calendar>
-  <div data-coral-calendar-header>January 2024</div>
+  <div data-coral-calendar-header>January 2025</div>
   <div data-coral-calendar-grid>
     <div data-coral-calendar-day data-selected>1</div>
     <div data-coral-calendar-day>2</div>

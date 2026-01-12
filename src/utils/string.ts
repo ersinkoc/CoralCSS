@@ -16,15 +16,15 @@
  * ```
  */
 export function kebabCase(str: string): string {
-  // Preserve CSS custom properties (starting with --)
-  if (str.startsWith('--')) {
+  // Preserve CSS custom properties (starting with --) and vendor prefixes (starting with single dash + lowercase)
+  if (str.startsWith('--') || /^-[a-z]/.test(str)) {
     return str.toLowerCase()
   }
 
   return str
     .replace(/([A-Z])/g, '-$1') // Insert dash before each uppercase
     .replace(/[\s_]+/g, '-')
-    .replace(/^-/, '') // Remove leading dash if present
+    .replace(/^-/, '') // Remove leading dash if present (from camelCase conversion)
     .replace(/--+/g, '-') // Collapse multiple dashes
     .toLowerCase()
 }

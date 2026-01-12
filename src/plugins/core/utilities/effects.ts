@@ -85,6 +85,61 @@ export function effectsPlugin(): Plugin {
       })
 
       // ========================================
+      // COLORED DROP SHADOWS (Tailwind 4.1+)
+      // ========================================
+
+      const dropShadowColors = [
+        'coral', 'slate', 'gray', 'zinc', 'neutral', 'stone',
+        'red', 'orange', 'amber', 'yellow', 'lime', 'green',
+        'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo',
+        'violet', 'purple', 'fuchsia', 'pink', 'rose',
+      ]
+
+      // Generate colored drop shadows
+      for (const color of dropShadowColors) {
+        for (const shade of ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']) {
+          // Without opacity
+          rules.push({
+            pattern: `drop-shadow-${color}-${shade}`,
+            generate: () => ({
+              properties: {
+                'filter': 'drop-shadow(var(--drop-shadow-color))',
+                '--drop-shadow-color': 'var(--color-' + color + '-' + shade + ')'
+              }
+            })
+          })
+
+          // With opacity modifier
+          rules.push({
+            pattern: `drop-shadow-${color}-${shade}\\/(\\d+)`,
+            handler: (match) => {
+              const opacityValue = match[1]
+              if (!opacityValue) return null
+              const opacity = (parseInt(opacityValue, 10) / 100).toFixed(2)
+              return {
+                properties: {
+                  'filter': 'drop-shadow(var(--drop-shadow-color-alpha))',
+                  '--drop-shadow-color-alpha': 'color-mix(in srgb, var(--color-' + color + '-' + shade + ') ' + opacity + ', transparent)'
+                }
+              }
+            }
+          })
+        }
+      }
+
+      // Arbitrary colored drop shadows
+      rules.push({
+        pattern: /^drop-shadow-\[(.+)\]$/,
+        handler: (match) => {
+          const value = match[1]
+          if (!value) return null
+          return {
+            properties: { 'filter': 'drop-shadow(' + value.replace(/_/g, ' ') + ')' }
+          }
+        }
+      })
+
+      // ========================================
       // CSS MASKS (Beyond Tailwind 4)
       // ========================================
 

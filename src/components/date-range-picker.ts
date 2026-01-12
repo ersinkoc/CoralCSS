@@ -455,7 +455,7 @@ export class DateRangePicker extends BaseComponent {
 
     for (let i = 0; i < 7; i++) {
       const dayIndex = (firstDayOfWeek + i) % 7
-      const date = new Date(2024, 0, dayIndex) // Jan 2024 starts on Monday
+      const date = new Date(2025, 0, dayIndex) // Jan 2025 starts on Monday
       while (date.getDay() !== dayIndex) {
         date.setDate(date.getDate() + 1)
       }

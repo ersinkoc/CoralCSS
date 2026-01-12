@@ -347,11 +347,11 @@ const filesComponents = [
     </div>
     <div>
       <p class="text-muted-foreground">Created</p>
-      <p class="font-medium">Jan 10, 2024</p>
+      <p class="font-medium">Jan 10, 2025</p>
     </div>
     <div>
       <p class="text-muted-foreground">Modified</p>
-      <p class="font-medium">Jan 12, 2024</p>
+      <p class="font-medium">Jan 12, 2025</p>
     </div>
     <div>
       <p class="text-muted-foreground">Location</p>
@@ -807,11 +807,11 @@ function FileDetailsPreview() {
         </div>
         <div>
           <p className="text-muted-foreground">Created</p>
-          <p className="font-medium">Jan 10, 2024</p>
+          <p className="font-medium">Jan 10, 2025</p>
         </div>
         <div>
           <p className="text-muted-foreground">Modified</p>
-          <p className="font-medium">Jan 12, 2024</p>
+          <p className="font-medium">Jan 12, 2025</p>
         </div>
         <div>
           <p className="text-muted-foreground">Location</p>

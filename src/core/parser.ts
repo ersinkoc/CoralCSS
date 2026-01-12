@@ -8,6 +8,15 @@
 import type { ParsedClass } from '../types'
 import { splitByDelimiter } from '../utils/string'
 import { NEGATIVE_PATTERN } from '../utils/regex'
+import {
+  OPACITY_PATTERN,
+  ARBITRARY_PATTERN,
+  VARIANT_GROUP_PREFIX_PATTERN,
+  WHITESPACE_PATTERN,
+  ARBITRARY_WITH_TYPE_PATTERN,
+  HAS_BRACKETS_PATTERN,
+  BRACKET_CONTENT_PATTERN,
+} from './parser-cache'
 
 /**
  * Parse a class name into its components
@@ -75,15 +84,15 @@ export function parse(className: string): ParsedClass {
   }
 
   // Check for opacity modifier (e.g., bg-red-500/50 or bg-red-500/[0.5])
-  const opacityMatch = remaining.match(/\/(\d+|[\d.]+%?|\[[^\]]+\])$/)
+  const opacityMatch = remaining.match(OPACITY_PATTERN)
   if (opacityMatch) {
     opacity = opacityMatch[1]!
     // Remove opacity from utility for matching
-    remaining = remaining.slice(0, -opacityMatch[0].length)
+    remaining = remaining.slice(0, -opacityMatch[0]!.length)
   }
 
   // Check for arbitrary value
-  const arbitraryMatch = remaining.match(/\[([^\]]+)\]/)
+  const arbitraryMatch = remaining.match(ARBITRARY_PATTERN)
   if (arbitraryMatch) {
     arbitrary = arbitraryMatch[1]!
   }
@@ -129,7 +138,7 @@ export function expandVariantGroups(input: string): string[] {
 
   // Helper to skip whitespace
   function skipWhitespace(): void {
-    while (pos < str.length && /\s/.test(str[pos]!)) {
+    while (pos < str.length && WHITESPACE_PATTERN.test(str[pos]!)) {
       pos++
     }
   }
@@ -144,11 +153,11 @@ export function expandVariantGroups(input: string): string[] {
     // Check if this is a variant group pattern
     // Match: variant:( or variant:variant:( etc.
     const remaining = str.slice(pos)
-    const groupMatch = remaining.match(/^([a-z0-9-]+(?::[a-z0-9-]+)*):\(/)
+    const groupMatch = remaining.match(VARIANT_GROUP_PREFIX_PATTERN)
 
     if (groupMatch) {
       const variantPrefix = groupMatch[1]!
-      pos += groupMatch[0].length - 1 // Move to opening paren
+      pos += groupMatch[0]!.length - 1 // Move to opening paren
 
       // Find matching closing paren
       const closePos = findClosingParen(str, pos + 1)
@@ -175,7 +184,7 @@ export function expandVariantGroups(input: string): string[] {
     }
 
     // Regular token - read until whitespace or end
-    while (pos < str.length && !/\s/.test(str[pos]!)) {
+    while (pos < str.length && !WHITESPACE_PATTERN.test(str[pos]!)) {
       pos++
     }
 
@@ -236,7 +245,7 @@ export function isNegative(className: string): boolean {
  * Check if a class name has an arbitrary value
  */
 export function hasArbitrary(className: string): boolean {
-  return /\[[^\]]+\]/.test(className)
+  return HAS_BRACKETS_PATTERN.test(className)
 }
 
 /**
@@ -293,7 +302,7 @@ export function normalizeArbitraryValue(value: string): string {
  * ```
  */
 export function parseArbitraryValue(input: string): { type: string | null; value: string } | null {
-  const match = input.match(/^\[(?:([a-z-]+):)?(.+)\]$/i)
+  const match = input.match(ARBITRARY_WITH_TYPE_PATTERN)
   if (!match) {
     return null
   }
@@ -383,13 +392,13 @@ export class ClassNameParser {
     }
 
     // Check for opacity modifier (e.g., bg-red-500/50)
-    const opacityMatch = remaining.match(/\/(\d+|[\d.]+%?)$/)
+    const opacityMatch = remaining.match(OPACITY_PATTERN)
     if (opacityMatch) {
       opacity = opacityMatch[1]!
     }
 
     // Check for arbitrary value
-    const arbitraryMatch = remaining.match(/\[([^\]]+)\]/)
+    const arbitraryMatch = remaining.match(ARBITRARY_PATTERN)
     if (arbitraryMatch) {
       arbitrary = arbitraryMatch[1]!
     }
@@ -424,7 +433,7 @@ export class ClassNameParser {
    * Parse an arbitrary value, returns just the value string
    */
   parseArbitraryValue(input: string): string | null {
-    const match = input.match(/^\[(.+)\]$/)
+    const match = input.match(BRACKET_CONTENT_PATTERN)
     if (!match) {
       return null
     }

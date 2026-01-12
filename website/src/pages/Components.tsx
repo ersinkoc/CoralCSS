@@ -901,7 +901,7 @@ const componentDemos: Record<string, { preview: React.ReactNode; code: string }>
   },
   RelativeTime: {
     preview: <RelativeTimePreview />,
-    code: `<time data-coral-relative-time datetime="2024-01-01">
+    code: `<time data-coral-relative-time datetime="2025-01-01">
   2 days ago
 </time>`
   },

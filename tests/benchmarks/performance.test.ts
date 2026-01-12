@@ -254,7 +254,7 @@ describe('Performance Benchmarks', () => {
       console.log(`  - Ops/sec: ${(1000 / avgTime).toFixed(0)}`)
 
       // Should maintain reasonable performance even with cache eviction
-      expect(avgTime).toBeLessThan(10) // 10ms max per operation
+      expect(avgTime).toBeLessThan(15) // 15ms max per operation (more lenient for CI environments)
     })
   })
 

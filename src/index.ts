@@ -19,6 +19,35 @@ export {
   CSSGenerator,
   CSSTransformer,
   ClassExtractor,
+  convertOKLABToRGB,
+  generateOKLABFallback,
+  generatePropertyFallback,
+  generateGradientFallback,
+  processCSSWithFallbacks,
+  createFallbacksPlugin,
+  defaultFallbackConfig,
+  // Performance optimizations
+  CoralWorker,
+  WorkerPool,
+  createWorker,
+  createWorkerPool,
+  HybridCache,
+  createHybridCache,
+  IncrementalBuilder,
+  DependencyTracker,
+  BuildCache,
+  createIncrementalBuilder,
+  createDependencyTracker,
+  createBuildCache,
+  // Phase 4: Performance Optimizations
+  TreeShake,
+  createTreeShake,
+  treeShakeRules,
+  analyzeRuleUsage,
+  RuntimeOptimizer,
+  createRuntimeOptimizer,
+  getGlobalOptimizer,
+  setGlobalOptimizer,
 } from './core'
 
 // Theme exports
@@ -236,6 +265,18 @@ export {
   cli,
 } from './build'
 
+// Config exports
+export {
+  parseCSSConfig,
+  mergeConfigs,
+  extractCoralDirectives,
+  validateCSSConfig,
+  cssConfigPlugin,
+  createCoralWithCSS,
+  generateCSSConfigTemplate,
+} from './config'
+export type { CSSConfigPluginOptions, ParsedCSSConfig } from './config'
+
 // Type exports
 export type {
   // Core types
@@ -293,10 +334,33 @@ export type {
   TransformOptions,
   ExtractOptions,
   ExtractResult,
+  FallbackConfig,
   // Event types
   CoralEvent,
   EventCallback,
 } from './types'
+
+// Performance optimization type exports
+export type {
+  WorkerMessage,
+  WorkerTask,
+  WorkerPoolOptions,
+  CacheEntry as HybridCacheEntry,
+  PersistentCacheEntry,
+  HybridCacheOptions,
+  ManifestEntry as BuildManifestEntry,
+  BuildManifest,
+  BuildResult,
+  IncrementalBuildOptions,
+  FileChangeType,
+  FileChange,
+  // Phase 4: Performance Optimizations
+  TreeShakeOptions,
+  UsageAnalysis,
+  SchedulerOptions,
+  BatchOptions,
+  VirtualizedOptions,
+} from './core'
 
 // Preset type exports
 export type {

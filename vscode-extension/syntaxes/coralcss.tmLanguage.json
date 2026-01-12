@@ -1,0 +1,158 @@
+{
+  "scopeName": "text.html.coralcss",
+  "patterns": [
+    {
+      "include": "#class-attribute"
+    },
+    {
+      "include": "#coral-class"
+    }
+  ],
+  "repository": {
+    "class-attribute": {
+      "name": "meta.attribute.class.html",
+      "begin": "(class)\\s*(=)",
+      "end": "(?<=[\"'])",
+      "beginCaptures": {
+        "1": { "name": "entity.other.attribute-name.html" },
+        "2": { "name": "punctuation.separator.key-value.html" }
+      },
+      "patterns": [
+        {
+          "include": "#class-string"
+        }
+      ]
+    },
+    "class-string": {
+      "begin": "([\"'])",
+      "end": "\\1",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.string.begin.html" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.html" }
+      },
+      "name": "string.quoted.html",
+      "patterns": [
+        {
+          "include": "#coral-class"
+        }
+      ]
+    },
+    "coral-class": {
+      "patterns": [
+        {
+          "include": "#variant-group"
+        },
+        {
+          "include": "#variant"
+        },
+        {
+          "include": "#utility"
+        },
+        {
+          "include": "#arbitrary-value"
+        }
+      ]
+    },
+    "variant-group": {
+      "name": "meta.variant-group.coralcss",
+      "begin": "([a-z][a-z0-9-]*)?\\(\\s*",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": { "name": "entity.other.variant-name.coralcss support.constant.variant.coralcss" }
+      },
+      "patterns": [
+        {
+          "include": "#coral-class"
+        }
+      ]
+    },
+    "variant": {
+      "match": "([a-z][a-z0-9-]*)(:)",
+      "captures": {
+        "1": { "name": "entity.other.variant-name.coralcss support.constant.variant.coralcss" },
+        "2": { "name": "punctuation.separator.variant.coralcss" }
+      }
+    },
+    "utility": {
+      "patterns": [
+        {
+          "match": "\\b(p|m|px|py|pt|pb|pl|pr)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.property-name.coralcss" },
+            "2": { "name": "constant.numeric.value.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(bg|text|border)-([a-z][a-z0-9]*)(-(\\d{2,3}|[a-z]+))?\\b",
+          "captures": {
+            "1": { "name": "support.type.property-name.coralcss" },
+            "2": { "name": "support.constant.color.coralcss" },
+            "4": { "name": "constant.numeric.shade.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(w|h|min-w|max-w|min-h|max-h)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.property-name.coralcss" },
+            "2": { "name": "constant.numeric.value.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(flex|grid|block|inline|inline-block|inline-flex|hidden)\\b",
+          "name": "keyword.control.display.coralcss"
+        },
+        {
+          "match": "\\b(items|justify|content)-(start|end|center|between|around|evenly)\\b",
+          "name": "keyword.control.alignment.coralcss"
+        },
+        {
+          "match": "\\b(rounded|shadow|opacity|blur)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.property-name.coralcss" },
+            "2": { "name": "constant.numeric.value.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(font|text)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.property-name.coralcss" },
+            "2": { "name": "constant.numeric.value.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(translate|scale|rotate)-([xyz]?)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.transform.coralcss" },
+            "2": { "name": "support.type.axis.coralcss" },
+            "3": { "name": "constant.numeric.value.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(animate|transition)-([a-z0-9-]+)\\b",
+          "captures": {
+            "1": { "name": "support.type.animation.coralcss" },
+            "2": { "name": "entity.name.animation.coralcss" }
+          }
+        },
+        {
+          "match": "\\b(cursor|pointer-events|user-select)-([a-z]+)\\b",
+          "name": "keyword.control.interaction.coralcss"
+        },
+        {
+          "match": "\\b(overflow|position)-(auto|hidden|scroll|visible|relative|absolute|fixed|sticky)\\b",
+          "name": "keyword.control.layout.coralcss"
+        }
+      ]
+    },
+    "arbitrary-value": {
+      "match": "(\\[)([^\\]]+)(\\])",
+      "captures": {
+        "1": { "name": "punctuation.definition.arbitrary.begin.coralcss" },
+        "2": { "name": "meta.arbitrary.value.coralcss string.unquoted.coralcss" },
+        "3": { "name": "punctuation.definition.arbitrary.end.coralcss" }
+      }
+    }
+  }
+}

@@ -449,7 +449,7 @@ export const landingFooter = `
 
     <!-- Bottom -->
     <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm">&copy; 2024 CoralCSS. All rights reserved.</p>
+      <p class="text-sm">&copy; 2025 CoralCSS. All rights reserved.</p>
       <div class="flex items-center gap-4 text-sm">
         <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
         <a href="#" class="hover:text-white transition-colors">Terms of Service</a>

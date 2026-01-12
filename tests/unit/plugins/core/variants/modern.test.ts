@@ -518,5 +518,125 @@ describe('Modern Variants Plugin', () => {
         expect(css).toContain('[aria-selected="true"]')
       })
     })
+
+    describe('Tailwind 4.1 Modern Variants', () => {
+      it('should apply user-valid handler', () => {
+        const css = directCoral.generate(['user-valid:bg-test'])
+        expect(css).toContain(':user-valid')
+      })
+
+      it('should apply user-invalid handler', () => {
+        const css = directCoral.generate(['user-invalid:bg-test'])
+        expect(css).toContain(':user-invalid')
+      })
+
+      it('should apply user-error handler (alias for user-invalid)', () => {
+        const css = directCoral.generate(['user-error:bg-test'])
+        expect(css).toContain(':user-invalid')
+      })
+
+      it('should apply pointer-fine handler', () => {
+        const css = directCoral.generate(['pointer-fine:bg-test'])
+        expect(css).toContain('@media (pointer: fine)')
+      })
+
+      it('should apply pointer-coarse handler', () => {
+        const css = directCoral.generate(['pointer-coarse:bg-test'])
+        expect(css).toContain('@media (pointer: coarse)')
+      })
+
+      it('should apply any-pointer-fine handler', () => {
+        const css = directCoral.generate(['any-pointer-fine:bg-test'])
+        expect(css).toContain('@media (any-pointer: fine)')
+      })
+
+      it('should apply any-pointer-coarse handler', () => {
+        const css = directCoral.generate(['any-pointer-coarse:bg-test'])
+        expect(css).toContain('@media (any-pointer: coarse)')
+      })
+
+      it('should apply inverted-colors handler', () => {
+        const css = directCoral.generate(['inverted-colors:bg-test'])
+        expect(css).toContain('@media (inverted-colors: inverted)')
+      })
+
+      it('should apply noscript handler', () => {
+        const css = directCoral.generate(['noscript:bg-test'])
+        expect(css).toContain('@supports not (selector(:where(noscript)))')
+      })
+
+      it('should apply details-content handler', () => {
+        const css = directCoral.generate(['details-content:bg-test'])
+        expect(css).toContain('::details-content')
+      })
+
+      it('should apply details-marker handler', () => {
+        const css = directCoral.generate(['details-marker:bg-test'])
+        expect(css).toContain('summary')
+        expect(css).toContain('::marker')
+      })
+
+      it('should apply details-open handler', () => {
+        const css = directCoral.generate(['details-open:bg-test'])
+        expect(css).toContain('details[open] > summary')
+      })
+    })
+
+    describe('Container Queries Plus Variants', () => {
+      it('should apply container-style-grid handler', () => {
+        const css = directCoral.generate(['container-style-grid:bg-test'])
+        expect(css).toContain('@container style(display: grid)')
+      })
+
+      it('should apply container-style-flex handler', () => {
+        const css = directCoral.generate(['container-style-flex:bg-test'])
+        expect(css).toContain('@container style(display: flex)')
+      })
+
+      it('should apply container-style-block handler', () => {
+        const css = directCoral.generate(['container-style-block:bg-test'])
+        expect(css).toContain('@container style(display: block)')
+      })
+
+      it('should apply container-style-inline handler', () => {
+        const css = directCoral.generate(['container-style-inline:bg-test'])
+        expect(css).toContain('@container style(display: inline)')
+      })
+
+      it('should apply container-hovered handler', () => {
+        const css = directCoral.generate(['container-hovered:bg-test'])
+        expect(css).toContain('@container state(:hover)')
+      })
+
+      it('should apply container-focused handler', () => {
+        const css = directCoral.generate(['container-focused:bg-test'])
+        expect(css).toContain('@container state(:focus-within)')
+      })
+
+      it('should apply container-active handler', () => {
+        const css = directCoral.generate(['container-active:bg-test'])
+        expect(css).toContain('@container state(:active)')
+      })
+
+      it('should apply container-checked handler', () => {
+        const css = directCoral.generate(['container-checked:bg-test'])
+        expect(css).toContain('@container state(:checked)')
+      })
+
+      it('should apply container-disabled handler', () => {
+        const css = directCoral.generate(['container-disabled:bg-test'])
+        expect(css).toContain('@container state(:disabled)')
+      })
+
+      it('should apply container-portrait handler', () => {
+        const css = directCoral.generate(['container-portrait:bg-test'])
+        expect(css).toContain('@container (orientation: portrait)')
+      })
+
+      it('should apply container-landscape handler', () => {
+        const css = directCoral.generate(['container-landscape:bg-test'])
+        expect(css).toContain('@container (orientation: landscape)')
+      })
+    })
   })
 })

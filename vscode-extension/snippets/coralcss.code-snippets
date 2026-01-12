@@ -1,0 +1,310 @@
+{
+  "CoralCSS Container": {
+    "prefix": "coral:container",
+    "description": "CoralCSS container with max-width",
+    "body": [
+      "class=\"container mx-auto px-4\""
+    ]
+  },
+  "CoralCSS Flex Center": {
+    "prefix": "coral:flex-center",
+    "description": "Flexbox centered content",
+    "body": [
+      "class=\"flex items-center justify-center\""
+    ]
+  },
+  "CoralCSS Grid": {
+    "prefix": "coral:grid",
+    "description": "CSS Grid layout",
+    "body": [
+      "class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\""
+    ]
+  },
+  "CoralCSS Card": {
+    "prefix": "coral:card",
+    "description": "Card component with shadow and rounded corners",
+    "body": [
+      "class=\"bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6\""
+    ]
+  },
+  "CoralCSS Button": {
+    "prefix": "coral:button",
+    "description": "Button with hover states",
+    "body": [
+      "class=\"px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors\""
+    ]
+  },
+  "CoralCSS Input": {
+    "prefix": "coral:input",
+    "description": "Styled input field",
+    "body": [
+      "class=\"w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none\""
+    ]
+  },
+  "CoralCSS Text Gradient": {
+    "prefix": "coral:gradient-text",
+    "description": "Gradient text effect",
+    "body": [
+      "class=\"bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent\""
+    ]
+  },
+  "CoralCSS Background Gradient": {
+    "prefix": "coral:gradient-bg",
+    "description": "Gradient background",
+    "body": [
+      "class=\"bg-gradient-to-r from-blue-500 to-purple-600\""
+    ]
+  },
+  "CoralCSS Hover Group": {
+    "prefix": "coral:hover-group",
+    "description": "Hover group with variant syntax",
+    "body": [
+      "class=\"hover:(bg-blue-500 text-white scale-105) transition-all\""
+    ]
+  },
+  "CoralCSS Responsive Padding": {
+    "prefix": "coral:responsive-padding",
+    "description": "Responsive padding",
+    "body": [
+      "class=\"p-2 sm:p-4 md:p-6 lg:p-8\""
+    ]
+  },
+  "CoralCSS Dark Mode": {
+    "prefix": "coral:dark",
+    "description": "Dark mode variant",
+    "body": [
+      "class=\"bg-white dark:bg-slate-900 text-slate-900 dark:text-white\""
+    ]
+  },
+  "CoralCSS Flex Row": {
+    "prefix": "coral:flex-row",
+    "description": "Flex row with gap",
+    "body": [
+      "class=\"flex flex-row gap-4\""
+    ]
+  },
+  "CoralCSS Flex Column": {
+    "prefix": "coral:flex-col",
+    "description": "Flex column with gap",
+    "body": [
+      "class=\"flex flex-col gap-4\""
+    ]
+  },
+  "CoralCSS Absolute Center": {
+    "prefix": "coral:absolute-center",
+    "description": "Absolute positioning center",
+    "body": [
+      "class=\"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2\""
+    ]
+  },
+  "CoralCSS Transition": {
+    "prefix": "coral:transition",
+    "description": "Smooth transition",
+    "body": [
+      "class=\"transition-all duration-300 ease-in-out\""
+    ]
+  },
+  "CoralCSS Skeleton Loader": {
+    "prefix": "coral:skeleton",
+    "description": "Skeleton loading state",
+    "body": [
+      "class=\"animate-pulse bg-slate-200 dark:bg-slate-700 rounded\""
+    ]
+  },
+  "CoralCSS Badge": {
+    "prefix": "coral:badge",
+    "description": "Badge component",
+    "body": [
+      "class=\"inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800\""
+    ]
+  },
+  "CoralCSS Tooltip Trigger": {
+    "prefix": "coral:tooltip",
+    "description": "Tooltip trigger with group",
+    "body": [
+      "class=\"group relative\""
+    ]
+  },
+  "CoralCSS Truncate Text": {
+    "prefix": "coral:truncate",
+    "description": "Truncate text with ellipsis",
+    "body": [
+      "class=\"truncate whitespace-nowrap overflow-hidden\""
+    ]
+  },
+  "CoralCSS Line Clamp": {
+    "prefix": "coral:line-clamp",
+    "description": "Limit lines of text",
+    "body": [
+      "class=\"line-clamp-3\""
+    ]
+  },
+  "CoralCSS Aspect Ratio": {
+    "prefix": "coral:aspect",
+    "description": "Aspect ratio container",
+    "body": [
+      "class=\"aspect-video w-full\""
+    ]
+  },
+  "CoralCSS Glassmorphism": {
+    "prefix": "coral:glass",
+    "description": "Glass effect with backdrop blur",
+    "body": [
+      "class=\"backdrop-blur-md bg-white/30 dark:bg-slate-900/30 border border-white/20\""
+    ]
+  },
+  "CoralCSS Shadow Sm": {
+    "prefix": "coral:shadow-sm",
+    "description": "Small shadow",
+    "body": [
+      "class=\"shadow-sm\""
+    ]
+  },
+  "CoralCSS Shadow Md": {
+    "prefix": "coral:shadow-md",
+    "description": "Medium shadow",
+    "body": [
+      "class=\"shadow-md\""
+    ]
+  },
+  "CoralCSS Shadow Lg": {
+    "prefix": "coral:shadow-lg",
+    "description": "Large shadow",
+    "body": [
+      "class=\"shadow-lg\""
+    ]
+  },
+  "CoralCSS Rounded": {
+    "prefix": "coral:rounded",
+    "description": "Rounded corners",
+    "body": [
+      "class=\"rounded-lg\""
+    ]
+  },
+  "CoralCSS Circle": {
+    "prefix": "coral:circle",
+    "description": "Perfect circle",
+    "body": [
+      "class=\"rounded-full\""
+    ]
+  },
+  "CoralCSS Screen Reader Only": {
+    "prefix": "coral:sr-only",
+    "description": "Screen reader only (visually hidden)",
+    "body": [
+      "class=\"sr-only\""
+    ]
+  },
+  "CoralCSS Focus Visible": {
+    "prefix": "coral:focus-ring",
+    "description": "Focus ring for accessibility",
+    "body": [
+      "class=\"focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2\""
+    ]
+  },
+  "CoralCSS Animation Spin": {
+    "prefix": "coral:spin",
+    "description": "Spinning animation",
+    "body": [
+      "class=\"animate-spin\""
+    ]
+  },
+  "CoralCSS Animation Bounce": {
+    "prefix": "coral:bounce",
+    "description": "Bouncing animation",
+    "body": [
+      "class=\"animate-bounce\""
+    ]
+  },
+  "CoralCSS Animation Pulse": {
+    "prefix": "coral:pulse",
+    "description": "Pulsing animation",
+    "body": [
+      "class=\"animate-pulse\""
+    ]
+  },
+  "CoralCSS Container Query": {
+    "prefix": "coral:container-query",
+    "description": "Container query wrapper",
+    "body": [
+      "class=\"@container\""
+    ]
+  },
+  "CoralCSS Smart Grid": {
+    "prefix": "coral:smart-grid",
+    "description": "Auto-fit responsive grid",
+    "body": [
+      "class=\"grid-auto-fit\""
+    ]
+  },
+  "CoralCSS Smart Spacing": {
+    "prefix": "coral:smart-spacing",
+    "description": "Fluid responsive spacing",
+    "body": [
+      "class=\"p-smart\""
+    ]
+  },
+  "CoralCSS Scroll Animation": {
+    "prefix": "coral:scroll-fade",
+    "description": "Scroll-driven fade in",
+    "body": [
+      "class=\"animate-scroll-fade-in\""
+    ]
+  },
+  "CoralCSS Spring Animation": {
+    "prefix": "coral:spring",
+    "description": "Spring bounce animation",
+    "body": [
+      "class=\"animate-spring-md\""
+    ]
+  },
+  "CoralCSS Adaptive Color": {
+    "prefix": "coral:perceptual",
+    "description": "Perceptual adaptive color",
+    "body": [
+      "class=\"text-perceptual\""
+    ]
+  },
+  "CoralCSS High Contrast": {
+    "prefix": "coral:high-contrast",
+    "description": "High contrast mode",
+    "body": [
+      "class=\"contrast-high\""
+    ]
+  },
+  "CoralCSS Masonry Grid": {
+    "prefix": "coral:masonry",
+    "description": "Masonry grid layout",
+    "body": [
+      "class=\"grid-masonry-tight\""
+    ]
+  },
+  "CoralCSS Arbitrary Value": {
+    "prefix": "coral:arbitrary",
+    "description": "Arbitrary value template",
+    "body": [
+      "[${1:property}-${2:value}]"
+    ]
+  },
+  "CoralCSS Negative Margin": {
+    "prefix": "coral:negative-margin",
+    "description": "Negative margin",
+    "body": [
+      "class=\"-${1:mt|mb|ml|mr}-${2:4|8|12}\""
+    ]
+  },
+  "CoralCSS State Variant": {
+    "prefix": "coral:state",
+    "description": "State variant placeholder",
+    "body": [
+      "${1:hover|focus|active|disabled}:${2:class}"
+    ]
+  },
+  "CoralCSS Responsive Variant": {
+    "prefix": "coral:responsive",
+    "description": "Responsive variant placeholder",
+    "body": [
+      "${1:sm|md|lg|xl|2xl}:${2:class}"
+    ]
+  }
+}

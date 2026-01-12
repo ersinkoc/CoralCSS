@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoralCSS - Advanced Features</title>
+  <script src="../../dist/coral.min.global.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="min-h-screen bg-gradient-to-br from-coral-50 via-white to-coral-100 p-8">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <h1 class="text-5xl font-bold text-coral-600 mb-4 animate-spring-md">
+          Advanced CSS Features
+        </h1>
+        <p class="text-xl text-gray-600">
+          Demonstrating modern CSS utilities and animations
+        </p>
+      </header>
+
+      <!-- Accent Colors Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">🎨</span>
+          Accent Colors
+        </h2>
+        <p class="text-gray-600 mb-6">Form element accent colors for modern browsers</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-4">
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Auto accent</span>
+              <input type="checkbox" class="accent-auto mt-2" checked>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Primary accent</span>
+              <input type="checkbox" class="accent-primary mt-2" checked>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Coral accent</span>
+              <input type="checkbox" class="accent-coral-500 mt-2" checked>
+            </label>
+          </div>
+
+          <div class="space-y-4">
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Red accent</span>
+              <input type="checkbox" class="accent-red-500 mt-2" checked>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Sky accent</span>
+              <input type="checkbox" class="accent-sky-500 mt-2" checked>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Purple accent</span>
+              <input type="checkbox" class="accent-purple-500 mt-2" checked>
+            </label>
+          </div>
+
+          <div class="bg-gray-100 rounded-lg p-4">
+            <code class="text-sm text-gray-700">
+              <div class="mb-2"><span class="text-coral-600">accent-auto</span> - Browser default</div>
+              <div class="mb-2"><span class="text-coral-600">accent-primary</span> - Theme primary</div>
+              <div class="mb-2"><span class="text-coral-600">accent-coral-500</span> - Custom color</div>
+            </code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Line Clamp Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">📝</span>
+          Line Clamping
+        </h2>
+        <p class="text-gray-600 mb-6">Text truncation with ellipsis</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div class="text-sm font-medium text-gray-500 mb-2">line-clamp-1</div>
+            <p class="line-clamp-1 text-gray-700">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-gray-500 mb-2">line-clamp-2</div>
+            <p class="line-clamp-2 text-gray-700">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+            </p>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-gray-500 mb-2">line-clamp-3</div>
+            <p class="line-clamp-3 text-gray-700">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-gray-500 mb-2">line-clamp-none</div>
+            <p class="line-clamp-none text-gray-700">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Color Scheme Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">🌓</span>
+          Color Scheme
+        </h2>
+        <p class="text-gray-600 mb-6">Native browser color scheme preferences</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="color-scheme-dark p-6 bg-gray-900 rounded-lg">
+            <h3 class="text-lg font-semibold text-white mb-2">Dark Mode</h3>
+            <p class="text-gray-300">Indicates dark mode preference</p>
+            <code class="text-xs text-coral-400">color-scheme-dark</code>
+          </div>
+
+          <div class="color-scheme-light p-6 bg-white border-2 border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Light Mode</h3>
+            <p class="text-gray-600">Indicates light mode preference</p>
+            <code class="text-xs text-coral-600">color-scheme-light</code>
+          </div>
+
+          <div class="p-6 bg-gradient-to-br from-gray-100 to-white rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Auto Mode</h3>
+            <p class="text-gray-600">Follows system preference</p>
+            <code class="text-xs text-coral-600">color-scheme-auto</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spring Animations Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">⚡</span>
+          Physics-Based Animations
+        </h2>
+        <p class="text-gray-600 mb-6">Spring animations for natural, bouncy effects</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="text-center p-6 bg-gradient-to-br from-coral-50 to-coral-100 rounded-xl">
+            <div class="w-20 h-20 mx-auto mb-4 bg-coral-500 rounded-full animate-spring-sm flex items-center justify-center text-white text-2xl">
+              ↑
+            </div>
+            <code class="text-xs text-coral-600">animate-spring-sm</code>
+          </div>
+
+          <div class="text-center p-6 bg-gradient-to-br from-sky-50 to-sky-100 rounded-xl">
+            <div class="w-20 h-20 mx-auto mb-4 bg-sky-500 rounded-full animate-spring-md flex items-center justify-center text-white text-2xl">
+              ↑
+            </div>
+            <code class="text-xs text-sky-600">animate-spring-md</code>
+          </div>
+
+          <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+            <div class="w-20 h-20 mx-auto mb-4 bg-purple-500 rounded-full animate-spring-lg flex items-center justify-center text-white text-2xl">
+              ↑
+            </div>
+            <code class="text-xs text-purple-600">animate-spring-lg</code>
+          </div>
+
+          <div class="text-center p-6 bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl">
+            <div class="w-20 h-20 mx-auto mb-4 bg-rose-500 rounded-full animate-bounce-in flex items-center justify-center text-white text-2xl">
+              ↑
+            </div>
+            <code class="text-xs text-rose-600">animate-bounce-in</code>
+          </div>
+        </div>
+
+        <!-- Re-trigger animations -->
+        <div class="mt-6 text-center">
+          <button onclick="window.location.reload()" class="px-6 py-3 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors">
+            Replay Animations
+          </button>
+        </div>
+      </section>
+
+      <!-- Scroll Animations Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">📜</span>
+          Scroll-Driven Animations
+        </h2>
+        <p class="text-gray-600 mb-6">Animations triggered by scroll position</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 bg-gradient-to-r from-coral-100 to-coral-200 rounded-xl">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Fade In on Scroll</h3>
+            <p class="text-gray-600 mb-4">This section fades in as you scroll</p>
+            <div class="h-2 bg-white rounded-full overflow-hidden">
+              <div class="h-full bg-coral-500 animate-scroll-fade-in" style="animation-duration: 1s;"></div>
+            </div>
+          </div>
+
+          <div class="p-6 bg-gradient-to-r from-sky-100 to-sky-200 rounded-xl">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Scale on Scroll</h3>
+            <p class="text-gray-600 mb-4">This section scales as you scroll</p>
+            <div class="w-16 h-16 bg-sky-500 rounded-xl mx-auto animate-scroll-scale"></div>
+          </div>
+        </div>
+
+        <div class="mt-8 p-8 bg-gray-100 rounded-xl h-64 overflow-y-auto">
+          <p class="text-gray-600 mb-4">Scroll down to see more items animate in:</p>
+          <div class="space-y-4">
+            <div class="p-4 bg-white rounded-lg shadow animate-scroll-fade-in">Item 1</div>
+            <div class="p-4 bg-white rounded-lg shadow animate-scroll-fade-in">Item 2</div>
+            <div class="p-4 bg-white rounded-lg shadow animate-scroll-fade-in">Item 3</div>
+            <div class="p-4 bg-white rounded-lg shadow animate-scroll-fade-in">Item 4</div>
+            <div class="p-4 bg-white rounded-lg shadow animate-scroll-fade-in">Item 5</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Special Effects Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">✨</span>
+          Special Text Effects
+        </h2>
+        <p class="text-gray-600 mb-6">Advanced text shadow effects for dramatic typography</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 bg-gradient-to-br from-white to-gray-100 rounded-xl">
+            <h3 class="text-xl font-bold text-shadow-embossed mb-2">Embossed</h3>
+            <p class="text-gray-600 text-sm">Raised text effect</p>
+            <code class="text-xs text-coral-600">text-shadow-embossed</code>
+          </div>
+
+          <div class="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl">
+            <h3 class="text-xl font-bold text-shadow-debossed text-gray-100 mb-2">Debossed</h3>
+            <p class="text-gray-400 text-sm">Recessed text effect</p>
+            <code class="text-xs text-coral-400">text-shadow-debossed</code>
+          </div>
+
+          <div class="p-6 bg-gradient-to-br from-purple-900 to-indigo-900 rounded-xl">
+            <h3 class="text-xl font-bold text-shadow-neon text-purple-300 mb-2">Neon Glow</h3>
+            <p class="text-gray-400 text-sm">Glowing effect</p>
+            <code class="text-xs text-coral-400">text-shadow-neon</code>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div class="p-6 bg-gradient-to-br from-red-100 to-orange-100 rounded-xl">
+            <h3 class="text-2xl font-black text-shadow-3d text-red-700 mb-2">3D Retro</h3>
+            <p class="text-gray-600 text-sm">Retro 3D shadow layering</p>
+            <code class="text-xs text-coral-600">text-shadow-3d</code>
+          </div>
+
+          <div class="p-6 bg-white border-2 border-gray-900 rounded-xl">
+            <h3 class="text-2xl font-bold text-shadow-outline text-gray-900 mb-2">Outline</h3>
+            <p class="text-gray-600 text-sm">Text outline effect</p>
+            <code class="text-xs text-coral-600">text-shadow-outline</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Visibility Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">🚀</span>
+          Performance Utilities
+        </h2>
+        <p class="text-gray-600 mb-6">Content-visibility for performance optimization</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 bg-gray-50 rounded-xl">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Normal Rendering</h3>
+            <p class="text-gray-600 mb-4">Content is rendered immediately</p>
+            <div class="h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg"></div>
+          </div>
+
+          <div class="p-6 bg-gray-50 rounded-xl">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Content Visibility Auto</h3>
+            <p class="text-gray-600 mb-4">Skips rendering when off-screen</p>
+            <div class="h-32 bg-gradient-to-br from-coral-200 to-coral-300 rounded-lg content-visibility-auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gesture Animations Section -->
+      <section class="mb-16 p-8 bg-white rounded-2xl shadow-xl scroll-fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <span class="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center text-white">👆</span>
+          Gesture Animations
+        </h2>
+        <p class="text-gray-600 mb-6">Swipe and gesture-based animations</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button class="p-4 bg-coral-500 text-white rounded-lg hover:animate-swipe-left active:animate-shake">
+            Swipe Left
+          </button>
+          <button class="p-4 bg-sky-500 text-white rounded-lg hover:animate-swipe-right active:animate-shake">
+            Swipe Right
+          </button>
+          <button class="p-4 bg-purple-500 text-white rounded-lg hover:animate-swipe-up active:animate-shake">
+            Swipe Up
+          </button>
+          <button class="p-4 bg-rose-500 text-white rounded-lg hover:animate-swipe-down active:animate-shake">
+            Swipe Down
+          </button>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 bg-gray-100 rounded-xl text-center">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Click to Shake</h3>
+            <div class="w-16 h-16 mx-auto bg-red-500 rounded-lg flex items-center justify-center text-white text-2xl cursor-pointer hover:animate-shake">
+              ⚠
+            </div>
+          </div>
+
+          <div class="p-6 bg-gray-100 rounded-xl text-center">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Click to Wiggle</h3>
+            <div class="w-16 h-16 mx-auto bg-yellow-500 rounded-lg flex items-center justify-center text-white text-2xl cursor-pointer hover:animate-wiggle">
+              ⚡
+            </div>
+          </div>
+
+          <div class="p-6 bg-gray-100 rounded-xl text-center">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Click to Pulse</h3>
+            <div class="w-16 h-16 mx-auto bg-green-500 rounded-lg flex items-center justify-center text-white text-2xl cursor-pointer hover:animate-pulse-glow">
+              💚
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="text-center text-gray-500 mt-16">
+        <p>CoralCSS Advanced Features Demo</p>
+        <p class="text-sm mt-2">Built with modern CSS utilities and animations</p>
+      </footer>
+
+    </div>
+  </div>
+</body>
+</html>

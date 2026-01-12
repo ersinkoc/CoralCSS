@@ -85,7 +85,7 @@ export interface CountdownState extends ComponentState {
  *
  * @example
  * ```html
- * <div data-coral-countdown data-target="2024-12-31T23:59:59" data-format="full">
+ * <div data-coral-countdown data-target="2025-12-31T23:59:59" data-format="full">
  *   <span data-coral-countdown-prefix>Countdown: </span>
  *   <span data-coral-countdown-value></span>
  *   <span data-coral-countdown-suffix> remaining</span>

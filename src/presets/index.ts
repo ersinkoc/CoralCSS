@@ -35,5 +35,8 @@ export type { GitHubPresetOptions } from './github'
 export { enhancedLightPreset, enhancedLightPresetConfig } from './enhanced-light'
 export type { EnhancedLightPresetOptions } from './enhanced-light'
 
+export { catppuccinPreset, catppuccinPresetConfig } from './catppuccin'
+export type { CatppuccinPresetOptions, CatppuccinFlavor } from './catppuccin'
+
 // Default export
 export { coralPreset as default } from './coral'

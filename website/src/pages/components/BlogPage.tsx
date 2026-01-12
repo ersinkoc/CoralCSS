@@ -20,17 +20,17 @@ export function BlogPageShowcase() {
       title: 'Introducing CoralCSS: The Future of Utility-First CSS',
       excerpt: 'Discover how CoralCSS is revolutionizing the way we write CSS with zero dependencies, lightning-fast performance, and modern features.',
       category: 'Development',
-      date: 'Dec 15, 2024',
+      date: 'Dec 15, 2025',
       readTime: '8 min read',
       image: '🚀',
       gradient: 'from-primary/20 to-accent/20',
       badge: 'Featured',
     },
     {
-      title: 'Mastering Modern CSS Features in 2024',
+      title: 'Mastering Modern CSS Features in 2025',
       excerpt: 'A comprehensive guide to anchor positioning, scroll-driven animations, container queries, and other cutting-edge CSS features.',
       category: 'Tutorial',
-      date: 'Dec 12, 2024',
+      date: 'Dec 12, 2025',
       readTime: '12 min read',
       image: '🎨',
       gradient: 'from-accent/20 to-info/20',
@@ -43,7 +43,7 @@ export function BlogPageShowcase() {
       title: 'Building Accessible Components with CoralCSS',
       excerpt: 'Learn how to create WCAG-compliant UI components using our headless component library.',
       category: 'Development',
-      date: 'Dec 10, 2024',
+      date: 'Dec 10, 2025',
       readTime: '6 min read',
       image: '♿',
     },
@@ -51,7 +51,7 @@ export function BlogPageShowcase() {
       title: 'Design Systems: From Theory to Practice',
       excerpt: 'Practical tips for creating and maintaining a scalable design system for your organization.',
       category: 'Design',
-      date: 'Dec 8, 2024',
+      date: 'Dec 8, 2025',
       readTime: '10 min read',
       image: '🎯',
     },
@@ -59,7 +59,7 @@ export function BlogPageShowcase() {
       title: 'Performance Optimization Techniques',
       excerpt: 'Deep dive into the performance optimizations that make CoralCSS 600K+ ops/sec fast.',
       category: 'Development',
-      date: 'Dec 5, 2024',
+      date: 'Dec 5, 2025',
       readTime: '7 min read',
       image: '⚡',
     },
@@ -67,7 +67,7 @@ export function BlogPageShowcase() {
       title: 'The Evolution of CSS Frameworks',
       excerpt: 'A historical look at how CSS frameworks have evolved and where CoralCSS fits in.',
       category: 'News',
-      date: 'Dec 3, 2024',
+      date: 'Dec 3, 2025',
       readTime: '5 min read',
       image: '📜',
     },
@@ -75,7 +75,7 @@ export function BlogPageShowcase() {
       title: 'Getting Started with Dark Mode',
       excerpt: 'Everything you need to know about implementing dark mode in your applications.',
       category: 'Tutorial',
-      date: 'Nov 30, 2024',
+      date: 'Nov 30, 2025',
       readTime: '9 min read',
       image: '🌙',
     },
@@ -83,7 +83,7 @@ export function BlogPageShowcase() {
       title: 'CoralCSS vs Tailwind CSS: A Comparison',
       excerpt: 'An in-depth comparison of features, performance, and developer experience.',
       category: 'Development',
-      date: 'Nov 28, 2024',
+      date: 'Nov 28, 2025',
       readTime: '11 min read',
       image: '⚔️',
     },
@@ -419,7 +419,7 @@ export function BlogPageShowcase() {
           <div className="pt-8 border-t border-border">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-muted-foreground">
-                © 2024 CoralCSS Blog. All rights reserved.
+                © 2025 CoralCSS Blog. All rights reserved.
               </p>
               <div className="flex gap-6">
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy</a>

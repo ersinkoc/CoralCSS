@@ -1,0 +1,70 @@
+{
+  "name": "coralcss-vscode",
+  "displayName": "CoralCSS IntelliSense",
+  "description": "Syntax highlighting, IntelliSense, and documentation for CoralCSS classes",
+  "version": "1.0.0",
+  "publisher": "coralcss",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "coralcss",
+        "aliases": ["CoralCSS", "coral"],
+        "extensions": [".html", ".jsx", ".tsx", ".vue", ".svelte"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "coralcss",
+        "scopeName": "text.html.coralcss",
+        "path": "./syntaxes/coralcss.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "coralcss",
+        "path": "./snippets/coralcss.code-snippets"
+      }
+    ],
+    "configuration": {
+      "title": "CoralCSS",
+      "properties": {
+        "coralcss.enableIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CoralCSS IntelliSense suggestions"
+        },
+        "coralcss.enableEmmet": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CoralCSS Emmet completions"
+        },
+        "coralcss.showDocumentationOnHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show documentation when hovering over classes"
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  }
+}

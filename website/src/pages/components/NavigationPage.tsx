@@ -745,7 +745,7 @@ function NavigationDrawerPreview() {
 
 function TimelineNavPreview() {
   const [active, setActive] = useState(1)
-  const events = ['2021', '2022', '2023', '2024', '2025']
+  const events = ['2021', '2022', '2023', '2025', '2025']
   return (
     <div data-coral-timeline-nav className="w-full max-w-md">
       <div className="relative flex items-center justify-between">
@@ -1499,7 +1499,7 @@ const navigationComponents = [
     description: 'A timeline-based navigation for historical or sequential content.',
     usage: `<div data-coral-timeline-nav>
   <button data-coral-timeline-point data-active>2023</button>
-  <button data-coral-timeline-point>2024</button>
+  <button data-coral-timeline-point>2025</button>
 </div>`,
     props: [
       { name: 'data-orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', description: 'Timeline direction' },
