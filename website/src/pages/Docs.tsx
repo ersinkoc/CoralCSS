@@ -197,8 +197,8 @@ function Docs() {
 
       <div className="container py-8 lg:py-12">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-          {/* Sidebar Navigation */}
-          <aside className="lg:w-72 flex-shrink-0">
+          {/* Left Sidebar Navigation */}
+          <aside className="lg:w-64 flex-shrink-0">
             <nav className="lg:sticky lg:top-28">
               {/* Progress indicator */}
               <div className="hidden lg:block mb-6 p-4 rounded-xl bg-card border border-border">
@@ -282,7 +282,7 @@ function Docs() {
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 max-w-3xl">
+          <main className="flex-1 min-w-0">
             {/* Installation */}
             <section id="installation" className="mb-16 scroll-mt-28">
               <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-3">
@@ -902,6 +902,44 @@ coralPreset({ darkMode: 'class' }).forEach(p => coral.use(p))`}</CodeBlock>
               </Link>
             </div>
           </main>
+
+          {/* Right Sidebar - On This Page */}
+          <aside className="hidden xl:block w-56 flex-shrink-0">
+            <nav className="sticky top-28">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                On This Page
+              </p>
+              <div className="space-y-1 border-l border-border">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`
+                      block pl-4 py-1.5 text-sm transition-all duration-200 -ml-px border-l-2
+                      ${activeSection === section.id
+                        ? 'border-primary text-primary font-medium'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                      }
+                    `}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+
+              {/* Help Section */}
+              <div className="mt-8 p-4 rounded-xl bg-muted/30 border border-border">
+                <p className="text-xs font-medium text-foreground mb-2">Need help?</p>
+                <a
+                  href="https://github.com/coralcss/coralcss/discussions"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Ask on GitHub Discussions
+                </a>
+              </div>
+            </nav>
+          </aside>
         </div>
       </div>
     </div>
