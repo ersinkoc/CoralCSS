@@ -5,7 +5,7 @@ A modern, zero-dependency CSS framework with utility-first classes, headless com
 ## Features
 
 - **Zero Dependencies** - No runtime dependencies, just pure TypeScript
-- **500+ Utilities** - Comprehensive utility classes with excellent performance (600K+ ops/sec)
+- **500+ Utilities** - Comprehensive utility classes with excellent performance
 - **60+ Headless Components** - Accessible, unstyled UI components (Dialog, Dropdown, Tabs, Accordion, etc.)
 - **Modern CSS** - First-class support for anchor positioning, container queries, :has(), scroll-driven animations, view transitions
 - **60+ Animations** - Built-in keyframes and animation utilities
@@ -15,6 +15,7 @@ A modern, zero-dependency CSS framework with utility-first classes, headless com
 - **Dark Mode** - Built-in dark mode with class, media, or selector strategies
 - **TypeScript** - Full TypeScript support with strict types
 - **Framework Integrations** - React, Vue, Angular, Svelte, Solid, Preact
+- **7600+ Tests** - Comprehensive test coverage ensuring reliability and correctness
 
 ## Installation
 
@@ -106,47 +107,56 @@ npm run test -- benchmarks/performance.test.ts
 CoralCSS provides thousands of utility classes covering:
 
 ### Layout
+
 - `flex`, `grid`, `block`, `inline`, `hidden`
 - `items-center`, `justify-between`, `gap-4`
 - `container`, `mx-auto`, `px-4`
 
 ### Spacing
+
 - `p-{0-96}`, `m-{0-96}`, `gap-{0-96}`
 - `px-4`, `py-2`, `mt-4`, `mb-8`
 - Negative values: `-mt-4`, `-ml-2`
 
 ### Sizing
+
 - `w-{0-96}`, `h-{0-96}`, `size-{0-96}`
 - `w-full`, `w-screen`, `w-1/2`, `w-auto`
 - `min-w-0`, `max-w-lg`, `min-h-screen`
 
 ### Typography
+
 - `text-xs` to `text-9xl`
 - `font-sans`, `font-serif`, `font-mono`
 - `font-normal`, `font-medium`, `font-bold`
 - `tracking-tight`, `leading-relaxed`
 
 ### Colors
+
 - `bg-{color}-{shade}`, `text-{color}-{shade}`
 - `border-{color}-{shade}`, `ring-{color}-{shade}`
 - Opacity: `bg-coral-500/50`
 
 ### Borders
+
 - `rounded-{none|sm|md|lg|xl|full}`
 - `border-{0|2|4|8}`, `border-{color}`
 - `ring-{0|1|2|4|8}`, `ring-offset-{0-8}`
 
 ### Effects
+
 - `shadow-{sm|md|lg|xl|2xl}`
 - `opacity-{0-100}`
 - `blur-{sm|md|lg|xl}`
 
 ### Transforms
+
 - `scale-{0-150}`, `rotate-{0-180}`
 - `translate-x-{0-96}`, `-translate-y-4`
 - `origin-center`, `origin-top-left`
 
 ### Transitions
+
 - `transition`, `transition-colors`, `transition-all`
 - `duration-{75-1000}`, `delay-{75-1000}`
 - `ease-in`, `ease-out`, `ease-in-out`
