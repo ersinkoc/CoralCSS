@@ -1,35 +1,64 @@
 /**
  * CSS Cache
  *
- * Caches generated CSS for performance.
+ * Caches generated CSS for performance with LRU eviction and TTL support.
  * @module core/cache
  */
 
 import type { CacheStats } from '../types'
 
 /**
- * CSS Cache for storing generated CSS
+ * Cache configuration options
+ */
+export interface CacheOptions {
+  /** Maximum number of entries before eviction (default: 1000) */
+  maxSize?: number
+  /** Time-to-live in milliseconds before entries expire (default: Infinity) */
+  ttl?: number
+  /** Whether caching is enabled (default: true) */
+  enabled?: boolean
+}
+
+/**
+ * Internal cache entry with timestamp
+ */
+interface CacheEntry {
+  value: string
+  timestamp: number
+}
+
+/**
+ * CSS Cache for storing generated CSS with LRU eviction and TTL support
  *
  * @example
  * ```typescript
- * const cache = new CSSCache()
+ * const cache = new CSSCache({ maxSize: 500, ttl: 60000 })
  * cache.set('p-4', '.p-4 { padding: 1rem; }')
  * const css = cache.get('p-4') // '.p-4 { padding: 1rem; }'
  * ```
  */
 export class CSSCache {
-  private cache: Map<string, string>
+  private cache: Map<string, CacheEntry>
   private hits: number
   private misses: number
+  private maxSize: number
+  private ttl: number
+  private enabled: boolean
+  private accessOrder: string[] // Track access order for LRU
 
-  constructor() {
+  constructor(options: CacheOptions = {}) {
     this.cache = new Map()
     this.hits = 0
     this.misses = 0
+    this.maxSize = options.maxSize ?? 1000
+    this.ttl = options.ttl ?? Infinity
+    this.enabled = options.enabled ?? true
+    this.accessOrder = []
   }
 
   /**
    * Get cached CSS for a class name
+   * Returns undefined if not cached, expired, or caching is disabled
    *
    * @example
    * ```typescript
@@ -40,17 +69,34 @@ export class CSSCache {
    * ```
    */
   get(className: string): string | undefined {
-    const value = this.cache.get(className)
-    if (value !== undefined) {
-      this.hits++
-      return value
+    if (!this.enabled) {
+      return undefined
     }
-    this.misses++
-    return undefined
+
+    const entry = this.cache.get(className)
+    if (entry === undefined) {
+      this.misses++
+      return undefined
+    }
+
+    // Check TTL
+    if (this.ttl !== Infinity && Date.now() - entry.timestamp > this.ttl) {
+      this.cache.delete(className)
+      this.removeFromAccessOrder(className)
+      this.misses++
+      return undefined
+    }
+
+    // Update access order for LRU
+    this.updateAccessOrder(className)
+
+    this.hits++
+    return entry.value
   }
 
   /**
    * Store CSS for a class name
+   * Evicts oldest entry if at max capacity
    *
    * @example
    * ```typescript
@@ -58,11 +104,28 @@ export class CSSCache {
    * ```
    */
   set(className: string, css: string): void {
-    this.cache.set(className, css)
+    if (!this.enabled) {
+      return
+    }
+
+    // Evict oldest if at capacity
+    if (this.cache.size >= this.maxSize && !this.cache.has(className)) {
+      const oldestKey = this.accessOrder.shift()
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey)
+      }
+    }
+
+    this.cache.set(className, {
+      value: css,
+      timestamp: Date.now()
+    })
+
+    this.updateAccessOrder(className)
   }
 
   /**
-   * Check if a class name is cached
+   * Check if a class name is cached (and not expired)
    *
    * @example
    * ```typescript
@@ -72,14 +135,34 @@ export class CSSCache {
    * ```
    */
   has(className: string): boolean {
-    return this.cache.has(className)
+    if (!this.enabled) {
+      return false
+    }
+
+    const entry = this.cache.get(className)
+    if (entry === undefined) {
+      return false
+    }
+
+    // Check TTL
+    if (this.ttl !== Infinity && Date.now() - entry.timestamp > this.ttl) {
+      this.cache.delete(className)
+      this.removeFromAccessOrder(className)
+      return false
+    }
+
+    return true
   }
 
   /**
    * Delete a cached entry
    */
   delete(className: string): boolean {
-    return this.cache.delete(className)
+    const deleted = this.cache.delete(className)
+    if (deleted) {
+      this.removeFromAccessOrder(className)
+    }
+    return deleted
   }
 
   /**
@@ -92,6 +175,7 @@ export class CSSCache {
    */
   clear(): void {
     this.cache.clear()
+    this.accessOrder = []
     this.hits = 0
     this.misses = 0
   }
@@ -102,36 +186,82 @@ export class CSSCache {
    * @example
    * ```typescript
    * const stats = cache.stats()
-   * console.log(`Hit rate: ${stats.hits / (stats.hits + stats.misses) * 100}%`)
+   * console.log(`Hit rate: ${stats.hitRate}%`)
    * ```
    */
-  stats(): CacheStats {
+  stats(): CacheStats & { hitRate: number; maxSize: number; ttl: number } {
     return {
       hits: this.hits,
       misses: this.misses,
       size: this.cache.size,
+      hitRate: this.getHitRate(),
+      maxSize: this.maxSize,
+      ttl: this.ttl === Infinity ? -1 : this.ttl
     }
   }
 
   /**
-   * Get all cached entries
+   * Get all cached entries (excluding expired)
    */
   entries(): IterableIterator<[string, string]> {
-    return this.cache.entries()
+    if (!this.enabled) {
+      return (function* () {})()
+    }
+
+    const now = Date.now()
+    const validEntries: Array<[string, string]> = []
+
+    for (const [key, entry] of this.cache.entries()) {
+      // Skip expired entries
+      if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
+        continue
+      }
+      validEntries.push([key, entry.value])
+    }
+
+    return validEntries[Symbol.iterator]() as IterableIterator<[string, string]>
   }
 
   /**
    * Get all cached class names
    */
   keys(): IterableIterator<string> {
-    return this.cache.keys()
+    if (!this.enabled) {
+      return (function* () {})()
+    }
+
+    const now = Date.now()
+    const validKeys: string[] = []
+
+    for (const [key, entry] of this.cache.entries()) {
+      if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
+        continue
+      }
+      validKeys.push(key)
+    }
+
+    return validKeys[Symbol.iterator]() as IterableIterator<string>
   }
 
   /**
    * Get all cached CSS values
    */
   values(): IterableIterator<string> {
-    return this.cache.values()
+    if (!this.enabled) {
+      return (function* () {})()
+    }
+
+    const now = Date.now()
+    const validValues: string[] = []
+
+    for (const [key, entry] of this.cache.entries()) {
+      if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
+        continue
+      }
+      validValues.push(entry.value)
+    }
+
+    return validValues[Symbol.iterator]() as IterableIterator<string>
   }
 
   /**
@@ -175,6 +305,46 @@ export class CSSCache {
     }
     return (this.hits / total) * 100
   }
+
+  /**
+   * Clean up expired entries
+   */
+  cleanup(): number {
+    if (this.ttl === Infinity) {
+      return 0
+    }
+
+    const now = Date.now()
+    let removed = 0
+
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp > this.ttl) {
+        this.cache.delete(key)
+        this.removeFromAccessOrder(key)
+        removed++
+      }
+    }
+
+    return removed
+  }
+
+  /**
+   * Update access order for LRU (move to end)
+   */
+  private updateAccessOrder(className: string): void {
+    this.removeFromAccessOrder(className)
+    this.accessOrder.push(className)
+  }
+
+  /**
+   * Remove from access order
+   */
+  private removeFromAccessOrder(className: string): void {
+    const index = this.accessOrder.indexOf(className)
+    if (index > -1) {
+      this.accessOrder.splice(index, 1)
+    }
+  }
 }
 
 /**
@@ -182,9 +352,9 @@ export class CSSCache {
  *
  * @example
  * ```typescript
- * const cache = createCache()
+ * const cache = createCache({ maxSize: 500, ttl: 60000 })
  * ```
  */
-export function createCache(): CSSCache {
-  return new CSSCache()
+export function createCache(options?: CacheOptions): CSSCache {
+  return new CSSCache(options)
 }

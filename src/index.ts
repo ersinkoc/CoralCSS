@@ -181,6 +181,18 @@ export {
   windPreset,
   miniPreset,
   fullPreset,
+  materialPreset,
+  materialPresetConfig,
+  cupertinoPreset,
+  cupertinoPresetConfig,
+  nordPreset,
+  nordPresetConfig,
+  draculaPreset,
+  draculaPresetConfig,
+  githubPreset,
+  githubPresetConfig,
+  enhancedLightPreset,
+  enhancedLightPresetConfig,
 } from './presets'
 
 // Component exports

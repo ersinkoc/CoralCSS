@@ -224,6 +224,22 @@ export type { TourConfig, TourState, TourStep, TourStepAction } from './tour'
 export { ImageCrop, createImageCrop } from './image-crop'
 export type { ImageCropConfig, ImageCropState, CropArea, CropResult } from './image-crop'
 
+// Batch 7 components
+export { TimePicker, createTimePicker } from './time-picker'
+export type { TimePickerConfig, TimePickerState, TimeValue, TimeFormat, TimePeriod } from './time-picker'
+
+export { SegmentedControl, createSegmentedControl } from './segmented-control'
+export type { SegmentedControlConfig, SegmentedControlState, SegmentOption } from './segmented-control'
+
+export { Transfer, createTransfer } from './transfer'
+export type { TransferConfig, TransferComponentState, TransferItem, TransferListState } from './transfer'
+
+export { QRCode, createQRCode } from './qrcode'
+export type { QRCodeConfig, QRCodeState, QRDataType, ErrorCorrectionLevel } from './qrcode'
+
+export { Countdown, createCountdown } from './countdown'
+export type { CountdownConfig, CountdownState, CountdownTarget, TimeUnits } from './countdown'
+
 // Layout Components
 export { Navbar, createNavbar } from './navbar'
 export type { NavbarConfig, NavbarState } from './navbar'
@@ -309,6 +325,12 @@ import { Mention } from './mention'
 import { DateRangePicker } from './date-range-picker'
 import { Tour } from './tour'
 import { ImageCrop } from './image-crop'
+// Batch 7
+import { TimePicker } from './time-picker'
+import { SegmentedControl } from './segmented-control'
+import { Transfer } from './transfer'
+import { QRCode } from './qrcode'
+import { Countdown } from './countdown'
 
 import { createButton, createButtonGroup } from './button'
 import { createDialog } from './dialog'
@@ -384,6 +406,12 @@ import { createMention } from './mention'
 import { createDateRangePicker } from './date-range-picker'
 import { createTour } from './tour'
 import { createImageCrop } from './image-crop'
+// Batch 7
+import { createTimePicker } from './time-picker'
+import { createSegmentedControl } from './segmented-control'
+import { createTransfer } from './transfer'
+import { createQRCode } from './qrcode'
+import { createCountdown } from './countdown'
 // Layout
 import { Navbar } from './navbar'
 import { Sidebar } from './sidebar'
@@ -492,6 +520,13 @@ export function initComponents(): void {
   autoInit('[data-coral-tour]', Tour as never)
   autoInit('[data-coral-image-crop]', ImageCrop as never)
 
+  // Batch 7 components
+  autoInit('[data-coral-time-picker]', TimePicker as never)
+  autoInit('[data-coral-segmented-control]', SegmentedControl as never)
+  autoInit('[data-coral-transfer]', Transfer as never)
+  autoInit('[data-coral-qrcode]', QRCode as never)
+  autoInit('[data-coral-countdown]', Countdown as never)
+
   // Layout components
   autoInit('[data-coral-navbar]', Navbar as never)
   autoInit('[data-coral-sidebar]', Sidebar as never)
@@ -581,6 +616,12 @@ export const components = {
   DateRangePicker,
   Tour,
   ImageCrop,
+  // Batch 7
+  TimePicker,
+  SegmentedControl,
+  Transfer,
+  QRCode,
+  Countdown,
   // Layout
   Navbar,
   Sidebar,
@@ -671,6 +712,12 @@ export const factories = {
   createDateRangePicker,
   createTour,
   createImageCrop,
+  // Batch 7
+  createTimePicker,
+  createSegmentedControl,
+  createTransfer,
+  createQRCode,
+  createCountdown,
   // Layout
   createNavbar,
   createSidebar,

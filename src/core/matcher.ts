@@ -9,10 +9,11 @@ import type { Rule, MatchResult } from '../types'
 import { anchorPattern } from '../utils/regex'
 
 /**
- * Compiled rule with pre-compiled RegExp
+ * Compiled rule with pre-compiled RegExp and extracted prefix
  */
 interface CompiledRule extends Rule {
   compiledPattern: RegExp
+  prefix?: string
 }
 
 /**
@@ -35,11 +36,13 @@ export class Matcher {
   private rules: Map<string, CompiledRule>
   private sortedRules: CompiledRule[] | null
   private matchCache: Map<string, MatchResult | null>
+  private prefixIndex: Map<string, CompiledRule[]> // Prefix -> rules with that prefix
 
   constructor() {
     this.rules = new Map()
     this.sortedRules = null
     this.matchCache = new Map()
+    this.prefixIndex = new Map()
   }
 
   /**
@@ -60,9 +63,13 @@ export class Matcher {
     const compiledPattern =
       typeof rule.pattern === 'string' ? anchorPattern(rule.pattern) : anchorPattern(rule.pattern)
 
+    // Extract prefix from pattern for faster matching
+    const prefix = this.extractPrefix(rule.pattern)
+
     const compiledRule: CompiledRule = {
       ...rule,
       compiledPattern,
+      prefix,
       priority: rule.priority ?? 0,
       layer: rule.layer ?? 'utilities',
     }
@@ -70,6 +77,28 @@ export class Matcher {
     const ruleName = rule.name ?? this.generateRuleName(rule.pattern)
     this.rules.set(ruleName, compiledRule)
     this.invalidateCache()
+  }
+
+  /**
+   * Extract prefix from pattern for indexing
+   * Examples: "^p-(\\d+)$" -> "p", "^bg-" -> "bg", "^col-span-" -> "col"
+   */
+  private extractPrefix(pattern: RegExp | string): string | undefined {
+    let source: string
+    if (typeof pattern === 'string') {
+      source = pattern
+    } else {
+      source = pattern.source
+    }
+
+    // Match pattern starting with literal characters (stopping at first hyphen or special char)
+    // This gives us the "first word" of the pattern for indexing
+    const prefixMatch = source.match(/^\^?([a-zA-Z][a-zA-Z0-9]*)(?:-|[^a-zA-Z0-9])/)
+    if (prefixMatch) {
+      return prefixMatch[1]
+    }
+
+    return undefined
   }
 
   /**
@@ -142,11 +171,20 @@ export class Matcher {
       return cached
     }
 
-    // Get sorted rules (by priority, highest first)
-    const rules = this.getSortedRules()
+    // Extract prefix from utility to narrow down candidate rules
+    const prefix = this.extractUtilityPrefix(utility)
+    let candidateRules: CompiledRule[]
 
-    // Try each rule
-    for (const rule of rules) {
+    if (prefix && this.prefixIndex.has(prefix)) {
+      // Use indexed rules for this prefix
+      candidateRules = this.prefixIndex.get(prefix)!
+    } else {
+      // Fallback to all sorted rules
+      candidateRules = this.getSortedRules()
+    }
+
+    // Try each candidate rule
+    for (const rule of candidateRules) {
       const match = utility.match(rule.compiledPattern)
       if (match) {
         const result: MatchResult = { rule, match }
@@ -158,6 +196,16 @@ export class Matcher {
     // No match found
     this.matchCache.set(utility, null)
     return null
+  }
+
+  /**
+   * Extract prefix from utility name for lookup
+   * Examples: "p-4" -> "p", "bg-red-500" -> "bg"
+   */
+  private extractUtilityPrefix(utility: string): string | undefined {
+    // Match prefix before first special character
+    const prefixMatch = utility.match(/^([a-zA-Z][a-zA-Z0-9]*)[^a-zA-Z0-9]/)
+    return prefixMatch ? prefixMatch[1] : undefined
   }
 
   /**
@@ -176,7 +224,9 @@ export class Matcher {
    */
   clear(): void {
     this.rules.clear()
-    this.invalidateCache()
+    this.sortedRules = null
+    this.matchCache.clear()
+    this.prefixIndex.clear()
   }
 
   /**
@@ -188,14 +238,33 @@ export class Matcher {
 
   /**
    * Get sorted rules by priority (highest first)
+   * Also rebuilds prefix index if needed
    */
   private getSortedRules(): CompiledRule[] {
     if (this.sortedRules === null) {
       this.sortedRules = Array.from(this.rules.values()).sort(
         (a, b) => (b.priority ?? 0) - (a.priority ?? 0)
       )
+      // Rebuild prefix index when sorting
+      this.buildPrefixIndex(this.sortedRules)
     }
     return this.sortedRules
+  }
+
+  /**
+   * Build prefix index for faster rule matching
+   */
+  private buildPrefixIndex(rules: CompiledRule[]): void {
+    this.prefixIndex.clear()
+
+    for (const rule of rules) {
+      if (rule.prefix) {
+        if (!this.prefixIndex.has(rule.prefix)) {
+          this.prefixIndex.set(rule.prefix, [])
+        }
+        this.prefixIndex.get(rule.prefix)!.push(rule)
+      }
+    }
   }
 
   /**
@@ -204,6 +273,7 @@ export class Matcher {
   private invalidateCache(): void {
     this.sortedRules = null
     this.matchCache.clear()
+    // Note: prefixIndex will be rebuilt when getSortedRules is called
   }
 }
 

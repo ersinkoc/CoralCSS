@@ -221,6 +221,18 @@ const filesComponents = [
   <div class="w-12 h-12 bg-purple-500/20 text-purple-600 rounded-lg flex items-center justify-center">
     <span class="text-xs font-bold">ZIP</span>
   </div>
+  <div class="w-12 h-12 bg-orange-500/20 text-orange-600 rounded-lg flex items-center justify-center">
+    <span class="text-xs font-bold">PPT</span>
+  </div>
+  <div class="w-12 h-12 bg-pink-500/20 text-pink-600 rounded-lg flex items-center justify-center">
+    <span class="text-xs font-bold">JPG</span>
+  </div>
+  <div class="w-12 h-12 bg-indigo-500/20 text-indigo-600 rounded-lg flex items-center justify-center">
+    <span class="text-xs font-bold">MP4</span>
+  </div>
+  <div class="w-12 h-12 bg-cyan-500/20 text-cyan-600 rounded-lg flex items-center justify-center">
+    <span class="text-xs font-bold">MP3</span>
+  </div>
 </div>`,
     props: [
       { name: 'data-extension', type: 'string', default: '""', description: 'File extension' },
@@ -659,11 +671,11 @@ function FileTypeIconPreview() {
     { ext: 'PDF', color: 'bg-red-500/20 text-red-600' },
     { ext: 'DOC', color: 'bg-blue-500/20 text-blue-600' },
     { ext: 'XLS', color: 'bg-green-500/20 text-green-600' },
-    { ext: 'PPT', color: 'bg-orange-100 text-orange-600' },
+    { ext: 'PPT', color: 'bg-orange-500/20 text-orange-600' },
     { ext: 'ZIP', color: 'bg-purple-500/20 text-purple-600' },
-    { ext: 'JPG', color: 'bg-pink-100 text-pink-600' },
-    { ext: 'MP4', color: 'bg-indigo-100 text-indigo-600' },
-    { ext: 'MP3', color: 'bg-cyan-100 text-cyan-600' },
+    { ext: 'JPG', color: 'bg-pink-500/20 text-pink-600' },
+    { ext: 'MP4', color: 'bg-indigo-500/20 text-indigo-600' },
+    { ext: 'MP3', color: 'bg-cyan-500/20 text-cyan-600' },
   ]
   return (
     <div className="flex flex-wrap gap-4">

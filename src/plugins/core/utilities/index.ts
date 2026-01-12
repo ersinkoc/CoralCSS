@@ -26,6 +26,8 @@ export { printPlugin } from './print'
 export { columnsPlugin } from './columns'
 export { performancePlugin } from './performance'
 export { masksPlugin } from './masks'
+export { gradientsPlugin } from './gradients'
+export { patternsPlugin } from './patterns'
 
 import type { Plugin } from '../../../types'
 
@@ -50,6 +52,8 @@ import { printPlugin } from './print'
 import { columnsPlugin } from './columns'
 import { performancePlugin } from './performance'
 import { masksPlugin } from './masks'
+import { gradientsPlugin } from './gradients'
+import { patternsPlugin } from './patterns'
 
 /**
  * Get all core utility plugins
@@ -77,6 +81,8 @@ export function coreUtilitiesPlugins(): Plugin[] {
     columnsPlugin(),
     performancePlugin(),
     masksPlugin(),
+    gradientsPlugin(),
+    patternsPlugin(),
   ]
 }
 

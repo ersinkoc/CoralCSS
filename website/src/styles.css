@@ -9,13 +9,13 @@
 /* Import Component Styles */
 @import '../../src/theme/components.css';
 
-/* Design Tokens - Light Mode */
+/* Design Tokens - Light Mode - Enhanced */
 :root {
-  /* Background colors */
-  --background: 0 0% 100%;
+  /* Background colors - Subtle off-white for better eye comfort */
+  --background: 220 15% 98%;
   --foreground: 222.2 84% 4.9%;
 
-  /* Card */
+  /* Card - Pure white with distinction from background */
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
 
@@ -27,15 +27,15 @@
   /* Theme-specific --primary and --primary-foreground are set in themes/index.css */
 
   /* Secondary */
-  --secondary: 210 40% 96.1%;
+  --secondary: 220 20% 95%;
   --secondary-foreground: 222.2 47.4% 11.2%;
 
-  /* Muted */
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  /* Muted - Better contrast for subtle backgrounds */
+  --muted: 220 15% 94%;
+  --muted-foreground: 215 16% 45%;
 
-  /* Accent */
-  --accent: 210 40% 96.1%;
+  /* Accent - More visible hover states */
+  --accent: 220 20% 94%;
   --accent-foreground: 222.2 47.4% 11.2%;
 
   /* Destructive */
@@ -54,9 +54,9 @@
   --info: 199 89% 48%;
   --info-foreground: 0 0% 100%;
 
-  /* Border & Input */
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  /* Border & Input - Improved contrast for better visibility */
+  --border: 220 15% 88%;
+  --input: 220 15% 88%;
   /* --ring is inherited from themes/index.css */
 
   /* Radius */
@@ -82,15 +82,28 @@
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
-  /* Sidebar - references theme colors */
-  --sidebar-background: 0 0% 98%;
+  /* Sidebar - Enhanced with better contrast */
+  --sidebar-background: 220 10% 96%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent: 220 15% 92%;
   --sidebar-accent-foreground: 240 5.9% 10%;
-  --sidebar-border: 220 13% 91%;
+  --sidebar-border: 220 15% 88%;
   --sidebar-ring: var(--ring);
+
+  /* Premium shadows for light mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* Light mode gradients */
+  --gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
 }
 
 /* Dark Mode - Enhanced Contrast */
@@ -271,7 +284,7 @@ code {
   opacity: 0.5;
 }
 
-/* Primary Button - Premium with glow */
+/* Primary Button */
 .btn-primary {
   background: linear-gradient(
     135deg,
@@ -279,27 +292,19 @@ code {
     var(--gradient-to, hsl(var(--primary))) 100%
   );
   color: hsl(var(--primary-foreground));
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1),
-    0 0 0 0 hsl(var(--primary) / 0);
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  transition: all 150ms ease;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1),
-    0 0 20px 0 hsl(var(--primary) / 0.3);
+  filter: brightness(1.05);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15);
   transform: translateY(-1px);
 }
 
 .btn-primary:active {
   transform: translateY(0);
-  box-shadow:
-    0 1px 2px 0 rgb(0 0 0 / 0.1),
-    0 0 0 0 hsl(var(--primary) / 0);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
 }
 
 /* Pulse glow animation for CTA buttons */
@@ -309,16 +314,10 @@ code {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1),
-      0 0 20px 0 hsl(var(--primary) / 0.2);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 0 15px 0 hsl(var(--primary) / 0.2);
   }
   50% {
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1),
-      0 0 30px 5px hsl(var(--primary) / 0.35);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 0 25px 5px hsl(var(--primary) / 0.3);
   }
 }
 
@@ -329,22 +328,21 @@ code {
 }
 
 .btn-secondary:hover {
-  background-color: hsl(var(--secondary) / 0.8);
+  background-color: hsl(var(--secondary) / 0.85);
 }
 
-/* Outline Button - Premium styling */
+/* Outline Button */
 .btn-outline {
   background-color: transparent;
   border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 150ms ease;
 }
 
 .btn-outline:hover {
   background-color: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
   border-color: hsl(var(--primary) / 0.3);
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
 /* Ghost Button */
@@ -408,18 +406,12 @@ code {
   color: hsl(var(--card-foreground));
   border-radius: calc(var(--radius) + 2px);
   border: 1px solid hsl(var(--border));
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1),
-    0 0 0 1px hsl(var(--border) / 0.5);
-  transition: all 200ms ease;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+  transition: all 150ms ease;
 }
 
 .card:hover {
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1),
-    0 0 0 1px hsl(var(--border));
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08);
 }
 
 .card-header {
@@ -488,7 +480,7 @@ code {
 }
 
 /* ========================================
-   Input - CoralCSS Component
+   Input - CoralCSS Component - Enhanced Light Mode
    ======================================== */
 
 .input {
@@ -512,7 +504,7 @@ code {
 .input:focus {
   outline: none;
   border-color: hsl(var(--ring));
-  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1);
 }
 
 .input:disabled {
@@ -543,7 +535,7 @@ code {
 .textarea:focus {
   outline: none;
   border-color: hsl(var(--ring));
-  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1);
 }
 
 /* Label */

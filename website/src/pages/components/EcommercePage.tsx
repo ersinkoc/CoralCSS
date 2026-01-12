@@ -276,13 +276,13 @@ const ecommerceComponents = [
 </div>
 
 <!-- Applied state -->
-<div class="flex items-center justify-between p-3 bg-green-500/10 border border-green-200 rounded-lg">
+<div class="flex items-center justify-between p-3 bg-success/10 border border-success/30 rounded-lg">
   <div class="flex items-center gap-2">
-    <svg class="w-5 h-5 text-green-600"><!-- check icon --></svg>
-    <span class="font-medium text-green-700">SAVE10</span>
-    <span class="text-green-600">- $14.70</span>
+    <svg class="w-5 h-5 text-success"><!-- check icon --></svg>
+    <span class="font-medium text-success">SAVE10</span>
+    <span class="text-success">- $14.70</span>
   </div>
-  <button class="text-green-600 hover:text-green-700">
+  <button class="text-success hover:text-success/80">
     <svg class="w-5 h-5"><!-- x icon --></svg>
   </button>
 </div>`,
@@ -322,16 +322,16 @@ const ecommerceComponents = [
 <span class="bg-coral-500/100 text-white text-xs font-semibold px-2 py-1 rounded-full">-20% OFF</span>
 
 <!-- New badge -->
-<span class="bg-green-500/100 text-white text-xs font-semibold px-2 py-1 rounded-full">NEW</span>
+<span class="bg-success text-white text-xs font-semibold px-2 py-1 rounded-full">NEW</span>
 
 <!-- Out of stock badge -->
 <span class="bg-muted/500 text-white text-xs font-semibold px-2 py-1 rounded-full">OUT OF STOCK</span>
 
 <!-- Limited badge -->
-<span class="bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">LIMITED</span>
+<span class="bg-warning text-white text-xs font-semibold px-2 py-1 rounded-full">LIMITED</span>
 
 <!-- Bestseller badge -->
-<span class="bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded-full">BESTSELLER</span>`,
+<span class="bg-info text-white text-xs font-semibold px-2 py-1 rounded-full">BESTSELLER</span>`,
     props: [
       { name: 'data-type', type: '"sale" | "new" | "soldout" | "limited" | "bestseller"', default: '"sale"', description: 'Badge type' },
     ],
@@ -367,7 +367,7 @@ const ecommerceComponents = [
     <button class="w-8 h-8 bg-gray-900 rounded-full ring-2 ring-offset-2 ring-coral-500" aria-label="Black"></button>
     <button class="w-8 h-8 bg-blue-900 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Navy"></button>
     <button class="w-8 h-8 bg-card border-2 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="White"></button>
-    <button class="w-8 h-8 bg-red-600 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Red"></button>
+    <button class="w-8 h-8 bg-destructive rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Red"></button>
   </div>
 </div>`,
     props: [
@@ -382,17 +382,17 @@ const ecommerceComponents = [
     description: 'Star rating display for product reviews.',
     usage: `<!-- Read-only stars -->
 <div class="flex items-center gap-1">
-  <svg class="w-5 h-5 text-amber-400 fill-current"><!-- star --></svg>
-  <svg class="w-5 h-5 text-amber-400 fill-current"><!-- star --></svg>
-  <svg class="w-5 h-5 text-amber-400 fill-current"><!-- star --></svg>
-  <svg class="w-5 h-5 text-amber-400 fill-current"><!-- star --></svg>
+  <svg class="w-5 h-5 text-warning fill-current"><!-- star --></svg>
+  <svg class="w-5 h-5 text-warning fill-current"><!-- star --></svg>
+  <svg class="w-5 h-5 text-warning fill-current"><!-- star --></svg>
+  <svg class="w-5 h-5 text-warning fill-current"><!-- star --></svg>
   <svg class="w-5 h-5 text-muted-foreground/50"><!-- star outline --></svg>
   <span class="ml-2 text-sm text-muted-foreground">(127 reviews)</span>
 </div>
 
 <!-- Interactive rating -->
 <div class="flex items-center gap-1" role="radiogroup">
-  <button class="text-amber-400 hover:scale-110 transition-transform">
+  <button class="text-warning hover:scale-110 transition-transform">
     <svg class="w-6 h-6 fill-current"><!-- star --></svg>
   </button>
 </div>`,
@@ -408,14 +408,14 @@ const ecommerceComponents = [
     name: 'StockIndicator',
     description: 'Shows product availability and stock level.',
     usage: `<!-- In stock -->
-<div class="flex items-center gap-2 text-green-600">
-  <span class="w-2 h-2 bg-green-500/100 rounded-full"></span>
+<div class="flex items-center gap-2 text-success">
+  <span class="w-2 h-2 bg-success rounded-full"></span>
   <span class="text-sm font-medium">In Stock</span>
 </div>
 
 <!-- Low stock -->
-<div class="flex items-center gap-2 text-amber-600">
-  <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+<div class="flex items-center gap-2 text-warning">
+  <span class="w-2 h-2 bg-warning rounded-full animate-pulse"></span>
   <span class="text-sm font-medium">Only 3 left</span>
 </div>
 
@@ -442,7 +442,7 @@ const ecommerceComponents = [
   <div class="space-y-2 text-sm">
     <div class="flex justify-between">
       <span class="text-muted-foreground">Standard (5-7 days)</span>
-      <span class="font-medium text-green-600">FREE</span>
+      <span class="font-medium text-success">FREE</span>
     </div>
     <div class="flex justify-between">
       <span class="text-muted-foreground">Express (2-3 days)</span>
@@ -493,9 +493,9 @@ const ecommerceComponents = [
   <div>
     <h3 class="font-semibold mb-3">Color</h3>
     <div class="flex flex-wrap gap-2">
-      <button class="w-6 h-6 bg-red-500 rounded-full ring-2 ring-offset-2 ring-coral-500"></button>
+      <button class="w-6 h-6 bg-destructive rounded-full ring-2 ring-offset-2 ring-coral-500"></button>
       <button class="w-6 h-6 bg-blue-500 rounded-full"></button>
-      <button class="w-6 h-6 bg-green-500/100 rounded-full"></button>
+      <button class="w-6 h-6 bg-success rounded-full"></button>
     </div>
   </div>
 </div>`,
@@ -786,15 +786,15 @@ function CouponInputPreview() {
           Apply
         </button>
       </div>
-      <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+      <div className="flex items-center justify-between p-3 bg-success/10 border border-success/30 rounded-lg">
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="font-medium text-green-600">SAVE10</span>
-          <span className="text-green-600">- $14.70</span>
+          <span className="font-medium text-success">SAVE10</span>
+          <span className="text-success">- $14.70</span>
         </div>
-        <button className="text-green-600 hover:text-green-500">
+        <button className="text-success hover:text-success/80">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -825,10 +825,10 @@ function ProductBadgePreview() {
   return (
     <div className="flex flex-wrap gap-3">
       <span className="bg-coral-500/100 text-white text-xs font-semibold px-2 py-1 rounded-full">-20% OFF</span>
-      <span className="bg-green-500/100 text-white text-xs font-semibold px-2 py-1 rounded-full">NEW</span>
+      <span className="bg-success text-white text-xs font-semibold px-2 py-1 rounded-full">NEW</span>
       <span className="bg-muted/500 text-white text-xs font-semibold px-2 py-1 rounded-full">OUT OF STOCK</span>
-      <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">LIMITED</span>
-      <span className="bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded-full">BESTSELLER</span>
+      <span className="bg-warning text-white text-xs font-semibold px-2 py-1 rounded-full">LIMITED</span>
+      <span className="bg-info text-white text-xs font-semibold px-2 py-1 rounded-full">BESTSELLER</span>
     </div>
   )
 }
@@ -856,7 +856,7 @@ function ColorSwatchPreview() {
         <button className="w-8 h-8 bg-gray-900 rounded-full ring-2 ring-offset-2 ring-coral-500" aria-label="Black"></button>
         <button className="w-8 h-8 bg-blue-900 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Navy"></button>
         <button className="w-8 h-8 bg-card border-2 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="White"></button>
-        <button className="w-8 h-8 bg-red-600 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Red"></button>
+        <button className="w-8 h-8 bg-destructive rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Red"></button>
         <button className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border" aria-label="Gradient"></button>
       </div>
     </div>
@@ -868,7 +868,7 @@ function ReviewStarsPreview() {
     <div className="space-y-4">
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4].map((i) => (
-          <svg key={i} className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+          <svg key={i} className="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
           </svg>
         ))}
@@ -879,7 +879,7 @@ function ReviewStarsPreview() {
       </div>
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((i) => (
-          <svg key={i} className={`w-5 h-5 ${i <= 3 ? 'text-amber-400' : 'text-muted-foreground/50'}`} fill="currentColor" viewBox="0 0 24 24">
+          <svg key={i} className={`w-5 h-5 ${i <= 3 ? 'text-warning' : 'text-muted-foreground/50'}`} fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
           </svg>
         ))}
@@ -892,12 +892,12 @@ function ReviewStarsPreview() {
 function StockIndicatorPreview() {
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2 text-green-600">
-        <span className="w-2 h-2 bg-green-500/100 rounded-full"></span>
+      <div className="flex items-center gap-2 text-success">
+        <span className="w-2 h-2 bg-success rounded-full"></span>
         <span className="text-sm font-medium">In Stock</span>
       </div>
-      <div className="flex items-center gap-2 text-amber-600">
-        <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+      <div className="flex items-center gap-2 text-warning">
+        <span className="w-2 h-2 bg-warning rounded-full animate-pulse"></span>
         <span className="text-sm font-medium">Only 3 left</span>
       </div>
       <div className="flex items-center gap-2 text-muted-foreground">
@@ -920,7 +920,7 @@ function ShippingEstimatePreview() {
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span className="text-muted-foreground">Standard (5-7 days)</span>
-          <span className="font-medium text-green-600">FREE</span>
+          <span className="font-medium text-success">FREE</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Express (2-3 days)</span>
@@ -967,9 +967,9 @@ function ProductFiltersPreview() {
       <div>
         <h3 className="font-semibold mb-3">Color</h3>
         <div className="flex flex-wrap gap-2">
-          <button className="w-6 h-6 bg-red-500 rounded-full ring-2 ring-offset-2 ring-coral-500"></button>
+          <button className="w-6 h-6 bg-destructive rounded-full ring-2 ring-offset-2 ring-coral-500"></button>
           <button className="w-6 h-6 bg-blue-500 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border"></button>
-          <button className="w-6 h-6 bg-green-500/100 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border"></button>
+          <button className="w-6 h-6 bg-success rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border"></button>
           <button className="w-6 h-6 bg-gray-900 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-border"></button>
         </div>
       </div>

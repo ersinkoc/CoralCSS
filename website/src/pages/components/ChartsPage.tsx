@@ -1,5 +1,30 @@
 import { ComponentPageLayout } from './ComponentPageLayout'
 
+// Chart color palette using CoralCSS CSS variables
+const chartColors = {
+  primary: 'hsl(var(--primary))',
+  secondary: 'hsl(var(--chart-2))',
+  success: 'hsl(var(--success))',
+  warning: 'hsl(var(--warning))',
+  destructive: 'hsl(var(--destructive))',
+  info: 'hsl(var(--info))',
+  chart3: 'hsl(var(--chart-3))',
+  chart4: 'hsl(var(--chart-4))',
+  chart5: 'hsl(var(--chart-5))',
+}
+
+// Multi-color arrays for charts
+const multiChartColors = [
+  chartColors.primary,
+  chartColors.secondary,
+  chartColors.success,
+  chartColors.warning,
+  chartColors.destructive,
+  chartColors.info,
+  chartColors.chart4,
+  chartColors.chart5,
+]
+
 // Sample data for charts
 const barData = [
   { label: 'Jan', value: 65 },
@@ -13,9 +38,9 @@ const barData = [
 const lineData = [30, 45, 35, 60, 55, 75, 65, 80, 70, 90]
 
 const pieData = [
-  { label: 'Desktop', value: 45, color: 'bg-primary' },
-  { label: 'Mobile', value: 35, color: 'bg-blue-500' },
-  { label: 'Tablet', value: 20, color: 'bg-emerald-500' },
+  { label: 'Desktop', value: 45, colorVar: chartColors.primary },
+  { label: 'Mobile', value: 35, colorVar: chartColors.secondary },
+  { label: 'Tablet', value: 20, colorVar: chartColors.success },
 ]
 
 const heatmapData = [
@@ -78,7 +103,6 @@ function PieChartPreview() {
       <svg viewBox="0 0 100 100" className="w-48 h-48">
         {(() => {
           let cumulativePercent = 0
-          const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981']
           return pieData.map((slice, index) => {
             const percent = slice.value
             const startX = Math.cos(2 * Math.PI * cumulativePercent / 100) * 50 + 50
@@ -91,7 +115,7 @@ function PieChartPreview() {
               <path
                 key={index}
                 d={`M 50 50 L ${startX} ${startY} A 50 50 0 ${largeArcFlag} 1 ${endX} ${endY} Z`}
-                fill={colors[index]}
+                fill={slice.colorVar}
                 className="hover:opacity-80 transition-opacity cursor-pointer"
               />
             )
@@ -101,7 +125,7 @@ function PieChartPreview() {
       <div className="space-y-2">
         {pieData.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${item.color}`} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.colorVar }} />
             <span className="text-sm text-muted-foreground">{item.label}</span>
             <span className="text-sm font-medium text-foreground">{item.value}%</span>
           </div>
@@ -118,7 +142,6 @@ function DonutChartPreview() {
         <svg viewBox="0 0 100 100" className="w-48 h-48">
           {(() => {
             let cumulativePercent = 0
-            const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981']
             return pieData.map((slice, index) => {
               const percent = slice.value
               const startAngle = (cumulativePercent / 100) * 360
@@ -134,7 +157,7 @@ function DonutChartPreview() {
                   key={index}
                   d={`M ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2}`}
                   fill="none"
-                  stroke={colors[index]}
+                  stroke={slice.colorVar}
                   strokeWidth="15"
                   className="hover:opacity-80 transition-opacity cursor-pointer"
                 />
@@ -152,7 +175,7 @@ function DonutChartPreview() {
       <div className="space-y-2">
         {pieData.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${item.color}`} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.colorVar }} />
             <span className="text-sm text-muted-foreground">{item.label}</span>
             <span className="text-sm font-medium text-foreground">{item.value}%</span>
           </div>
@@ -198,7 +221,7 @@ function SparklinePreview() {
         <svg viewBox="0 0 100 30" className="w-24 h-6">
           <polyline
             fill="none"
-            stroke="#10b981"
+            stroke={chartColors.success}
             strokeWidth="2"
             points="0,20 15,15 30,18 45,10 60,12 75,5 100,8"
           />
@@ -389,10 +412,10 @@ function ScatterPlotPreview() {
 
 function TimelineChartPreview() {
   const timelineData = [
-    { date: '2024-01', label: 'Planning', value: 20, color: 'hsl(var(--primary))' },
-    { date: '2024-02', label: 'Development', value: 45, color: '#3b82f6' },
-    { date: '2024-03', label: 'Testing', value: 30, color: '#10b981' },
-    { date: '2024-04', label: 'Launch', value: 60, color: '#f59e0b' },
+    { date: '2024-01', label: 'Planning', value: 20, color: chartColors.primary },
+    { date: '2024-02', label: 'Development', value: 45, color: chartColors.secondary },
+    { date: '2024-03', label: 'Testing', value: 30, color: chartColors.success },
+    { date: '2024-04', label: 'Launch', value: 60, color: chartColors.warning },
   ]
 
   return (
@@ -461,7 +484,7 @@ function WaterfallChartPreview() {
                 y={barY}
                 width="60"
                 height={barHeight}
-                fill={item.isTotal ? 'hsl(var(--primary))' : item.value > 0 ? '#10b981' : '#ef4444'}
+                fill={item.isTotal ? chartColors.primary : item.value > 0 ? chartColors.success : chartColors.destructive}
                 className="transition-all hover:opacity-80"
                 rx="4"
               />
@@ -502,10 +525,10 @@ function WaterfallChartPreview() {
 
 function TreemapChartPreview() {
   const treemapData = [
-    { label: 'Desktop', value: 45, color: 'hsl(var(--primary))' },
-    { label: 'Mobile', value: 30, color: '#3b82f6' },
-    { label: 'Tablet', value: 15, color: '#10b981' },
-    { label: 'Other', value: 10, color: '#f59e0b' },
+    { label: 'Desktop', value: 45, color: chartColors.primary },
+    { label: 'Mobile', value: 30, color: chartColors.secondary },
+    { label: 'Tablet', value: 15, color: chartColors.success },
+    { label: 'Other', value: 10, color: chartColors.warning },
   ]
 
   return (
@@ -539,11 +562,11 @@ function TreemapChartPreview() {
 
 function FunnelChartPreview() {
   const funnelData = [
-    { label: 'Visitors', value: 1000, color: 'hsl(var(--primary))' },
-    { label: 'Sign-ups', value: 750, color: '#3b82f6' },
-    { label: 'Trials', value: 500, color: '#10b981' },
-    { label: 'Customers', value: 250, color: '#f59e0b' },
-    { label: 'Loyal', value: 125, color: '#ef4444' },
+    { label: 'Visitors', value: 1000, color: chartColors.primary },
+    { label: 'Sign-ups', value: 750, color: chartColors.secondary },
+    { label: 'Trials', value: 500, color: chartColors.success },
+    { label: 'Customers', value: 250, color: chartColors.warning },
+    { label: 'Loyal', value: 125, color: chartColors.destructive },
   ]
 
   return (
@@ -624,7 +647,7 @@ function ChordDiagramPreview() {
     [12, 5, 15, 10],
   ]
   const labels = ['A', 'B', 'C', 'D']
-  const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981', '#f59e0b']
+  const colors = [chartColors.primary, chartColors.secondary, chartColors.success, chartColors.warning]
 
   return (
     <div className="w-full max-w-md flex justify-center">
@@ -732,7 +755,7 @@ function StackedBarChartPreview() {
     { label: 'Q3', values: [40, 35, 30] },
     { label: 'Q4', values: [45, 40, 35] },
   ]
-  const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981']
+  const colors = [chartColors.primary, chartColors.secondary, chartColors.success]
 
   return (
     <div className="w-full max-w-md">
@@ -771,7 +794,7 @@ function GroupedBarChartPreview() {
     { label: 'Mar', values: [78, 52] },
     { label: 'Apr', values: [62, 70] },
   ]
-  const colors = ['hsl(var(--primary))', '#3b82f6']
+  const colors = [chartColors.primary, chartColors.secondary]
 
   return (
     <div className="w-full max-w-md">
@@ -829,7 +852,7 @@ function CandlestickChartPreview() {
                 y1={200 - candle.high * 2}
                 x2={x}
                 y2={200 - candle.low * 2}
-                stroke={isUp ? '#10b981' : '#ef4444'}
+                stroke={isUp ? chartColors.success : chartColors.destructive}
                 strokeWidth="1"
               />
               <rect
@@ -837,7 +860,7 @@ function CandlestickChartPreview() {
                 y={200 - bodyTop * 2}
                 width="24"
                 height={(bodyTop - bodyBottom) * 2}
-                fill={isUp ? '#10b981' : '#ef4444'}
+                fill={isUp ? chartColors.success : chartColors.destructive}
                 className="transition-all hover:opacity-80"
               />
             </g>
@@ -940,7 +963,7 @@ function PolarAreaChartPreview() {
     { label: 'Sat', value: 55 },
     { label: 'Sun', value: 40 },
   ]
-  const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+  const colors = multiChartColors.slice(0, 7)
 
   return (
     <div className="w-full max-w-md flex justify-center">
@@ -969,10 +992,10 @@ function PolarAreaChartPreview() {
 
 function RadialBarPreview() {
   const radialData = [
-    { label: 'CPU', value: 78, color: 'hsl(var(--primary))' },
-    { label: 'Memory', value: 65, color: '#3b82f6' },
-    { label: 'Disk', value: 45, color: '#10b981' },
-    { label: 'Network', value: 88, color: '#f59e0b' },
+    { label: 'CPU', value: 78, color: chartColors.primary },
+    { label: 'Memory', value: 65, color: chartColors.secondary },
+    { label: 'Disk', value: 45, color: chartColors.success },
+    { label: 'Network', value: 88, color: chartColors.warning },
   ]
 
   return (
@@ -1022,7 +1045,7 @@ function StreamGraphPreview() {
     [15, 20, 25, 30, 25, 20, 22],
     [8, 12, 15, 20, 18, 14, 16],
   ]
-  const colors = ['hsl(var(--primary))', '#3b82f6', '#10b981']
+  const colors = [chartColors.primary, chartColors.secondary, chartColors.success]
 
   return (
     <div className="w-full max-w-lg">
@@ -1114,7 +1137,6 @@ function DotPlotPreview() {
 function WaffleChartPreview() {
   const waffleValue = 73
   const total = 100
-  const rows = 10
   const cols = 10
 
   return (
@@ -1578,8 +1600,8 @@ const chartComponents = [
 </div>`,
     props: [
       { name: 'data', type: 'CandleData[]', default: 'required', description: 'Array of OHLC values' },
-      { name: 'upColor', type: 'string', default: '"#10b981"', description: 'Color for up candles' },
-      { name: 'downColor', type: 'string', default: '"#ef4444"', description: 'Color for down candles' },
+      { name: 'upColor', type: 'string', default: '"success"', description: 'Color for up candles' },
+      { name: 'downColor', type: 'string', default: '"destructive"', description: 'Color for down candles' },
     ],
     preview: CandlestickChartPreview,
   },

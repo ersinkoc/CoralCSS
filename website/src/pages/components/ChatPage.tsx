@@ -19,9 +19,9 @@ const chatComponents = [
 
 <!-- Sent message -->
 <div class="flex gap-3 max-w-md ml-auto flex-row-reverse">
-  <div class="w-8 h-8 bg-coral-500 rounded-full flex-shrink-0"></div>
+  <div class="w-8 h-8 bg-primary rounded-full flex-shrink-0"></div>
   <div class="text-right">
-    <div class="bg-coral-500 text-white rounded-2xl rounded-tr-sm px-4 py-2">
+    <div class="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2">
       <p>I'm doing great, thanks!</p>
     </div>
     <span class="text-xs text-muted-foreground mr-2 mt-1">10:31 AM ✓✓</span>
@@ -64,13 +64,13 @@ const chatComponents = [
     <textarea
       placeholder="Type a message..."
       rows="1"
-      class="w-full px-4 py-2 bg-muted rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-coral-500"
+      class="w-full px-4 py-2 bg-muted rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-primary"
     ></textarea>
     <button class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-muted-foreground">
       <svg class="w-5 h-5"><!-- emoji icon --></svg>
     </button>
   </div>
-  <button class="p-2 bg-coral-500 text-white rounded-full hover:bg-coral-600 transition-colors">
+  <button class="p-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
     <svg class="w-6 h-6"><!-- send icon --></svg>
   </button>
 </div>`,
@@ -88,7 +88,7 @@ const chatComponents = [
   <div class="flex items-center gap-3 p-4 hover:bg-muted/50 cursor-pointer">
     <div class="relative">
       <div class="w-12 h-12 bg-muted rounded-full"></div>
-      <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full"></span>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-card rounded-full"></span>
     </div>
     <div class="flex-1 min-w-0">
       <div class="flex items-center justify-between">
@@ -97,7 +97,7 @@ const chatComponents = [
       </div>
       <p class="text-sm text-muted-foreground truncate">Hey! How are you?</p>
     </div>
-    <span class="w-5 h-5 bg-coral-500 text-white text-xs flex items-center justify-center rounded-full">3</span>
+    <span class="w-5 h-5 bg-primary text-primary-foreground text-xs flex items-center justify-center rounded-full">3</span>
   </div>
 </div>`,
     props: [
@@ -119,7 +119,7 @@ const chatComponents = [
     <span>❤️</span>
     <span class="text-muted-foreground">2</span>
   </button>
-  <button class="inline-flex items-center gap-1 px-2 py-0.5 bg-coral-500/20 text-coral-600 rounded-full text-sm">
+  <button class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/20 text-primary rounded-full text-sm">
     <span>😂</span>
     <span>1</span>
   </button>
@@ -135,7 +135,7 @@ const chatComponents = [
     name: 'VoiceMessage',
     description: 'A voice message player with waveform visualization.',
     usage: `<div class="flex items-center gap-3 bg-muted rounded-2xl px-4 py-3 max-w-xs">
-  <button class="w-10 h-10 bg-coral-500 text-white rounded-full flex items-center justify-center">
+  <button class="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
     <svg class="w-5 h-5"><!-- play icon --></svg>
   </button>
   <div class="flex-1">
@@ -143,7 +143,7 @@ const chatComponents = [
       <!-- waveform bars -->
       <span class="w-1 h-2 bg-muted-foreground/50 rounded-full"></span>
       <span class="w-1 h-4 bg-muted-foreground/50 rounded-full"></span>
-      <span class="w-1 h-6 bg-coral-500 rounded-full"></span>
+      <span class="w-1 h-6 bg-primary rounded-full"></span>
       <!-- more bars... -->
     </div>
   </div>
@@ -179,7 +179,7 @@ const chatComponents = [
   </span>
 
   <!-- Read -->
-  <span class="flex items-center gap-1 text-sm text-blue-500">
+  <span class="flex items-center gap-1 text-sm text-info">
     <svg class="w-4 h-4"><!-- double check filled --></svg>
     Read
   </span>
@@ -199,11 +199,11 @@ const chatComponents = [
   </button>
   <div class="relative">
     <div class="w-10 h-10 bg-muted rounded-full"></div>
-    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-card rounded-full"></span>
+    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success border-2 border-card rounded-full"></span>
   </div>
   <div class="flex-1">
     <h2 class="font-semibold text-foreground">John Doe</h2>
-    <p class="text-xs text-green-600">Online</p>
+    <p class="text-xs text-success">Online</p>
   </div>
   <button class="p-2 hover:bg-muted rounded-full">
     <svg class="w-5 h-5"><!-- phone icon --></svg>
@@ -282,7 +282,7 @@ const chatComponents = [
     name: 'FileMessage',
     description: 'A message for sharing files with download option.',
     usage: `<div class="flex items-center gap-3 bg-muted rounded-2xl px-4 py-3 max-w-xs">
-  <div class="w-10 h-10 bg-coral-500/20 text-coral-600 rounded-lg flex items-center justify-center">
+  <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center">
     <svg class="w-5 h-5"><!-- file icon --></svg>
   </div>
   <div class="flex-1 min-w-0">
@@ -307,19 +307,19 @@ const chatComponents = [
   <!-- Online -->
   <div class="relative">
     <div class="w-10 h-10 bg-muted rounded-full"></div>
-    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full"></span>
+    <span class="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-card rounded-full"></span>
   </div>
 
   <!-- Away -->
   <div class="relative">
     <div class="w-10 h-10 bg-muted rounded-full"></div>
-    <span class="absolute bottom-0 right-0 w-3 h-3 bg-amber-500/100 border-2 border-card rounded-full"></span>
+    <span class="absolute bottom-0 right-0 w-3 h-3 bg-warning border-2 border-card rounded-full"></span>
   </div>
 
   <!-- Busy -->
   <div class="relative">
     <div class="w-10 h-10 bg-muted rounded-full"></div>
-    <span class="absolute bottom-0 right-0 w-3 h-3 bg-red-500/100 border-2 border-card rounded-full"></span>
+    <span class="absolute bottom-0 right-0 w-3 h-3 bg-destructive border-2 border-card rounded-full"></span>
   </div>
 
   <!-- Offline -->
@@ -337,9 +337,9 @@ const chatComponents = [
     id: 'reply-preview',
     name: 'ReplyPreview',
     description: 'Preview of the message being replied to.',
-    usage: `<div class="flex items-center gap-2 p-2 bg-muted/50 border-l-4 border-coral-500 rounded">
+    usage: `<div class="flex items-center gap-2 p-2 bg-muted/50 border-l-4 border-primary rounded">
   <div class="flex-1 min-w-0">
-    <p class="text-sm font-medium text-coral-600">John Doe</p>
+    <p class="text-sm font-medium text-primary">John Doe</p>
     <p class="text-sm text-muted-foreground truncate">The original message text here...</p>
   </div>
   <button class="p-1 text-muted-foreground/70 hover:text-muted-foreground">
@@ -357,11 +357,11 @@ const chatComponents = [
     name: 'VideoCallButton',
     description: 'Buttons for initiating voice and video calls.',
     usage: `<div class="flex gap-2">
-  <button class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">
+  <button class="flex items-center gap-2 px-4 py-2 bg-success text-success-foreground rounded-full hover:bg-success/90 transition-colors">
     <svg class="w-5 h-5"><!-- phone icon --></svg>
     Voice Call
   </button>
-  <button class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+  <button class="flex items-center gap-2 px-4 py-2 bg-info text-info-foreground rounded-full hover:bg-info/90 transition-colors">
     <svg class="w-5 h-5"><!-- video icon --></svg>
     Video Call
   </button>
@@ -382,7 +382,7 @@ const chatComponents = [
 </div>
 
 <div class="flex justify-center my-4">
-  <span class="px-3 py-1 bg-amber-500/10 text-amber-600 text-xs rounded-full">
+  <span class="px-3 py-1 bg-warning/10 text-warning text-xs rounded-full">
     Messages are end-to-end encrypted
   </span>
 </div>`,
@@ -398,9 +398,9 @@ const chatComponents = [
     usage: `<div class="flex items-center gap-1 mt-1">
   <span class="text-xs text-muted-foreground">Seen by</span>
   <div class="flex -space-x-2">
-    <div class="w-5 h-5 bg-blue-400 rounded-full border-2 border-white"></div>
-    <div class="w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
-    <div class="w-5 h-5 bg-purple-400 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px]">
+    <div class="w-5 h-5 bg-info rounded-full border-2 border-foreground"></div>
+    <div class="w-5 h-5 bg-success rounded-full border-2 border-foreground"></div>
+    <div class="w-5 h-5 rounded-full border-2 border-foreground flex items-center justify-center text-foreground text-[10px]" style={{ backgroundColor: 'hsl(var(--accent))' }}>
       +3
     </div>
   </div>
@@ -417,7 +417,7 @@ function ChatBubblePreview() {
   return (
     <div className="space-y-4 max-w-lg mx-auto">
       <div className="flex gap-3 max-w-md">
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex-shrink-0"></div>
+        <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, hsl(var(--info)), hsl(var(--info) / 0.7))' }}></div>
         <div>
           <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-2">
             <p className="text-foreground">Hey! How are you doing?</p>
@@ -427,9 +427,9 @@ function ChatBubblePreview() {
       </div>
 
       <div className="flex gap-3 max-w-md ml-auto flex-row-reverse">
-        <div className="w-8 h-8 bg-gradient-to-br from-coral-400 to-coral-600 rounded-full flex-shrink-0"></div>
+        <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, hsl(var(--primary)), hsl(var(--primary) / 0.7))' }}></div>
         <div className="text-right">
-          <div className="bg-coral-500 text-white rounded-2xl rounded-tr-sm px-4 py-2">
+          <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2">
             <p>I'm doing great, thanks! Just finished the project.</p>
           </div>
           <span className="text-xs text-muted-foreground mr-2 mt-1 block">10:31 AM ✓✓</span>
@@ -437,7 +437,7 @@ function ChatBubblePreview() {
       </div>
 
       <div className="flex gap-3 max-w-md">
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex-shrink-0"></div>
+        <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, hsl(var(--info)), hsl(var(--info) / 0.7))' }}></div>
         <div>
           <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-2">
             <p className="text-foreground">That's awesome! 🎉</p>
@@ -452,7 +452,7 @@ function ChatBubblePreview() {
 function TypingIndicatorPreview() {
   return (
     <div className="flex gap-3 max-w-md">
-      <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex-shrink-0"></div>
+      <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, hsl(var(--info)), hsl(var(--info) / 0.7))' }}></div>
       <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3">
         <div className="flex gap-1">
           <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
@@ -476,7 +476,7 @@ function MessageInputPreview() {
         <input
           type="text"
           placeholder="Type a message..."
-          className="w-full px-4 py-2 bg-muted rounded-full focus:outline-none focus:ring-2 focus:ring-coral-500"
+          className="w-full px-4 py-2 bg-muted rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-muted-foreground">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -484,7 +484,7 @@ function MessageInputPreview() {
           </svg>
         </button>
       </div>
-      <button className="p-2 bg-coral-500 text-white rounded-full hover:bg-coral-600 transition-colors">
+      <button className="p-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
         </svg>
@@ -506,7 +506,7 @@ function ChatListPreview() {
         <div key={i} className="flex items-center gap-3 p-4 hover:bg-muted/50 cursor-pointer">
           <div className="relative">
             <div className="w-12 h-12 bg-gradient-to-br from-muted to-muted/80 rounded-full"></div>
-            {chat.online && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full"></span>}
+            {chat.online && <span className="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-card rounded-full"></span>}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
@@ -516,7 +516,7 @@ function ChatListPreview() {
             <p className="text-sm text-muted-foreground truncate">{chat.message}</p>
           </div>
           {chat.unread > 0 && (
-            <span className="w-5 h-5 bg-coral-500 text-white text-xs flex items-center justify-center rounded-full">
+            <span className="w-5 h-5 bg-primary text-primary-foreground text-xs flex items-center justify-center rounded-full">
               {chat.unread}
             </span>
           )}
@@ -537,7 +537,7 @@ function MessageReactionsPreview() {
         <span>❤️</span>
         <span className="text-muted-foreground">2</span>
       </button>
-      <button className="inline-flex items-center gap-1 px-2 py-0.5 bg-coral-500/20 text-coral-600 rounded-full text-sm">
+      <button className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/20 text-primary rounded-full text-sm">
         <span>😂</span>
         <span>1</span>
       </button>
@@ -549,7 +549,7 @@ function MessageReactionsPreview() {
 function VoiceMessagePreview() {
   return (
     <div className="flex items-center gap-3 bg-muted rounded-2xl px-4 py-3 w-full max-w-sm mx-auto">
-      <button className="w-10 h-10 bg-coral-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+      <button className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0">
         <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
         </svg>
@@ -557,7 +557,7 @@ function VoiceMessagePreview() {
       <div className="flex-1">
         <div className="flex items-end gap-0.5 h-6">
           {[2, 4, 3, 5, 4, 6, 5, 4, 3, 5, 6, 4, 3, 4, 5, 3].map((h, i) => (
-            <span key={i} className={`w-1 rounded-full ${i < 6 ? 'bg-coral-500' : 'bg-muted-foreground/50'}`} style={{ height: `${h * 4}px` }}></span>
+            <span key={i} className={`w-1 rounded-full ${i < 6 ? 'bg-primary' : 'bg-muted-foreground/50'}`} style={{ height: `${h * 4}px` }}></span>
           ))}
         </div>
       </div>
@@ -588,7 +588,7 @@ function MessageStatusPreview() {
         </svg>
         Delivered
       </span>
-      <span className="flex items-center gap-1 text-blue-500">
+      <span className="flex items-center gap-1 text-info">
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" transform="translate(3, 0)"/>
@@ -608,12 +608,12 @@ function ChatHeaderPreview() {
         </svg>
       </button>
       <div className="relative">
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full"></div>
-        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-card rounded-full"></span>
+        <div className="w-10 h-10 rounded-full" style={{ background: 'linear-gradient(to bottom right, hsl(var(--info)), hsl(var(--info) / 0.7))' }}></div>
+        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success border-2 border-card rounded-full"></span>
       </div>
       <div className="flex-1">
         <h2 className="font-semibold text-foreground">John Doe</h2>
-        <p className="text-xs text-green-600">Online</p>
+        <p className="text-xs text-success">Online</p>
       </div>
       <button className="p-2 hover:bg-muted rounded-full">
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -638,7 +638,7 @@ function MessageGroupPreview() {
   return (
     <div className="space-y-1 max-w-md">
       <div className="flex gap-3">
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex-shrink-0"></div>
+        <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, hsl(var(--info)), hsl(var(--info) / 0.7))' }}></div>
         <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-2">
           <p>Hey!</p>
         </div>
@@ -703,7 +703,7 @@ function ImageMessagePreview() {
 function FileMessagePreview() {
   return (
     <div className="flex items-center gap-3 bg-muted rounded-2xl px-4 py-3 w-full max-w-sm mx-auto">
-      <div className="w-10 h-10 bg-coral-500/20 text-coral-600 rounded-lg flex items-center justify-center flex-shrink-0">
+      <div className="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center flex-shrink-0">
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
@@ -727,21 +727,21 @@ function OnlineIndicatorPreview() {
       <div className="text-center">
         <div className="relative inline-block">
           <div className="w-12 h-12 bg-gradient-to-br from-muted to-muted/80 rounded-full"></div>
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full"></span>
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-card rounded-full"></span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">Online</p>
       </div>
       <div className="text-center">
         <div className="relative inline-block">
           <div className="w-12 h-12 bg-gradient-to-br from-muted to-muted/80 rounded-full"></div>
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-amber-500/100 border-2 border-card rounded-full"></span>
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-warning border-2 border-card rounded-full"></span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">Away</p>
       </div>
       <div className="text-center">
         <div className="relative inline-block">
           <div className="w-12 h-12 bg-gradient-to-br from-muted to-muted/80 rounded-full"></div>
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-red-500/100 border-2 border-card rounded-full"></span>
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-destructive border-2 border-card rounded-full"></span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">Busy</p>
       </div>
@@ -759,9 +759,9 @@ function OnlineIndicatorPreview() {
 function ReplyPreviewPreview() {
   return (
     <div className="space-y-3 max-w-md">
-      <div className="flex items-center gap-2 p-2 bg-muted/50 border-l-4 border-coral-500 rounded">
+      <div className="flex items-center gap-2 p-2 bg-muted/50 border-l-4 border-primary rounded">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-coral-600">John Doe</p>
+          <p className="text-sm font-medium text-primary">John Doe</p>
           <p className="text-sm text-muted-foreground truncate">Hey! How are you doing?</p>
         </div>
         <button className="p-1 text-muted-foreground/70 hover:text-muted-foreground">
@@ -777,13 +777,13 @@ function ReplyPreviewPreview() {
 function VideoCallButtonPreview() {
   return (
     <div className="flex gap-3">
-      <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">
+      <button className="flex items-center gap-2 px-4 py-2 bg-success text-success-foreground rounded-full hover:bg-success/90 transition-colors">
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
         </svg>
         Voice Call
       </button>
-      <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+      <button className="flex items-center gap-2 px-4 py-2 bg-info text-info-foreground rounded-full hover:bg-info/90 transition-colors">
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
         </svg>
@@ -802,12 +802,12 @@ function ChatNotificationPreview() {
         </span>
       </div>
       <div className="flex justify-center">
-        <span className="px-3 py-1 bg-amber-500/10 text-amber-600 text-xs rounded-full">
+        <span className="px-3 py-1 bg-warning/10 text-warning text-xs rounded-full">
           🔒 Messages are end-to-end encrypted
         </span>
       </div>
       <div className="flex justify-center">
-        <span className="px-3 py-1 bg-red-500/10 text-red-600 text-xs rounded-full">
+        <span className="px-3 py-1 bg-destructive/10 text-destructive text-xs rounded-full">
           Jane has left the chat
         </span>
       </div>
@@ -820,9 +820,9 @@ function ReadReceiptsPreview() {
     <div className="flex items-center gap-2 mt-1">
       <span className="text-xs text-muted-foreground">Seen by</span>
       <div className="flex -space-x-2">
-        <div className="w-5 h-5 bg-blue-400 rounded-full border-2 border-white"></div>
-        <div className="w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
-        <div className="w-5 h-5 bg-purple-400 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-medium">
+        <div className="w-5 h-5 bg-info rounded-full border-2 border-foreground"></div>
+        <div className="w-5 h-5 bg-success rounded-full border-2 border-foreground"></div>
+        <div className="w-5 h-5 rounded-full border-2 border-foreground flex items-center justify-center text-foreground text-[10px] font-medium" style={{ backgroundColor: 'hsl(var(--accent))' }}>
           +3
         </div>
       </div>

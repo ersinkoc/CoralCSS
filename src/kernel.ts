@@ -31,6 +31,7 @@ import { Transformer, createTransformer } from './core/transformer'
 import { Extractor, createExtractor } from './core/extractor'
 import { parse, expandVariantGroups } from './core/parser'
 import { dedupeStrings } from './utils/string'
+import { defaultTheme } from './theme/default'
 
 /**
  * Default configuration values
@@ -38,7 +39,7 @@ import { dedupeStrings } from './utils/string'
 const defaultConfig: ResolvedConfig = {
   presets: [],
   plugins: [],
-  theme: {} as Theme,
+  theme: defaultTheme,
   darkMode: 'class',
   darkModeSelector: '.dark',
   prefix: '',
@@ -49,6 +50,11 @@ const defaultConfig: ResolvedConfig = {
   content: [],
   safelist: [],
   blocklist: [],
+  cache: {
+    maxSize: 1000,
+    ttl: Infinity,
+    enabled: true,
+  },
 }
 
 /**
@@ -123,12 +129,14 @@ export class Kernel implements Coral {
     this._variants = new Map()
     this._components = new Map()
     this._eventHandlers = new Map()
-    this._cache = createCache()
     this._matcher = createMatcher()
     this._initialized = false
 
-    // Resolve configuration
+    // Resolve configuration first
     this._config = this.resolveConfig(options)
+
+    // Create cache with resolved config
+    this._cache = createCache(this._config.cache)
 
     // Initialize generator and transformer with empty theme/variants
     // They will be updated after plugins are loaded
@@ -299,13 +307,17 @@ export class Kernel implements Coral {
     // Generate CSS for each class
     const cssItems: GeneratedCSS[] = []
     const uncachedClasses: ParsedClass[] = []
+    const seenCachedCSS = new Set<string>()
 
     for (const className of expandedClasses) {
       // Check cache
       const cached = this._cache.get(className)
       if (cached !== undefined) {
         this.emit('cache:hit', { className })
-        // Parse cached CSS back - skip for now, just track we need to handle this
+        // Track cached CSS to include later
+        if (!seenCachedCSS.has(cached)) {
+          seenCachedCSS.add(cached)
+        }
         continue
       }
 
@@ -338,12 +350,9 @@ export class Kernel implements Coral {
     // Generate CSS strings
     const cssStrings = sorted.map((item) => this._generator.toCSS(item))
 
-    // Also include cached CSS
-    for (const className of expandedClasses) {
-      const cached = this._cache.get(className)
-      if (cached && !cssStrings.includes(cached)) {
-        cssStrings.push(cached)
-      }
+    // Include cached CSS (already deduplicated via Set)
+    for (const cachedCSS of seenCachedCSS) {
+      cssStrings.push(cachedCSS)
     }
 
     // Combine and return

@@ -101,6 +101,18 @@ export interface CoralOptions {
    * ```
    */
   blocklist?: (string | RegExp)[]
+  /**
+   * Cache configuration
+   * @example
+   * ```ts
+   * cache: {
+   *   maxSize: 500,
+   *   ttl: 60000,  // 1 minute
+   *   enabled: true
+   * }
+   * ```
+   */
+  cache?: CacheOptions
 }
 
 /**
@@ -120,6 +132,7 @@ export interface ResolvedConfig {
   readonly content: string[]
   readonly safelist: (string | RegExp | { pattern: RegExp; variants?: string[] })[]
   readonly blocklist: (string | RegExp)[]
+  readonly cache: Required<CacheOptions>
 }
 
 // =============================================================================
@@ -951,6 +964,18 @@ export interface ComboboxState extends ComponentState {
 // =============================================================================
 
 /**
+ * Cache configuration options
+ */
+export interface CacheOptions {
+  /** Maximum number of entries before eviction (default: 1000) */
+  maxSize?: number
+  /** Time-to-live in milliseconds before entries expire (default: Infinity) */
+  ttl?: number
+  /** Whether caching is enabled (default: true) */
+  enabled?: boolean
+}
+
+/**
  * Cache statistics
  */
 export interface CacheStats {
@@ -960,6 +985,12 @@ export interface CacheStats {
   misses: number
   /** Current cache size */
   size: number
+  /** Hit rate percentage */
+  hitRate?: number
+  /** Maximum cache size */
+  maxSize?: number
+  /** TTL in milliseconds (-1 if infinite) */
+  ttl?: number
 }
 
 // =============================================================================

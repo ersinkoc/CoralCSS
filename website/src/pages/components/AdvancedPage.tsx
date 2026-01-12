@@ -56,7 +56,7 @@ function CarouselPreview() {
         </div>
         <button
           onClick={() => setCurrent((current - 1 + slides.length) % slides.length)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70"
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 backdrop-blur-sm"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -64,7 +64,7 @@ function CarouselPreview() {
         </button>
         <button
           onClick={() => setCurrent((current + 1) % slides.length)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 backdrop-blur-sm"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -138,7 +138,7 @@ function SpotlightPreview() {
   const [active, setActive] = useState(false)
   return (
     <div className="relative w-full max-w-sm p-8">
-      {active && <div className="absolute inset-0 bg-black/50 rounded-lg" />}
+      {active && <div className="absolute inset-0 bg-foreground/50 rounded-lg" />}
       <div className={`relative z-10 p-4 bg-card border border-border rounded-lg ${active ? 'ring-4 ring-primary ring-offset-2 ring-offset-background' : ''}`}>
         <p className="text-foreground mb-4">This is the spotlight target element.</p>
         <button
@@ -459,13 +459,13 @@ function BeforeAfterSliderPreview() {
       <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
         <div className="absolute inset-0 flex">
           <div className="flex-1 bg-gradient-to-br from-warning to-destructive flex items-center justify-center">
-            <span className="text-2xl font-bold text-white">BEFORE</span>
+            <span className="text-2xl font-bold text-primary-foreground">BEFORE</span>
           </div>
           <div
             className="flex-1 bg-gradient-to-br from-success to-primary flex items-center justify-center"
             style={{ clipPath: `polygon(${position}% 0, 100% 0, 100% 100%, ${position}% 100%)` }}
           >
-            <span className="text-2xl font-bold text-white">AFTER</span>
+            <span className="text-2xl font-bold text-primary-foreground">AFTER</span>
           </div>
         </div>
         <div
@@ -476,7 +476,7 @@ function BeforeAfterSliderPreview() {
           className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 bg-primary rounded-full shadow-lg flex items-center justify-center cursor-ew-resize"
           style={{ left: `${position}%` }}
         >
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
           </svg>
         </div>
@@ -525,16 +525,16 @@ function GlassmorphismPreview() {
     <div className="w-full max-w-md">
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-lg blur-xl opacity-30" />
-        <div className="relative bg-background/40 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-xl">
+        <div className="relative bg-background/40 backdrop-blur-md border border-foreground/20 rounded-xl p-6 shadow-xl">
           <h3 className="text-xl font-bold text-foreground mb-2">Glassmorphism</h3>
           <p className="text-muted-foreground text-sm">
             Frosted glass effect with backdrop blur and transparency
           </p>
           <div className="mt-4 flex gap-2">
-            <button className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-sm text-foreground hover:bg-white/30 transition-colors">
+            <button className="px-4 py-2 bg-foreground/10 backdrop-blur-sm rounded-lg text-sm text-foreground hover:bg-foreground/20 transition-colors">
               Action
             </button>
-            <button className="px-4 py-2 border border-white/20 rounded-lg text-sm text-foreground hover:bg-white/10 transition-colors">
+            <button className="px-4 py-2 border border-foreground/20 rounded-lg text-sm text-foreground hover:bg-foreground/10 transition-colors">
               Secondary
             </button>
           </div>
@@ -678,7 +678,7 @@ function ParallaxPreview() {
         style={{ transform: 'translateZ(-1px) scale(1.5)' }}
       />
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="text-center text-white">
+        <div className="text-center text-primary-foreground">
           <h3 className="text-2xl font-bold mb-2">Parallax Effect</h3>
           <p className="text-sm opacity-80">Background moves slower than foreground</p>
         </div>
@@ -849,33 +849,33 @@ function FileUploadPreview() {
 function CodeHighlightPreview() {
   return (
     <div className="w-full max-w-md">
-      <div className="bg-[#1e1e1e] rounded-lg overflow-hidden">
-        <div className="flex items-center gap-2 px-4 py-2 bg-[#252526]">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="text-xs text-gray-400 ml-2">index.js</span>
+      <div className="bg-muted rounded-lg overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-2 bg-card">
+          <div className="w-3 h-3 rounded-full bg-destructive" />
+          <div className="w-3 h-3 rounded-full bg-warning" />
+          <div className="w-3 h-3 rounded-full bg-success" />
+          <span className="text-xs text-muted-foreground ml-2">index.js</span>
         </div>
         <pre className="p-4 text-sm font-mono overflow-x-auto">
           <code>
-            <span className="text-purple-400">const</span>{' '}
-            <span className="text-blue-300">coral</span>{' '}
-            <span className="text-white">=</span>{' '}
-            <span className="text-yellow-300">createCoral</span>
-            <span className="text-white">(</span>
-            <span className="text-orange-300">{`{`}</span>
+            <span className="text-primary">const</span>{' '}
+            <span className="text-info">coral</span>{' '}
+            <span className="text-foreground">=</span>{' '}
+            <span className="text-warning">createCoral</span>
+            <span className="text-foreground">(</span>
+            <span className="text-accent">{`{`}</span>
             {'\n  '}
-            <span className="text-blue-300">preset</span>
-            <span className="text-white">:</span>{' '}
-            <span className="text-green-300">'coral'</span>
-            <span className="text-white">,</span>
+            <span className="text-info">preset</span>
+            <span className="text-foreground">:</span>{' '}
+            <span className="text-success">'coral'</span>
+            <span className="text-foreground">,</span>
             {'\n  '}
-            <span className="text-blue-300">darkMode</span>
-            <span className="text-white">:</span>{' '}
-            <span className="text-green-300">'class'</span>
+            <span className="text-info">darkMode</span>
+            <span className="text-foreground">:</span>{' '}
+            <span className="text-success">'class'</span>
             {'\n'}
-            <span className="text-orange-300">{`}`}</span>
-            <span className="text-white">)</span>
+            <span className="text-accent">{`}`}</span>
+            <span className="text-foreground">)</span>
           </code>
         </pre>
       </div>
@@ -936,7 +936,7 @@ function TiltPreview() {
         }}
         onMouseLeave={() => setTransform('rotateX(0) rotateY(0)')}
       >
-        <span className="text-white text-xl font-bold">Tilt Me</span>
+        <span className="text-primary-foreground text-xl font-bold">Tilt Me</span>
       </div>
     </div>
   )
@@ -964,7 +964,7 @@ function ConfettiPreview() {
               className="absolute w-2 h-2 rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
-                backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6'][i % 5],
+                backgroundColor: `hsl(var(${['--warning', '--destructive', '--success', '--info', '--primary'][i % 5]}))`,
                 animation: `confetti-fall ${1 + Math.random() * 2}s ease-out forwards`,
                 animationDelay: `${Math.random() * 0.5}s`,
               }}
@@ -985,23 +985,23 @@ function ConfettiPreview() {
 function QRCodePreview() {
   return (
     <div className="w-full max-w-sm flex flex-col items-center gap-4">
-      <div className="p-4 bg-white rounded-lg">
+      <div className="p-4 bg-card rounded-lg border border-border">
         <svg viewBox="0 0 100 100" className="w-32 h-32">
-          <rect x="0" y="0" width="100" height="100" fill="white" />
+          <rect x="0" y="0" width="100" height="100" fill="hsl(var(--background))" />
           {/* Simplified QR pattern */}
-          <rect x="10" y="10" width="25" height="25" fill="black" />
-          <rect x="65" y="10" width="25" height="25" fill="black" />
-          <rect x="10" y="65" width="25" height="25" fill="black" />
-          <rect x="15" y="15" width="15" height="15" fill="white" />
-          <rect x="70" y="15" width="15" height="15" fill="white" />
-          <rect x="15" y="70" width="15" height="15" fill="white" />
-          <rect x="20" y="20" width="5" height="5" fill="black" />
-          <rect x="75" y="20" width="5" height="5" fill="black" />
-          <rect x="20" y="75" width="5" height="5" fill="black" />
-          <rect x="40" y="10" width="5" height="5" fill="black" />
-          <rect x="50" y="10" width="5" height="5" fill="black" />
-          <rect x="40" y="20" width="10" height="5" fill="black" />
-          <rect x="45" y="45" width="10" height="10" fill="black" />
+          <rect x="10" y="10" width="25" height="25" fill="hsl(var(--foreground))" />
+          <rect x="65" y="10" width="25" height="25" fill="hsl(var(--foreground))" />
+          <rect x="10" y="65" width="25" height="25" fill="hsl(var(--foreground))" />
+          <rect x="15" y="15" width="15" height="15" fill="hsl(var(--background))" />
+          <rect x="70" y="15" width="15" height="15" fill="hsl(var(--background))" />
+          <rect x="15" y="70" width="15" height="15" fill="hsl(var(--background))" />
+          <rect x="20" y="20" width="5" height="5" fill="hsl(var(--foreground))" />
+          <rect x="75" y="20" width="5" height="5" fill="hsl(var(--foreground))" />
+          <rect x="20" y="75" width="5" height="5" fill="hsl(var(--foreground))" />
+          <rect x="40" y="10" width="5" height="5" fill="hsl(var(--foreground))" />
+          <rect x="50" y="10" width="5" height="5" fill="hsl(var(--foreground))" />
+          <rect x="40" y="20" width="10" height="5" fill="hsl(var(--foreground))" />
+          <rect x="45" y="45" width="10" height="10" fill="hsl(var(--foreground))" />
         </svg>
       </div>
       <p className="text-sm text-muted-foreground">Scan to visit CoralCSS</p>

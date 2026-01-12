@@ -337,8 +337,8 @@ function ImageGridPreview() {
         <div className="aspect-square bg-gradient-to-br from-success to-info" />
         <div className="aspect-square bg-gradient-to-br from-warning to-success" />
         <div className="aspect-square bg-gradient-to-br from-error to-warning relative">
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <span className="text-white font-medium">+5</span>
+          <div className="absolute inset-0 bg-foreground/60 flex items-center justify-center">
+            <span className="text-background font-medium">+5</span>
           </div>
         </div>
         <div className="aspect-square bg-gradient-to-br from-accent to-error" />
@@ -352,16 +352,16 @@ function ThumbnailPreview() {
     <div className="flex gap-4">
       <div className="relative w-24">
         <div className="aspect-video bg-gradient-to-br from-primary to-accent rounded-lg" />
-        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/80 rounded text-xs text-white">
+        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-foreground/80 rounded text-xs text-background">
           3:45
         </div>
       </div>
       <div className="relative w-24">
         <div className="aspect-video bg-gradient-to-br from-info to-success rounded-lg" />
-        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/80 rounded text-xs text-white">
+        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-foreground/80 rounded text-xs text-background">
           12:30
         </div>
-        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-red-500 rounded text-xs text-white">
+        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-destructive rounded text-xs text-destructive-foreground">
           LIVE
         </div>
       </div>
@@ -377,15 +377,15 @@ function CarouselPreview() {
       <div className="relative overflow-hidden rounded-lg">
         <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${current * 100}%)` }}>
           {items.map((gradient, i) => (
-            <div key={i} className={`w-full flex-shrink-0 aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-bold`}>
+            <div key={i} className={`w-full flex-shrink-0 aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center text-background text-2xl font-bold`}>
               {i + 1}
             </div>
           ))}
         </div>
-        <button onClick={() => setCurrent(Math.max(0, current - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 rounded-full text-white">
+        <button onClick={() => setCurrent(Math.max(0, current - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-foreground/50 rounded-full text-background">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <button onClick={() => setCurrent(Math.min(items.length - 1, current + 1))} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 rounded-full text-white">
+        <button onClick={() => setCurrent(Math.min(items.length - 1, current + 1))} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-foreground/50 rounded-full text-background">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
@@ -404,8 +404,8 @@ function LightboxPreview() {
     <>
       <button onClick={() => setOpen(true)} className="w-32 h-24 bg-gradient-to-br from-primary to-accent rounded-lg hover:scale-105 transition-transform cursor-zoom-in" />
       {open && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center" onClick={() => setOpen(false)}>
-          <button className="absolute top-4 right-4 text-white/70 hover:text-white">
+        <div className="fixed inset-0 bg-foreground/95 z-50 flex items-center justify-center" onClick={() => setOpen(false)}>
+          <button className="absolute top-4 right-4 text-background/70 hover:text-background">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
           <div className="w-[80vw] max-w-2xl aspect-video bg-gradient-to-br from-primary to-accent rounded-lg" />
@@ -419,14 +419,14 @@ function CompareSliderPreview() {
   const [position, setPosition] = useState(50)
   return (
     <div className="w-full max-w-sm relative overflow-hidden rounded-lg" style={{ touchAction: 'none' }}>
-      <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-600" />
+      <div className="aspect-video bg-gradient-to-br from-muted-foreground to-muted" />
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${position}%` }}>
         <div className="aspect-video bg-gradient-to-br from-primary to-accent" style={{ width: '100%' }} />
       </div>
       <div className="absolute inset-y-0" style={{ left: `${position}%` }}>
-        <div className="absolute inset-y-0 w-0.5 bg-white -translate-x-1/2" />
+        <div className="absolute inset-y-0 w-0.5 bg-background -translate-x-1/2" />
         <button
-          className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-ew-resize"
+          className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full shadow-lg flex items-center justify-center cursor-ew-resize"
           onMouseDown={(e) => {
             const parent = e.currentTarget.parentElement?.parentElement
             const move = (ev: MouseEvent) => {
@@ -440,7 +440,7 @@ function CompareSliderPreview() {
             document.addEventListener('mouseup', up)
           }}
         >
-          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
           </svg>
         </button>
@@ -477,9 +477,9 @@ function PosterPreview() {
   return (
     <div className="w-32 bg-card rounded-lg overflow-hidden shadow-lg border border-border">
       <div className="aspect-[2/3] bg-gradient-to-br from-primary to-accent relative">
-        <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-          <h4 className="text-white text-sm font-bold">Movie Title</h4>
-          <p className="text-white/70 text-xs">2024</p>
+        <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-foreground/80 to-transparent">
+          <h4 className="text-background text-sm font-bold">Movie Title</h4>
+          <p className="text-background/70 text-xs">2024</p>
         </div>
       </div>
     </div>
@@ -490,8 +490,8 @@ function CoverPreview() {
   return (
     <div className="w-full max-w-sm relative rounded-xl overflow-hidden">
       <div className="aspect-[21/9] bg-gradient-to-br from-primary to-accent" />
-      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-        <div className="text-center text-white">
+      <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
+        <div className="text-center text-background">
           <h3 className="text-2xl font-bold mb-1">Cover Title</h3>
           <p className="text-sm opacity-80">Subtitle text</p>
         </div>
@@ -504,10 +504,10 @@ function BackgroundMediaPreview() {
   return (
     <div className="w-full max-w-md h-48 relative rounded-xl overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent" />
-      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-foreground/30" />
       <div className="relative h-full flex flex-col items-center justify-center p-6">
-        <h3 className="text-white text-xl font-bold mb-2">Background Media</h3>
-        <p className="text-white/80 text-sm text-center">Content overlaid on background</p>
+        <h3 className="text-background text-xl font-bold mb-2">Background Media</h3>
+        <p className="text-background/80 text-sm text-center">Content overlaid on background</p>
       </div>
     </div>
   )
@@ -614,7 +614,7 @@ function SlideshowPreview() {
         <div className={`absolute inset-0 bg-gradient-to-br ${slides[slide]} transition-opacity`} />
         <div className="absolute bottom-2 inset-x-0 flex justify-center gap-2">
           {slides.map((_, i) => (
-            <button key={i} onClick={() => setSlide(i)} className={`w-8 h-1 rounded-full ${i === slide ? 'bg-white' : 'bg-white/40'}`} />
+            <button key={i} onClick={() => setSlide(i)} className={`w-8 h-1 rounded-full ${i === slide ? 'bg-background' : 'bg-background/40'}`} />
           ))}
         </div>
       </div>
@@ -737,7 +737,7 @@ const mediaComponents = [
     props: [
       { name: 'data-value', type: 'string', default: 'required', description: 'Data to encode' },
       { name: 'data-size', type: 'number', default: '128', description: 'QR code size in pixels' },
-      { name: 'data-color', type: 'string', default: '"#000"', description: 'QR code color' },
+      { name: 'data-color', type: 'string', default: '"hsl(var(--foreground))"', description: 'QR code color' },
     ],
     preview: QRCodePreview,
   },

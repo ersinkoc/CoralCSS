@@ -423,45 +423,45 @@ darkMode: 'media'`}
 function PreviewCard({ mode }: { mode: 'light' | 'dark' }) {
   const isDark = mode === 'dark'
 
-  // Fully isolated color scheme - primary uses CSS variable for theme support
+  // Fully isolated color scheme using only CSS variables for theme support
   const colors = isDark ? {
-    bg: '#121212',
-    cardBg: '#1a1a1a',
-    border: '#262626',
-    borderLight: '#363636',
-    text: '#ffffff',
-    textMuted: '#9ca3af',
-    textSubtle: '#6b7280',
-    inputBg: '#1a1a1a',
-    secondaryBg: '#262626',
-    // Primary uses CSS variable to match selected theme
+    bg: 'hsl(var(--background))',
+    cardBg: 'hsl(var(--card))',
+    border: 'hsl(var(--border))',
+    borderLight: 'hsl(var(--border) / 0.6)',
+    text: 'hsl(var(--foreground))',
+    textMuted: 'hsl(var(--muted-foreground))',
+    textSubtle: 'hsl(var(--muted-foreground))',
+    inputBg: 'hsl(var(--card))',
+    secondaryBg: 'hsl(var(--muted))',
     primary: 'hsl(var(--primary))',
+    primaryFg: 'hsl(var(--primary-foreground))',
     primaryBg: 'hsl(var(--primary) / 0.2)',
-    successBg: 'rgba(34, 197, 94, 0.2)',
-    successText: '#4ade80',
-    warningBg: 'rgba(234, 179, 8, 0.2)',
-    warningText: '#facc15',
-    errorBg: 'rgba(239, 68, 68, 0.2)',
-    errorText: '#f87171',
+    successBg: 'hsl(var(--success) / 0.2)',
+    successText: 'hsl(var(--success))',
+    warningBg: 'hsl(var(--warning) / 0.2)',
+    warningText: 'hsl(var(--warning))',
+    errorBg: 'hsl(var(--destructive) / 0.2)',
+    errorText: 'hsl(var(--destructive))',
   } : {
-    bg: '#ffffff',
-    cardBg: '#f9fafb',
-    border: '#e5e7eb',
-    borderLight: '#d1d5db',
-    text: '#111827',
-    textMuted: '#6b7280',
-    textSubtle: '#9ca3af',
-    inputBg: '#ffffff',
-    secondaryBg: '#f3f4f6',
-    // Primary uses CSS variable to match selected theme
+    bg: 'hsl(var(--background))',
+    cardBg: 'hsl(var(--card))',
+    border: 'hsl(var(--border))',
+    borderLight: 'hsl(var(--border) / 0.7)',
+    text: 'hsl(var(--foreground))',
+    textMuted: 'hsl(var(--muted-foreground))',
+    textSubtle: 'hsl(var(--muted-foreground))',
+    inputBg: 'hsl(var(--card))',
+    secondaryBg: 'hsl(var(--muted))',
     primary: 'hsl(var(--primary))',
+    primaryFg: 'hsl(var(--primary-foreground))',
     primaryBg: 'hsl(var(--primary) / 0.1)',
-    successBg: '#dcfce7',
-    successText: '#16a34a',
-    warningBg: '#fef9c3',
-    warningText: '#ca8a04',
-    errorBg: '#fee2e2',
-    errorText: '#dc2626',
+    successBg: 'hsl(var(--success) / 0.15)',
+    successText: 'hsl(var(--success))',
+    warningBg: 'hsl(var(--warning) / 0.15)',
+    warningText: 'hsl(var(--warning))',
+    errorBg: 'hsl(var(--destructive) / 0.15)',
+    errorText: 'hsl(var(--destructive))',
   }
 
   return (
@@ -476,9 +476,9 @@ function PreviewCard({ mode }: { mode: 'light' | 'dark' }) {
       >
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgba(239, 68, 68, 0.8)' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgba(234, 179, 8, 0.8)' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgba(34, 197, 94, 0.8)' }} />
+            <div className="w-3 h-3 rounded-full bg-destructive/80" />
+            <div className="w-3 h-3 rounded-full bg-warning/80" />
+            <div className="w-3 h-3 rounded-full bg-success/80" />
           </div>
           <span className="text-sm font-medium" style={{ color: colors.text }}>
             {mode === 'light' ? 'Light Mode' : 'Dark Mode'}
@@ -500,7 +500,7 @@ function PreviewCard({ mode }: { mode: 'light' | 'dark' }) {
           <div className="flex flex-wrap gap-2">
             <button
               className="px-4 py-2 rounded-lg text-sm font-medium"
-              style={{ backgroundColor: colors.primary, color: '#ffffff' }}
+              style={{ backgroundColor: colors.primary, color: colors.primaryFg }}
             >
               Primary
             </button>
@@ -564,7 +564,7 @@ function PreviewCard({ mode }: { mode: 'light' | 'dark' }) {
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center font-medium"
-              style={{ backgroundColor: colors.primary, color: '#ffffff' }}
+              style={{ backgroundColor: colors.primary, color: colors.primaryFg }}
             >
               JD
             </div>

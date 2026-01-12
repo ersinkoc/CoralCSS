@@ -28,6 +28,10 @@ import EcommercePage from './pages/components/EcommercePage'
 import ChatPage from './pages/components/ChatPage'
 import AIPage from './pages/components/AIPage'
 import FilesPage from './pages/components/FilesPage'
+import LandingPage from './pages/components/LandingPage'
+import PortfolioPage from './pages/components/PortfolioPage'
+import BlogPage from './pages/components/BlogPage'
+import DocsPage from './pages/components/DocsPage'
 
 function App() {
   return (
@@ -55,6 +59,10 @@ function App() {
             <Route path="/components/chat" element={<ChatPage />} />
             <Route path="/components/ai" element={<AIPage />} />
             <Route path="/components/files" element={<FilesPage />} />
+            <Route path="/components/landing" element={<LandingPage />} />
+            <Route path="/components/portfolio" element={<PortfolioPage />} />
+            <Route path="/components/blog" element={<BlogPage />} />
+            <Route path="/components/docs" element={<DocsPage />} />
             <Route path="/themes" element={<Themes />} />
             <Route path="/docs" element={<Docs />} />
             <Route path="/examples" element={<Examples />} />

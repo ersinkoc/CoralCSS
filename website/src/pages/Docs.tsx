@@ -24,14 +24,14 @@ function CodeBlock({ children, filename, language = 'typescript' }: { children: 
   }
 
   return (
-    <div className="relative group rounded-xl overflow-hidden border border-border bg-[#0d1117] shadow-lg">
+    <div className="relative group rounded-xl overflow-hidden border border-border bg-card shadow-lg">
       {filename && (
-        <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-border/50">
+        <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border/50">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-red-500/80" />
-              <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <span className="w-3 h-3 rounded-full bg-green-500/80" />
+              <span className="w-3 h-3 rounded-full bg-destructive/80" />
+              <span className="w-3 h-3 rounded-full bg-warning/80" />
+              <span className="w-3 h-3 rounded-full bg-success/80" />
             </div>
             <span className="text-xs font-mono text-muted-foreground ml-2">{filename}</span>
           </div>
@@ -39,12 +39,12 @@ function CodeBlock({ children, filename, language = 'typescript' }: { children: 
         </div>
       )}
       <div className="relative">
-        <pre className="p-4 overflow-x-auto text-sm font-mono text-gray-300 leading-relaxed">
+        <pre className="p-4 overflow-x-auto text-sm font-mono text-muted-foreground leading-relaxed">
           {children}
         </pre>
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-200"
+          className="absolute top-3 right-3 p-2 rounded-lg bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 opacity-0 group-hover:opacity-100 transition-all duration-200"
           title="Copy to clipboard"
         >
           {copied ? (
@@ -52,7 +52,7 @@ function CodeBlock({ children, filename, language = 'typescript' }: { children: 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           ) : (
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           )}
@@ -64,10 +64,10 @@ function CodeBlock({ children, filename, language = 'typescript' }: { children: 
 
 function Callout({ type = 'info', title, children }: { type?: 'info' | 'warning' | 'success' | 'tip'; title?: string; children: React.ReactNode }) {
   const styles = {
-    info: 'bg-blue-500/10 border-blue-500/30 text-blue-400',
-    warning: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-    success: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
-    tip: 'bg-violet-500/10 border-violet-500/30 text-violet-400',
+    info: 'bg-info/10 border-info/30 text-info',
+    warning: 'bg-warning/10 border-warning/30 text-warning',
+    success: 'bg-success/10 border-success/30 text-success',
+    tip: 'bg-primary/10 border-primary/30 text-primary',
   }
   const icons = {
     info: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -571,6 +571,7 @@ blur-{sm|md|lg|xl}`
                   <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                     {['Coral', 'Slate', 'Rose', 'Emerald', 'Violet', 'Amber', 'Ocean', 'Crimson', 'Teal', 'Indigo', 'Lime', 'Fuchsia'].map((theme) => (
                       <div key={theme} className="p-3 rounded-lg bg-card border border-border text-center hover:border-primary/30 transition-colors cursor-pointer">
+                        {/* Hardcoded hex colors are intentional here - these are color picker swatches that preview actual theme colors */}
                         <div className={`w-8 h-8 rounded-full mx-auto mb-2 bg-gradient-to-br from-${theme.toLowerCase()}-400 to-${theme.toLowerCase()}-600`} style={{
                           background: theme === 'Coral' ? 'linear-gradient(135deg, #ff7f50, #ff6b35)' :
                                      theme === 'Rose' ? 'linear-gradient(135deg, #f43f5e, #e11d48)' :

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ComponentPageLayout } from './ComponentPageLayout'
 
 const feedbackComponents = [
@@ -968,25 +968,25 @@ function SkeletonLoaderPreview() {
 function InlineMessagePreview() {
   return (
     <div className="space-y-3 w-full max-w-md">
-      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-info/10 text-info dark:text-info border border-info/20">
         <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <span className="text-sm">Information message with helpful context</span>
       </div>
-      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-success/10 text-success dark:text-success border border-success/20">
         <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
         <span className="text-sm">Success message confirming action completed</span>
       </div>
-      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-warning/10 text-warning dark:text-warning border border-warning/20">
         <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
         <span className="text-sm">Warning message about potential issues</span>
       </div>
-      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20">
+      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-destructive/10 text-destructive dark:text-destructive border border-destructive/20">
         <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -1092,12 +1092,12 @@ function PulsePreview() {
         <div className="w-6 h-6 bg-primary rounded-full relative z-10"></div>
       </div>
       <div className="relative flex items-center gap-4">
-        <div data-coral-pulse data-color="success" className="w-6 h-6 bg-emerald-500 rounded-full animate-ping absolute"></div>
-        <div className="w-6 h-6 bg-emerald-500 rounded-full relative z-10"></div>
+        <div data-coral-pulse data-color="success" className="w-6 h-6 bg-success rounded-full animate-ping absolute"></div>
+        <div className="w-6 h-6 bg-success rounded-full relative z-10"></div>
       </div>
       <div className="relative flex items-center gap-4">
-        <div data-coral-pulse data-color="warning" className="w-6 h-6 bg-amber-500 rounded-full animate-ping absolute"></div>
-        <div className="w-6 h-6 bg-amber-500 rounded-full relative z-10"></div>
+        <div data-coral-pulse data-color="warning" className="w-6 h-6 bg-warning rounded-full animate-ping absolute"></div>
+        <div className="w-6 h-6 bg-warning rounded-full relative z-10"></div>
       </div>
     </div>
   )
@@ -1161,7 +1161,7 @@ function ProgressStepsPreview() {
                   data-active={currentStep === stepNumber}
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                     currentStep > stepNumber
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-success text-white'
                       : currentStep === stepNumber
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground'
@@ -1174,7 +1174,7 @@ function ProgressStepsPreview() {
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 mx-2 transition-colors ${
-                    currentStep > stepNumber ? 'bg-emerald-500' : 'bg-muted'
+                    currentStep > stepNumber ? 'bg-success' : 'bg-muted'
                   }`}
                 />
               )}
@@ -1269,7 +1269,7 @@ function CalloutPreview() {
     <div className="space-y-4 w-full max-w-md">
       <div data-coral-callout data-variant="info" className="p-4 border border-border rounded-lg">
         <div className="flex gap-3">
-          <svg data-coral-callout-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg data-coral-callout-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div data-coral-callout-content className="flex-1">
@@ -1280,7 +1280,7 @@ function CalloutPreview() {
       </div>
       <div data-coral-callout data-variant="tip" className="p-4 border border-border rounded-lg">
         <div className="flex gap-3">
-          <svg data-coral-callout-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg data-coral-callout-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
           <div data-coral-callout-content className="flex-1">
@@ -1329,9 +1329,9 @@ function GuideTipPreview() {
 function HighlightBoxPreview() {
   return (
     <div className="space-y-4 w-full max-w-md">
-      <div data-coral-highlight-box data-variant="info" className="p-4 border-l-4 border-blue-500 bg-blue-500/10 rounded-r-lg">
+      <div data-coral-highlight-box data-variant="info" className="p-4 border-l-4 border-info bg-info/10 rounded-r-lg">
         <div className="flex gap-3">
-          <svg data-coral-highlight-box-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg data-coral-highlight-box-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div data-coral-highlight-box-content>
@@ -1340,9 +1340,9 @@ function HighlightBoxPreview() {
           </div>
         </div>
       </div>
-      <div data-coral-highlight-box data-variant="warning" className="p-4 border-l-4 border-amber-500 bg-amber-500/10 rounded-r-lg">
+      <div data-coral-highlight-box data-variant="warning" className="p-4 border-l-4 border-warning bg-warning/10 rounded-r-lg">
         <div className="flex gap-3">
-          <svg data-coral-highlight-box-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg data-coral-highlight-box-icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div data-coral-highlight-box-content>
@@ -1364,7 +1364,7 @@ function SuccessAnimationPreview() {
         data-coral-success-animation
         data-active={active || undefined}
         className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
-          active ? 'bg-emerald-500 scale-110' : 'bg-muted'
+          active ? 'bg-success scale-110' : 'bg-muted'
         }`}
       >
         <svg
@@ -1405,7 +1405,7 @@ function ErrorAnimationPreview() {
         data-coral-error-animation
         data-active={active || undefined}
         className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-          active ? 'bg-red-500 animate-shake' : 'bg-muted'
+          active ? 'bg-destructive animate-shake' : 'bg-muted'
         }`}
       >
         <svg
@@ -1443,7 +1443,7 @@ function CountdownPreview() {
   const [count, setCount] = useState(10)
   const [running, setRunning] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (running && count > 0) {
       const timer = setTimeout(() => setCount(count - 1), 1000)
       return () => clearTimeout(timer)
@@ -1514,7 +1514,7 @@ function RatingFeedbackPreview() {
                 key={star}
                 onClick={() => setRating(star)}
                 className={`text-2xl transition-transform hover:scale-125 ${
-                  star <= rating ? 'text-amber-400' : 'text-muted-foreground/30'
+                  star <= rating ? 'text-warning' : 'text-muted-foreground/30'
                 }`}
               >
                 ★
@@ -1551,7 +1551,7 @@ function UploadProgressPreview() {
   const [progress, setProgress] = useState(0)
   const [uploading, setUploading] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (uploading && progress < 100) {
       const timer = setTimeout(() => setProgress(p => Math.min(p + Math.random() * 15, 100)), 300)
       return () => clearTimeout(timer)
@@ -1613,9 +1613,9 @@ function ConnectionStatusPreview() {
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                s === 'connected' ? 'bg-emerald-500' :
-                s === 'connecting' ? 'bg-amber-500 animate-pulse' :
-                'bg-red-500'
+                s === 'connected' ? 'bg-success' :
+                s === 'connecting' ? 'bg-warning animate-pulse' :
+                'bg-destructive'
               }`}
             />
             <span className="text-sm capitalize">{s}</span>
@@ -1625,9 +1625,9 @@ function ConnectionStatusPreview() {
       <div className="text-center">
         <p className="text-sm text-muted-foreground">Current status:</p>
         <p className={`font-medium capitalize ${
-          status === 'connected' ? 'text-emerald-500' :
-          status === 'connecting' ? 'text-amber-500' :
-          'text-red-500'
+          status === 'connected' ? 'text-success' :
+          status === 'connecting' ? 'text-warning' :
+          'text-destructive'
         }`}>{status}</p>
       </div>
     </div>
@@ -1674,7 +1674,7 @@ function ReadReceiptPreview() {
                 </svg>
               )}
               {status === 'read' && (
-                <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7M5 7l4 4" />
                 </svg>
               )}
@@ -1757,26 +1757,26 @@ function FormValidationPreview() {
           data-error={showError || undefined}
           data-valid={isValid || undefined}
           className={`w-full px-3 py-2 rounded-lg border transition-colors ${
-            showError ? 'border-red-500 bg-red-500/5' :
-            isValid ? 'border-emerald-500 bg-emerald-500/5' :
+            showError ? 'border-destructive bg-destructive/5' :
+            isValid ? 'border-success bg-success/5' :
             'border-border'
           }`}
           placeholder="Enter password"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2">
           {isValid && (
-            <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           )}
           {showError && (
-            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           )}
         </div>
       </div>
-      <p className={`text-xs ${showError ? 'text-red-500' : 'text-muted-foreground'}`}>
+      <p className={`text-xs ${showError ? 'text-destructive' : 'text-muted-foreground'}`}>
         {showError ? 'Password must be at least 8 characters' : 'Minimum 8 characters required'}
       </p>
     </div>
@@ -1790,11 +1790,11 @@ function StepIndicatorPreview() {
   return (
     <div className="w-full max-w-md">
       <div data-coral-step-indicator className="flex items-center justify-between mb-4">
-        {steps.map((label, i) => (
+        {steps.map((_label, i) => (
           <div key={i} className="flex items-center">
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                i < step ? 'bg-emerald-500 text-white' :
+                i < step ? 'bg-success text-white' :
                 i === step ? 'bg-primary text-primary-foreground' :
                 'bg-muted text-muted-foreground'
               }`}
@@ -1802,7 +1802,7 @@ function StepIndicatorPreview() {
               {i < step ? '✓' : i + 1}
             </div>
             {i < steps.length - 1 && (
-              <div className={`w-12 h-0.5 mx-1 ${i < step ? 'bg-emerald-500' : 'bg-muted'}`} />
+              <div className={`w-12 h-0.5 mx-1 ${i < step ? 'bg-success' : 'bg-muted'}`} />
             )}
           </div>
         ))}
@@ -1851,7 +1851,7 @@ function CopyFeedbackPreview() {
           className="p-1.5 hover:bg-background rounded transition-colors"
         >
           {copied ? (
-            <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           ) : (
@@ -1861,7 +1861,7 @@ function CopyFeedbackPreview() {
           )}
         </button>
       </div>
-      {copied && <p className="text-xs text-emerald-500 mt-2 text-center">Copied to clipboard!</p>}
+      {copied && <p className="text-xs text-success mt-2 text-center">Copied to clipboard!</p>}
     </div>
   )
 }
@@ -1922,14 +1922,14 @@ function QuotaIndicatorPreview() {
       <div data-coral-quota-indicator data-percentage={percentage} className="h-2 bg-muted rounded-full overflow-hidden">
         <div
           className={`h-full transition-all duration-500 ${
-            percentage > 90 ? 'bg-red-500' :
-            percentage > 70 ? 'bg-amber-500' :
+            percentage > 90 ? 'bg-destructive' :
+            percentage > 70 ? 'bg-warning' :
             'bg-primary'
           }`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <p className={`text-xs mt-2 ${percentage > 70 ? 'text-amber-500' : 'text-muted-foreground'}`}>
+      <p className={`text-xs mt-2 ${percentage > 70 ? 'text-warning' : 'text-muted-foreground'}`}>
         {percentage > 90 ? 'Critical: Storage almost full!' :
          percentage > 70 ? 'Warning: Running low on storage' :
          '2.8 GB remaining'}
@@ -1968,7 +1968,7 @@ function PasswordFeedbackPreview() {
               key={i}
               className={`h-1 flex-1 rounded transition-colors ${
                 i <= strength
-                  ? strength <= 2 ? 'bg-red-500' : strength <= 3 ? 'bg-amber-500' : 'bg-emerald-500'
+                  ? strength <= 2 ? 'bg-destructive' : strength <= 3 ? 'bg-warning' : 'bg-success'
                   : 'bg-muted'
               }`}
             />
@@ -1976,7 +1976,7 @@ function PasswordFeedbackPreview() {
         </div>
         <div className="grid grid-cols-2 gap-1">
           {checks.map((check, i) => (
-            <div key={i} className={`flex items-center gap-1 text-xs ${check.valid ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+            <div key={i} className={`flex items-center gap-1 text-xs ${check.valid ? 'text-success' : 'text-muted-foreground'}`}>
               {check.valid ? '✓' : '○'} {check.label}
             </div>
           ))}
@@ -2004,16 +2004,16 @@ function SaveIndicatorPreview() {
         )}
         {status === 'saved' && (
           <>
-            <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <span className="text-sm text-emerald-500">All changes saved</span>
+            <span className="text-sm text-success">All changes saved</span>
           </>
         )}
         {status === 'unsaved' && (
           <>
-            <div className="w-2 h-2 rounded-full bg-amber-500" />
-            <span className="text-sm text-amber-500">Unsaved changes</span>
+            <div className="w-2 h-2 rounded-full bg-warning" />
+            <span className="text-sm text-warning">Unsaved changes</span>
           </>
         )}
       </div>
@@ -2081,7 +2081,7 @@ function LiveIndicatorPreview() {
         data-coral-live-indicator
         data-live={isLive || undefined}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
-          isLive ? 'bg-red-500 text-white' : 'bg-muted text-muted-foreground'
+          isLive ? 'bg-destructive text-white' : 'bg-muted text-muted-foreground'
         }`}
       >
         <span className={`w-2 h-2 rounded-full ${isLive ? 'bg-white animate-pulse' : 'bg-muted-foreground'}`} />
@@ -2143,7 +2143,7 @@ function VoiceFeedbackPreview() {
   const [active, setActive] = useState(false)
   const [levels, setLevels] = useState([20, 40, 60, 80, 60])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (active) {
       const interval = setInterval(() => {
         setLevels(prev => prev.map(() => Math.random() * 100))

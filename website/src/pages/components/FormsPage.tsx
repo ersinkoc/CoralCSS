@@ -306,8 +306,8 @@ const formComponents = [
     name: 'ColorPicker',
     description: 'A color picker with preset swatches.',
     usage: `<div data-coral-color-picker>
-  <div data-coral-color-picker-preview style={{ backgroundColor: '#ff7f50' }} />
-  <input data-coral-color-picker-input value="#ff7f50" />
+  <div data-coral-color-picker-preview style={{ backgroundColor: 'hsl(var(--primary))' }} />
+  <input data-coral-color-picker-input value="hsl(var(--primary))" />
 </div>`,
     props: [
       { name: 'data-value', type: 'string', default: '"#000000"', description: 'Selected color' },
@@ -1115,7 +1115,7 @@ function SliderPreview() {
 }
 
 function ColorPickerPreview() {
-  const [color, setColor] = useState('#ff7f50')
+  const [color, setColor] = useState('hsl(var(--primary))')
   const swatches = ['#ff7f50', '#4ecdc4', '#45b7d1', '#96c93d', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd']
 
   return (
@@ -3061,7 +3061,7 @@ function HexInputPreview() {
         <div
           data-coral-hex-preview
           className="w-10 h-10 rounded-lg border border-border"
-          style={{ backgroundColor: isValidHex(hex) ? `#${hex}` : '#fff' }}
+          style={{ backgroundColor: isValidHex(hex) ? `#${hex}` : 'hsl(var(--background))' }}
         />
       </div>
     </div>

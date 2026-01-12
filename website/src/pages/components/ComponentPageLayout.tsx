@@ -118,8 +118,8 @@ export function ComponentPageLayout({
 
             <div className="rounded-xl border border-border">
               {showCode && currentComponent.usage ? (
-                <div className="bg-[#0d1117] p-6 rounded-xl">
-                  <pre className="text-sm font-mono text-gray-300 whitespace-pre-wrap overflow-x-auto">
+                <div className="p-6 rounded-xl" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                  <pre className="text-sm font-mono whitespace-pre-wrap overflow-x-auto" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     {currentComponent.usage}
                   </pre>
                 </div>

@@ -219,11 +219,11 @@ function ColorMixPreview() {
   return (
     <div className="space-y-4 w-full max-w-sm">
       <div className="flex gap-2 items-center">
-        <div className="w-12 h-12 bg-red-500 rounded-lg" />
+        <div className="w-12 h-12 bg-destructive rounded-lg" />
         <span className="text-muted-foreground">+</span>
-        <div className="w-12 h-12 bg-blue-500 rounded-lg" />
+        <div className="w-12 h-12 bg-info rounded-lg" />
         <span className="text-muted-foreground">=</span>
-        <div className="w-12 h-12 bg-purple-500 rounded-lg" />
+        <div className="w-12 h-12 bg-primary rounded-lg" />
       </div>
       <div className="flex gap-2">
         {[10, 25, 50, 75, 90].map((mix) => (
@@ -231,7 +231,7 @@ function ColorMixPreview() {
             key={mix}
             className="flex-1 h-12 rounded-lg flex items-center justify-center text-xs font-medium text-white"
             style={{
-              backgroundColor: `rgb(${255 - (mix * 2.55)}, ${0 + (mix * 0.5)}, ${mix * 2.55})`,
+              backgroundColor: `color-mix(in srgb, hsl(var(--destructive)), hsl(var(--info)) ${mix}%)`,
             }}
           >
             {mix}%
@@ -531,15 +531,15 @@ function AccentColorPreview() {
         <span className="text-sm text-foreground">Primary accent checkbox</span>
       </div>
       <div className="flex items-center gap-4">
-        <input type="radio" name="accent" defaultChecked className="w-5 h-5" style={{ accentColor: '#10b981' }} />
+        <input type="radio" name="accent" defaultChecked className="w-5 h-5" style={{ accentColor: 'hsl(var(--success))' }} />
         <span className="text-sm text-foreground">Green accent radio</span>
       </div>
       <div className="flex items-center gap-4">
-        <input type="range" defaultValue={50} className="w-32" style={{ accentColor: '#f59e0b' }} />
+        <input type="range" defaultValue={50} className="w-32" style={{ accentColor: 'hsl(var(--warning))' }} />
         <span className="text-sm text-foreground">Orange accent slider</span>
       </div>
       <div className="flex items-center gap-4">
-        <progress value={75} max={100} className="w-32" style={{ accentColor: '#8b5cf6' }} />
+        <progress value={75} max={100} className="w-32" style={{ accentColor: 'hsl(var(--primary))' }} />
         <span className="text-sm text-foreground">Purple accent progress</span>
       </div>
     </div>
@@ -635,7 +635,7 @@ function DialogElementPreview() {
         Open Dialog
       </button>
       {open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'hsl(var(--foreground) / 0.5)' }}>
           <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full mx-4 shadow-xl">
             <h3 className="text-lg font-semibold text-foreground mb-2">Native Dialog</h3>
             <p className="text-sm text-muted-foreground mb-4">

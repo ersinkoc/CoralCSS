@@ -7,12 +7,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run build        # Build with tsup (outputs to dist/)
 npm run dev          # Watch mode build
+npm run build:css    # Build CSS only (runs build-css.js script)
 npm run test         # Run all tests with vitest
 npm run test:watch   # Run tests in watch mode
 npm run test:coverage # Run tests with coverage
 npm run test:e2e     # Run Playwright e2e tests
 npm run lint         # Lint src/ with ESLint
 npm run lint:fix     # Auto-fix lint issues
+npm run format       # Format code with Prettier
+npm run format:check # Check formatting
 npm run typecheck    # TypeScript type checking
 npm run clean        # Remove dist/
 ```
@@ -20,6 +23,11 @@ npm run clean        # Remove dist/
 Run a single test file:
 ```bash
 npx vitest run tests/unit/kernel.test.ts
+```
+
+CLI Usage:
+```bash
+npx coralcss src/**/*.html -o dist/styles.css --minify
 ```
 
 ## Architecture Overview
@@ -197,6 +205,93 @@ tests/
 └── integration/       # Integration tests
 examples/              # HTML examples (use dist/coral.min.global.js)
 ```
+
+## Key Features
+
+### Variant Groups (Unique Feature!)
+Apply multiple classes under one variant:
+
+```html
+<!-- Instead of repeating variants -->
+<div class="hover:bg-coral-500 hover:text-white hover:scale-105">
+
+<!-- Use variant groups -->
+<div class="hover:(bg-coral-500 text-white scale-105)">
+```
+
+### Modern CSS Features
+
+**Container Queries:**
+```html
+<div class="@container">
+  <div class="@sm:flex @md:grid @lg:hidden">
+    Responds to container size
+  </div>
+</div>
+```
+
+**Anchor Positioning:**
+```html
+<button class="anchor-name-[--btn]">Anchor</button>
+<div class="position-anchor-[--btn] position-area-bottom">
+  Positioned relative to anchor
+</div>
+```
+
+**Scroll-Driven Animations:**
+```html
+<div class="animation-timeline-scroll animation-range-entry">
+  Animates as you scroll
+</div>
+```
+
+## Usage Examples
+
+### Vite Plugin
+```typescript
+// vite.config.ts
+import coral from '@coral-css/core/vite'
+
+export default {
+  plugins: [coral({ darkMode: 'class' })],
+}
+```
+
+### PostCSS
+```javascript
+// postcss.config.js
+module.exports = {
+  plugins: [
+    require('@coral-css/core/postcss')({
+      content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
+    }),
+  ],
+}
+```
+
+```css
+/* In your CSS */
+@coral base;
+@coral theme;
+@coral utilities;
+@coral components;
+```
+
+### CDN Runtime
+```html
+<script src="https://unpkg.com/@coral-css/core/dist/cdn.iife.js"></script>
+<script>
+  // CoralCSS auto-initializes and watches for class changes
+  const coral = window.CoralCSS.getCoralCDN()
+</script>
+```
+
+## Presets
+
+**coral** (default) - Modern CSS with container queries, anchor positioning
+**wind** - Tailwind-compatible utilities
+**mini** - Minimal core utilities only
+**full** - Everything included (all plugins)
 
 ## Conventions
 
