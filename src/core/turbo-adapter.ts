@@ -153,7 +153,7 @@ function convertParsedClass(turbo: TurboParsedClass): ParsedClass {
     negative: turbo.negative,
     arbitrary: turbo.arbitrary ?? null,
     important: turbo.important,
-    opacity: turbo.opacity,
+    opacity: turbo.opacity !== undefined ? String(turbo.opacity) : undefined,
   }
 }
 
