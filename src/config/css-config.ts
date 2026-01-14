@@ -7,7 +7,7 @@
  * @module config/css-config
  */
 
-import type { Plugin, PluginAPI, CoralOptions } from '../types'
+import type { Plugin, PluginAPI, CoralOptions, DeepPartial, Theme } from '../types'
 import { parseCSSConfig, mergeConfigs, validateCSSConfig } from './css-parser'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
@@ -103,7 +103,8 @@ export function cssConfigPlugin(options: CSSConfigPluginOptions = {}): Plugin {
 
       // Apply theme variables
       if (parsedConfig.theme) {
-        api.extendTheme(parsedConfig.theme as any)
+        // Convert CSS theme Record to DeepPartial<Theme> structure
+        api.extendTheme(parsedConfig.theme as unknown as DeepPartial<Theme>)
       }
 
       // Apply source/content configuration
@@ -176,7 +177,7 @@ export function cssConfigPlugin(options: CSSConfigPluginOptions = {}): Plugin {
  * })
  * ```
  */
-export function createCoralWithCSS(options: CoralOptions & CSSConfigPluginOptions): any {
+export function createCoralWithCSS(options: CoralOptions & CSSConfigPluginOptions): Partial<CoralOptions> {
   const { cssConfig, inlineConfig, ...jsConfig } = options
 
   // Parse CSS config

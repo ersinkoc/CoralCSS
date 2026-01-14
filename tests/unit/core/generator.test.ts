@@ -1101,6 +1101,156 @@ describe('CSSGenerator', () => {
     const result = generator.generateClass('null-handler')
     expect(result).toBe('')
   })
+
+  describe('caching', () => {
+    it('should cache generated CSS by default', () => {
+      let callCount = 0
+      const matcher = {
+        match: (utility: string) => {
+          callCount++
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher)
+
+      // First call should generate and cache
+      const result1 = generator.generateClass('flex')
+      expect(result1).toContain('.flex')
+      expect(callCount).toBe(1)
+
+      // Second call should return from cache (matcher not called again)
+      const result2 = generator.generateClass('flex')
+      expect(result2).toBe(result1)
+      expect(callCount).toBe(1) // Still 1, cache hit
+    })
+
+    it('should report cache statistics', () => {
+      const matcher = {
+        match: (utility: string) => {
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher)
+
+      generator.generateClass('flex') // miss
+      generator.generateClass('flex') // hit
+      generator.generateClass('flex') // hit
+
+      const stats = generator.getCacheStats()
+      expect(stats).not.toBeNull()
+      expect(stats!.hits).toBe(2)
+      expect(stats!.misses).toBe(1)
+      expect(stats!.size).toBe(1)
+    })
+
+    it('should clear cache', () => {
+      let callCount = 0
+      const matcher = {
+        match: (utility: string) => {
+          callCount++
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher)
+
+      generator.generateClass('flex')
+      expect(callCount).toBe(1)
+
+      generator.clearCache()
+
+      generator.generateClass('flex')
+      expect(callCount).toBe(2) // Called again after cache clear
+    })
+
+    it('should allow disabling cache', () => {
+      let callCount = 0
+      const matcher = {
+        match: (utility: string) => {
+          callCount++
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher, undefined, { cache: false })
+
+      expect(generator.isCacheEnabled()).toBe(false)
+      expect(generator.getCacheStats()).toBeNull()
+
+      generator.generateClass('flex')
+      generator.generateClass('flex')
+      expect(callCount).toBe(2) // Called each time, no caching
+    })
+
+    it('should clear cache when theme changes', () => {
+      let callCount = 0
+      const matcher = {
+        match: (utility: string) => {
+          callCount++
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher)
+
+      generator.generateClass('flex')
+      expect(callCount).toBe(1)
+
+      // Changing theme should clear cache
+      generator.setTheme({ colors: {} } as unknown as Theme)
+
+      generator.generateClass('flex')
+      expect(callCount).toBe(2) // Called again after theme change
+    })
+
+    it('should support custom cache options', () => {
+      const matcher = {
+        match: (utility: string) => {
+          if (utility === 'flex') {
+            return {
+              rule: { name: 'flex', pattern: /^flex$/, properties: { display: 'flex' } },
+              match: utility.match(/^flex$/)!,
+            }
+          }
+          return null
+        },
+      }
+      const generator = new CSSGenerator(matcher, undefined, {
+        cacheOptions: { maxSize: 10, ttl: 1000 }
+      })
+
+      expect(generator.isCacheEnabled()).toBe(true)
+      const stats = generator.getCacheStats()
+      expect(stats?.maxSize).toBe(10)
+    })
+  })
 })
 
 describe('sortGeneratedCSS', () => {

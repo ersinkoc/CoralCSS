@@ -7,7 +7,7 @@
  * @module presets/catppuccin
  */
 
-import type { Plugin } from '../types'
+import type { Plugin, DeepPartial, Theme } from '../types'
 import { corePlugins } from '../plugins/core'
 import { modernCSSPlugin } from '../plugins/core/modern'
 import { darkModeVariantsPlugin } from '../plugins/core/variants/dark'
@@ -332,11 +332,11 @@ export function catppuccinPreset(options: CatppuccinPresetOptions = {}): Plugin[
       }
 
       api.extendTheme({
-        colors: colors as any,
-        spacing: catppuccinSpacing as any,
-        borderRadius: catppuccinBorderRadius as any,
-        boxShadow: catppuccinBoxShadow as any,
-      })
+        colors,
+        spacing: catppuccinSpacing,
+        borderRadius: catppuccinBorderRadius,
+        boxShadow: catppuccinBoxShadow,
+      } as DeepPartial<Theme>)
     },
   })
 

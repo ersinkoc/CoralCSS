@@ -479,8 +479,8 @@ export class DependencyTracker {
 /**
  * Build cache for storing intermediate results
  */
-export class BuildCache {
-  private cache: Map<string, { result: any; timestamp: number }> = new Map()
+export class BuildCache<T = unknown> {
+  private cache: Map<string, { result: T; timestamp: number }> = new Map()
   private ttl: number
 
   constructor(ttl: number = 3600000) { // 1 hour default
@@ -490,7 +490,7 @@ export class BuildCache {
   /**
    * Get cached build result
    */
-  get(key: string): any | null {
+  get(key: string): T | null {
     const entry = this.cache.get(key)
     if (!entry) {
       return null
@@ -507,7 +507,7 @@ export class BuildCache {
   /**
    * Set build result in cache
    */
-  set(key: string, result: any): void {
+  set(key: string, result: T): void {
     this.cache.set(key, {
       result,
       timestamp: Date.now()

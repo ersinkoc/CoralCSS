@@ -11,6 +11,31 @@ import { BaseComponent, createComponentFactory } from './base'
 import type { ComponentConfig, ComponentState } from '../types'
 
 /**
+ * QRCode library interface (external library)
+ */
+interface QRCodeLibrary {
+  toCanvas(
+    canvas: HTMLCanvasElement,
+    data: string,
+    options: {
+      width: number
+      margin: number
+      color: { dark?: string; light?: string }
+    },
+    callback: (error: Error | null) => void
+  ): void
+}
+
+/**
+ * Global window extension for QRCode library
+ */
+declare global {
+  interface Window {
+    QRCode?: QRCodeLibrary
+  }
+}
+
+/**
  * QR Code error correction levels
  */
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
@@ -250,7 +275,7 @@ export class QRCode extends BaseComponent {
     // For this implementation, we'll use a canvas-based approach
     return new Promise((resolve, reject) => {
       // Check if qrcode library is available
-      const library = (window as any).QRCode
+      const library = window.QRCode
 
       if (library) {
         try {

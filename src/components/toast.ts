@@ -270,10 +270,20 @@ export class ToastContainer {
     const element = document.createElement('div')
     element.id = id
     element.setAttribute('data-coral-toast', '')
-    element.innerHTML = `
-      <span data-coral-toast-message>${message}</span>
-      ${mergedConfig.dismissible !== false ? '<button data-coral-toast-close aria-label="Close">&times;</button>' : ''}
-    `
+    // Build toast content safely using DOM methods to prevent XSS
+    const messageSpan = document.createElement('span')
+    messageSpan.setAttribute('data-coral-toast-message', '')
+    messageSpan.textContent = message // textContent is safe, doesn't parse HTML
+
+    element.appendChild(messageSpan)
+
+    if (mergedConfig.dismissible !== false) {
+      const closeButton = document.createElement('button')
+      closeButton.setAttribute('data-coral-toast-close', '')
+      closeButton.setAttribute('aria-label', 'Close')
+      closeButton.textContent = '\u00D7' // × character
+      element.appendChild(closeButton)
+    }
 
     this.container.appendChild(element)
 

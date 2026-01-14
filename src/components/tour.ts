@@ -514,28 +514,74 @@ export class Tour extends BaseComponent {
     // Determine actions
     const actions = step.actions || this.getDefaultActions(isFirst, isLast)
 
-    // Render tooltip content
-    this.tooltip.innerHTML = `
-      <div data-coral-tour-header>
-        ${this.config.showProgress ? `<div data-coral-tour-progress>${stepIndex + 1} / ${totalSteps}</div>` : ''}
-        ${this.config.showCloseButton ? '<button data-coral-tour-close aria-label="Close tour">&times;</button>' : ''}
-      </div>
-      <div data-coral-tour-body>
-        <h3 data-coral-tour-title>${step.title}</h3>
-        <p data-coral-tour-content>${step.content}</p>
-      </div>
-      <div data-coral-tour-footer>
-        ${this.config.showSkipButton && !isLast ? `<button data-coral-tour-skip>${this.config.skipText}</button>` : '<div></div>'}
-        <div data-coral-tour-actions>
-          ${actions.map((action) => `
-            <button
-              data-coral-tour-action="${action.action}"
-              ${action.primary ? 'data-primary' : ''}
-            >${action.label}</button>
-          `).join('')}
-        </div>
-      </div>
-    `
+    // Render tooltip content using safe DOM methods
+    this.tooltip.textContent = '' // Clear existing content
+
+    // Header
+    const header = document.createElement('div')
+    header.setAttribute('data-coral-tour-header', '')
+
+    if (this.config.showProgress) {
+      const progress = document.createElement('div')
+      progress.setAttribute('data-coral-tour-progress', '')
+      progress.textContent = `${stepIndex + 1} / ${totalSteps}`
+      header.appendChild(progress)
+    }
+
+    if (this.config.showCloseButton) {
+      const closeBtn = document.createElement('button')
+      closeBtn.setAttribute('data-coral-tour-close', '')
+      closeBtn.setAttribute('aria-label', 'Close tour')
+      closeBtn.textContent = '\u00D7'
+      header.appendChild(closeBtn)
+    }
+
+    this.tooltip.appendChild(header)
+
+    // Body
+    const body = document.createElement('div')
+    body.setAttribute('data-coral-tour-body', '')
+
+    const title = document.createElement('h3')
+    title.setAttribute('data-coral-tour-title', '')
+    title.textContent = step.title // textContent is safe
+    body.appendChild(title)
+
+    const content = document.createElement('p')
+    content.setAttribute('data-coral-tour-content', '')
+    content.textContent = step.content // textContent is safe
+    body.appendChild(content)
+
+    this.tooltip.appendChild(body)
+
+    // Footer
+    const footer = document.createElement('div')
+    footer.setAttribute('data-coral-tour-footer', '')
+
+    if (this.config.showSkipButton && !isLast) {
+      const skipBtn = document.createElement('button')
+      skipBtn.setAttribute('data-coral-tour-skip', '')
+      skipBtn.textContent = this.config.skipText || 'Skip'
+      footer.appendChild(skipBtn)
+    } else {
+      footer.appendChild(document.createElement('div'))
+    }
+
+    const actionsDiv = document.createElement('div')
+    actionsDiv.setAttribute('data-coral-tour-actions', '')
+
+    actions.forEach((action) => {
+      const btn = document.createElement('button')
+      btn.setAttribute('data-coral-tour-action', action.action)
+      if (action.primary) {
+        btn.setAttribute('data-primary', '')
+      }
+      btn.textContent = action.label // textContent is safe
+      actionsDiv.appendChild(btn)
+    })
+
+    footer.appendChild(actionsDiv)
+    this.tooltip.appendChild(footer)
 
     // Position tooltip
     this.positionTooltip(target, step)

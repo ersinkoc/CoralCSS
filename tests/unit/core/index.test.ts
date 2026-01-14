@@ -199,8 +199,10 @@ describe('Core Index Exports', () => {
       expect(RuleMatcher).toBe(Matcher)
     })
 
-    it('should export CSSGenerator as alias for Generator', () => {
-      expect(CSSGenerator).toBe(Generator)
+    it('should export CSSGenerator as its own class', () => {
+      // CSSGenerator is now a separate class with built-in caching support
+      expect(CSSGenerator).toBeDefined()
+      expect(CSSGenerator).not.toBe(Generator)
     })
 
     it('should export CSSTransformer as alias for Transformer', () => {

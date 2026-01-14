@@ -7,7 +7,7 @@
  * @module presets/github
  */
 
-import type { Plugin } from '../types'
+import type { Plugin, DeepPartial, Theme } from '../types'
 import { corePlugins } from '../plugins/core'
 import { modernCSSPlugin } from '../plugins/core/modern'
 import { darkModeVariantsPlugin } from '../plugins/core/variants/dark'
@@ -206,11 +206,11 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
       }
 
       api.extendTheme({
-        colors: colors as any,
-        spacing: githubSpacing as any,
-        borderRadius: githubBorderRadius as any,
-        boxShadow: githubBoxShadow as any,
-      })
+        colors,
+        spacing: githubSpacing,
+        borderRadius: githubBorderRadius,
+        boxShadow: githubBoxShadow,
+      } as DeepPartial<Theme>)
 
       // Configure reduced motion if enabled
       if (reducedMotion) {
@@ -219,7 +219,7 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
             'motion-safe': '0ms',
             'motion-reduce': '0ms',
           },
-        } as any)
+        } as DeepPartial<Theme>)
       }
     },
   })
@@ -236,7 +236,7 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
           colors: {
             [key]: value,
           },
-        } as any)
+        } as DeepPartial<Theme>)
       }
     },
   })

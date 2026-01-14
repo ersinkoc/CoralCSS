@@ -15,6 +15,7 @@ import type { Rule } from '../../../src/types'
 // Mock URL API
 vi.stubGlobal('URL', {
   createObjectURL: vi.fn(() => 'blob:mock-url'),
+  revokeObjectURL: vi.fn(),
 })
 
 // Mock Blob
@@ -34,6 +35,7 @@ describe('Worker Thread Processing', () => {
     // Re-stub URL and Blob since unstubAllGlobals removes them
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn(() => 'blob:mock-url'),
+      revokeObjectURL: vi.fn(),
     })
     vi.stubGlobal('Blob', vi.fn(() => ({})))
   })
@@ -169,8 +171,9 @@ describe('Worker Thread Processing', () => {
         expect(postMessageMock.mock.calls[0][0]).toHaveProperty('type', 'generate')
         expect(postMessageMock.mock.calls[0][0]).toHaveProperty('classes')
 
-        // Clean up by terminating
+        // Clean up by terminating - catch the rejection since we terminate mid-task
         worker.terminate()
+        await expect(promise).rejects.toThrow('Worker terminated')
       })
 
       it('should increment active task count when task starts', async () => {
@@ -187,14 +190,16 @@ describe('Worker Thread Processing', () => {
         const rules: Rule[] = []
 
         // Start task
-        worker.generateCSS(['p-4'], rules)
+        const promise = worker.generateCSS(['p-4'], rules)
 
         await new Promise(resolve => setTimeout(resolve, 10))
 
         // Active tasks should be > 0
         expect(worker.getActiveTaskCount()).toBeGreaterThan(0)
 
+        // Clean up by terminating - catch the rejection since we terminate mid-task
         worker.terminate()
+        await expect(promise).rejects.toThrow('Worker terminated')
       })
     })
 
@@ -222,13 +227,16 @@ describe('Worker Thread Processing', () => {
         const worker = new CoralWorker()
         const rules: Rule[] = []
 
-        // Start task
-        worker.generateCSS(['p-4'], rules)
+        // Start task and immediately attach rejection handler to avoid unhandled rejection
+        const promise = worker.generateCSS(['p-4'], rules)
 
-        // Wait for error to be triggered
-        await new Promise(resolve => setTimeout(resolve, 20))
+        // The onerror handler rejects pending tasks with the error message
+        // Wait for the rejection (which will happen at ~5ms when onerror triggers)
+        await expect(promise).rejects.toThrow('Worker error: Worker error')
 
-        expect(consoleSpy).toHaveBeenCalledWith('Worker error:', 'Worker error')
+        // Verify console.error was called
+        expect(consoleSpy).toHaveBeenCalledWith('[CoralCSS] Worker error:', 'Worker error')
+        worker.terminate()
       })
     })
 
@@ -553,15 +561,15 @@ describe('Worker Thread Processing', () => {
         onmessage: ((e: MessageEvent) => void) | null = null
         onerror: ((e: ErrorEvent) => void) | null = null
 
-        postMessage = vi.fn((data: any) => {
+        postMessage = vi.fn((data: { id: string }) => {
           capturedTaskId = data.id
           setTimeout(() => {
             if (this.onmessage && capturedTaskId) {
               this.onmessage({
                 data: {
                   id: capturedTaskId,
-                  type: 'success',
-                  matches: [{ className: 'p-4', css: 'padding: 1rem;' }]
+                  type: 'result',
+                  matches: [{ className: 'p-4', ruleId: 'test-rule', match: ['p-4'] }]
                 }
               } as MessageEvent)
             }
@@ -574,7 +582,14 @@ describe('Worker Thread Processing', () => {
       vi.stubGlobal('Worker', MatchWorker)
 
       const worker = new CoralWorker()
-      const rules: Rule[] = []
+      // Provide a rule with matching name
+      const rules: Rule[] = [
+        {
+          name: 'test-rule',
+          pattern: /^p-(\d+)$/,
+          properties: { padding: '1rem' }
+        }
+      ]
 
       const result = await worker.matchRules(['p-4'], rules)
 

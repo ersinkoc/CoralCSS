@@ -208,7 +208,7 @@ describe('CSS Theme Parser', () => {
           }
         `
         const result = parseCSSTheme(css)
-        expect(result.plugins).toBeDefined()
+        expect(result.pluginDirectives).toBeDefined()
       })
     })
 
@@ -224,8 +224,8 @@ describe('CSS Theme Parser', () => {
         `
         const result = parseCSSTheme(css)
 
-        expect(result.plugins).toBeDefined()
-        expect(result.plugins?.length).toBeGreaterThan(0)
+        expect(result.pluginDirectives).toBeDefined()
+        expect(result.pluginDirectives?.length).toBeGreaterThan(0)
       })
     })
 

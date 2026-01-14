@@ -16,6 +16,17 @@ import type {
 } from '../types'
 import { escapeSelector } from '../utils/string'
 import { formatRule } from '../utils/css'
+import { CSSCache, type CacheOptions } from './cache'
+
+/**
+ * CSSGenerator options
+ */
+export interface CSSGeneratorOptions {
+  /** Enable caching for generated CSS */
+  cache?: boolean
+  /** Cache configuration options */
+  cacheOptions?: CacheOptions
+}
 
 /**
  * Convert hex color to rgb values
@@ -468,11 +479,20 @@ export class CSSGenerator {
   private matcher: { match: (utility: string) => MatchResult | null }
   private variants: Map<string, Variant>
   private theme: Theme
+  private cache: CSSCache | null
 
-  constructor(matcher: { match: (utility: string) => MatchResult | null }, theme?: Theme) {
+  constructor(
+    matcher: { match: (utility: string) => MatchResult | null },
+    theme?: Theme,
+    options: CSSGeneratorOptions = {}
+  ) {
     this.matcher = matcher
     this.variants = new Map()
     this.theme = theme ?? ({} as Theme)
+
+    // Initialize cache if enabled (default: enabled)
+    const cacheEnabled = options.cache !== false
+    this.cache = cacheEnabled ? new CSSCache(options.cacheOptions) : null
   }
 
   /**
@@ -509,6 +529,14 @@ export class CSSGenerator {
    * Generate CSS for a single class
    */
   generateClass(className: string): string {
+    // Check cache first
+    if (this.cache) {
+      const cached = this.cache.get(className)
+      if (cached !== undefined) {
+        return cached
+      }
+    }
+
     // Handle important prefix
     const isImportant = className.startsWith('!')
     const cleanClassName = isImportant ? className.slice(1) : className
@@ -593,7 +621,38 @@ export class CSSGenerator {
       cssOutput = `${wrapper} {\n${cssOutput}\n}`
     }
 
+    // Cache the result
+    if (this.cache) {
+      this.cache.set(className, cssOutput)
+    }
+
     return cssOutput
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats(): { hits: number; misses: number; size: number; hitRate: number } | null {
+    if (!this.cache) {
+      return null
+    }
+    return this.cache.stats()
+  }
+
+  /**
+   * Clear the cache
+   */
+  clearCache(): void {
+    if (this.cache) {
+      this.cache.clear()
+    }
+  }
+
+  /**
+   * Check if caching is enabled
+   */
+  isCacheEnabled(): boolean {
+    return this.cache !== null
   }
 
   /**
@@ -618,8 +677,13 @@ export class CSSGenerator {
 
   /**
    * Set theme
+   * Note: Clears cache since theme changes may affect CSS output
    */
   setTheme(theme: Theme): void {
     this.theme = theme
+    // Clear cache when theme changes since CSS output may differ
+    if (this.cache) {
+      this.cache.clear()
+    }
   }
 }

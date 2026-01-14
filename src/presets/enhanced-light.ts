@@ -7,7 +7,7 @@
  * @module presets/enhanced-light
  */
 
-import type { Plugin } from '../types'
+import type { Plugin, DeepPartial, Theme } from '../types'
 import { corePlugins } from '../plugins/core'
 import { modernCSSPlugin } from '../plugins/core/modern'
 
@@ -204,17 +204,11 @@ export function enhancedLightPreset(): Plugin[] {
     version: '1.0.0',
     install(api) {
       api.extendTheme({
-        colors: enhancedLightColors as any,
-        boxShadow: {
-          ...enhancedShadows,
-        } as any,
-        borderRadius: {
-          ...enhancedBorderRadius,
-        } as any,
-        spacing: {
-          ...enhancedSpacing,
-        } as any,
-      })
+        colors: enhancedLightColors,
+        boxShadow: enhancedShadows,
+        borderRadius: enhancedBorderRadius,
+        spacing: enhancedSpacing,
+      } as DeepPartial<Theme>)
     },
   })
 

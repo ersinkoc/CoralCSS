@@ -315,12 +315,12 @@ describe('CLI Tool', () => {
       it('should run analyze', async () => {
         const result = await run({ command: 'analyze' })
         expect(result.success).toBe(true)
-        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Analyzing'))
+        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Bundle Analyzer'))
       })
 
       it('should display bundle analysis', async () => {
         await run({ command: 'analyze' })
-        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Bundle Analysis'))
+        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('CoralCSS'))
       })
 
       it('should show suggestions', async () => {
@@ -338,12 +338,12 @@ describe('CLI Tool', () => {
 
       it('should display optimization steps', async () => {
         await run({ command: 'optimize' })
-        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Optimizing'))
+        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Optimization Results'))
       })
 
       it('should show optimization results', async () => {
         await run({ command: 'optimize' })
-        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Optimization complete'))
+        expect(consoleMock.log).toHaveBeenCalledWith(expect.stringContaining('Total Reduction'))
       })
     })
 

@@ -7,7 +7,7 @@
  * @module presets/nord
  */
 
-import type { Plugin } from '../types'
+import type { Plugin, DeepPartial, Theme } from '../types'
 import { corePlugins } from '../plugins/core'
 import { modernCSSPlugin } from '../plugins/core/modern'
 import { darkModeVariantsPlugin } from '../plugins/core/variants/dark'
@@ -154,11 +154,11 @@ export function nordPreset(options: NordPresetOptions = {}): Plugin[] {
     version: '1.0.0',
     install(api) {
       api.extendTheme({
-        colors: nordColors as any,
-        ...(polarNight && { spacing: nordSpacing as any }),
-        ...(frost && { borderRadius: nordBorderRadius as any }),
-        ...(aurora && { boxShadow: nordBoxShadow as any }),
-      })
+        colors: nordColors,
+        ...(polarNight && { spacing: nordSpacing }),
+        ...(frost && { borderRadius: nordBorderRadius }),
+        ...(aurora && { boxShadow: nordBoxShadow }),
+      } as DeepPartial<Theme>)
     },
   })
 

@@ -242,13 +242,20 @@ export class FileUpload extends BaseComponent {
         preview.appendChild(icon)
       }
 
-      // File info
+      // File info - use safe DOM methods to prevent XSS from file names
       const info = document.createElement('div')
       info.className = 'file-upload-preview-info'
-      info.innerHTML = `
-        <span class="file-upload-preview-name">${file.name}</span>
-        <span class="file-upload-preview-size">${this.formatSize(file.size)}</span>
-      `
+
+      const nameSpan = document.createElement('span')
+      nameSpan.className = 'file-upload-preview-name'
+      nameSpan.textContent = file.name // textContent is safe
+
+      const sizeSpan = document.createElement('span')
+      sizeSpan.className = 'file-upload-preview-size'
+      sizeSpan.textContent = this.formatSize(file.size)
+
+      info.appendChild(nameSpan)
+      info.appendChild(sizeSpan)
       preview.appendChild(info)
 
       // Remove button

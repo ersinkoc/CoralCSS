@@ -7,7 +7,12 @@
  * @module config/css-parser
  */
 
-import type { CoralOptions } from '../types'
+import type { CoralOptions, DeepPartial, Theme } from '../types'
+
+/**
+ * Plugin option value types
+ */
+export type PluginOptionValue = string | number | boolean
 
 /**
  * Parsed CSS configuration
@@ -20,7 +25,7 @@ export interface ParsedCSSConfig {
   blocklist?: string[]
   plugins?: string[]
   disabledPlugins?: string[]
-  pluginOptions?: Record<string, any>
+  pluginOptions?: Record<string, Record<string, PluginOptionValue>>
   presets?: string[]
   extends?: string[]
 }
@@ -150,8 +155,8 @@ function parseCSSVariables(css: string): Record<string, string> {
 /**
  * Parse plugin options from CSS syntax
  */
-function parsePluginOptions(options: string): Record<string, any> {
-  const parsed: Record<string, any> = {}
+function parsePluginOptions(options: string): Record<string, PluginOptionValue> {
+  const parsed: Record<string, PluginOptionValue> = {}
 
   // Parse key: value pairs
   const pairs = options.split(/\s+/).filter(Boolean)
@@ -179,6 +184,23 @@ function parsePluginOptions(options: string): Record<string, any> {
 }
 
 /**
+ * Extended config type to include plugin options from CSS config
+ * Note: This doesn't extend Partial<CoralOptions> because CSS config
+ * stores preset names as strings (for later resolution) while
+ * CoralOptions expects full Preset objects
+ */
+interface MergedConfig {
+  theme?: DeepPartial<Theme>
+  content?: string[]
+  safelist?: Array<string | RegExp | { pattern: RegExp; variants?: string[] }>
+  blocklist?: Array<string | RegExp>
+  pluginOptions?: Record<string, Record<string, PluginOptionValue>>
+  // Presets stored as string names for later resolution by preset loader
+  presets?: string[]
+  [key: string]: unknown
+}
+
+/**
  * Merge CSS config with JS config
  * CSS config takes precedence for overlapping values
  */
@@ -186,14 +208,23 @@ export function mergeConfigs(
   jsConfig: Partial<CoralOptions>,
   cssConfig: ParsedCSSConfig
 ): Partial<CoralOptions> {
-  const merged: Partial<CoralOptions> = { ...jsConfig }
+  // Extract pluginOptions from jsConfig if present (extended config type)
+  const jsPluginOptions = (jsConfig as { pluginOptions?: Record<string, Record<string, PluginOptionValue>> }).pluginOptions
 
-  // Merge theme
+  const merged: MergedConfig = {
+    theme: jsConfig.theme,
+    content: Array.isArray(jsConfig.content) ? jsConfig.content : jsConfig.content ? [jsConfig.content] : undefined,
+    safelist: jsConfig.safelist,
+    blocklist: jsConfig.blocklist,
+    pluginOptions: jsPluginOptions,
+  }
+
+  // Merge theme - CSS variables become theme values
   if (cssConfig.theme) {
     merged.theme = {
       ...jsConfig.theme,
       ...cssConfig.theme,
-    } as any
+    } as unknown as DeepPartial<Theme>
   }
 
   // Merge source/content paths
@@ -205,45 +236,56 @@ export function mergeConfigs(
       ...content,
       ...(cssConfig.source || []),
       ...(cssConfig.sourceNot?.map(s => `!${s}`) || []),
-    ] as any
+    ]
   }
 
-  // Merge safelist
+  // Merge safelist - handle both string and array from JS config
   if (cssConfig.safelist) {
-    const existingSafelist = merged.safelist || []
-    const safelist = Array.isArray(existingSafelist) ? existingSafelist : [existingSafelist]
+    const existingSafelist = merged.safelist
+    const safelist: string[] = Array.isArray(existingSafelist)
+      ? (existingSafelist as string[])
+      : existingSafelist
+        ? [existingSafelist as unknown as string]
+        : []
 
     merged.safelist = [
       ...safelist,
       ...cssConfig.safelist,
-    ] as any
+    ]
   }
 
-  // Merge blocklist
+  // Merge blocklist - handle both string and array from JS config
   if (cssConfig.blocklist) {
-    const existingBlocklist = merged.blocklist || []
-    const blocklist = Array.isArray(existingBlocklist) ? existingBlocklist : [existingBlocklist]
+    const existingBlocklist = merged.blocklist
+    const blocklist: string[] = Array.isArray(existingBlocklist)
+      ? (existingBlocklist as string[])
+      : existingBlocklist
+        ? [existingBlocklist as unknown as string]
+        : []
 
     merged.blocklist = [
       ...blocklist,
       ...cssConfig.blocklist,
-    ] as any
+    ]
   }
 
-  // Merge presets
+  // Store presets - as string array for later resolution by preset loader
   if (cssConfig.presets) {
-    merged.presets = cssConfig.presets as any
+    // Store preset names directly on the config
+    // Note: These are string names, not full Preset objects
+    (merged as MergedConfig).presets = cssConfig.presets as unknown as typeof merged.presets
   }
 
   // Merge plugin options
   if (cssConfig.pluginOptions) {
-    (merged as any).pluginOptions = {
-      ...(merged as any).pluginOptions,
+    merged.pluginOptions = {
+      ...merged.pluginOptions,
       ...cssConfig.pluginOptions,
     }
   }
 
-  return merged
+  // Cast to Partial<CoralOptions> - preset string names will be resolved later
+  return merged as unknown as Partial<CoralOptions>
 }
 
 /**

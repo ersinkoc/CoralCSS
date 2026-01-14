@@ -7,7 +7,22 @@
  * @module config/css-theme-parser
  */
 
-import type { CoralOptions, Theme, ThemeColors } from '../types'
+import type { CoralOptions, Theme, ThemeColors, DeepPartial } from '../types'
+
+/**
+ * Plugin directive from CSS @plugin
+ */
+export interface PluginDirective {
+  name: string
+}
+
+/**
+ * Output from CSS theme parser
+ */
+export interface CSSThemeConfig {
+  theme?: DeepPartial<Theme>
+  pluginDirectives?: PluginDirective[]
+}
 
 /**
  * CSS Variable definition
@@ -40,14 +55,14 @@ interface ParsedTheme {
  * }
  * ```
  */
-export function parseCSSTheme(cssContent: string): CoralOptions {
+export function parseCSSTheme(cssContent: string): CSSThemeConfig {
   const parsed = parseCSSVariables(cssContent)
   const theme = buildThemeFromVariables(parsed)
-  const plugins = extractPluginDirectives(cssContent)
+  const pluginDirectives = extractPluginDirectives(cssContent)
 
   return {
     theme,
-    plugins,
+    pluginDirectives,
   }
 }
 
@@ -181,15 +196,17 @@ function buildThemeFromVariables(parsed: ParsedTheme): Partial<Theme> {
 /**
  * Extract plugin directives from CSS
  */
-function extractPluginDirectives(cssContent: string): any[] {
-  const plugins: any[] = []
+function extractPluginDirectives(cssContent: string): PluginDirective[] {
+  const plugins: PluginDirective[] = []
 
   // @plugin directive
   const pluginRegex = /@plugin\s+['"]([^'"]+)['"];/g
   let match
   while ((match = pluginRegex.exec(cssContent)) !== null) {
-    // Store plugin name for later import
-    plugins.push({ name: match[1] })
+    const pluginName = match[1]
+    if (pluginName) {
+      plugins.push({ name: pluginName })
+    }
   }
 
   return plugins

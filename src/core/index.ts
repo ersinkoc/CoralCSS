@@ -59,12 +59,14 @@ export { Matcher, createMatcher } from './matcher'
 // Generator
 export {
   Generator,
+  CSSGenerator,
   createGenerator,
   generateNegative,
   mergeProperties,
   sortGeneratedCSS,
   dedupeGeneratedCSS,
   type GeneratorOptions,
+  type CSSGeneratorOptions,
 } from './generator'
 
 // Transformer
@@ -89,7 +91,6 @@ export {
 
 // Aliases for compatibility
 export { Matcher as RuleMatcher } from './matcher'
-export { Generator as CSSGenerator } from './generator'
 export { Transformer as CSSTransformer } from './transformer'
 export { Extractor as ClassExtractor } from './extractor'
 
