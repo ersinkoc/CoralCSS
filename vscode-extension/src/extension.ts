@@ -8,11 +8,17 @@ import * as vscode from 'vscode'
 
 // CoralCSS utility categories and patterns
 const UTILITY_PATTERNS = {
-  // Spacing
+  // Spacing (including logical properties)
   spacing: {
-    prefixes: ['p', 'm', 'px', 'py', 'pt', 'pb', 'pl', 'pr', 'space-x', 'space-y'],
-    description: 'Padding and margin utilities',
-    values: ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24', '32', '40', '48', '56', '64', '72', '96', 'auto']
+    prefixes: ['p', 'm', 'px', 'py', 'pt', 'pb', 'pl', 'pr', 'ps', 'pe', 'pbs', 'pbe', 'pli', 'plb', 'mx', 'my', 'ms', 'me', 'mbs', 'mbe', 'mli', 'mlb', 'space-x', 'space-y', 'gap', 'gap-x', 'gap-y', 'gap-inline', 'gap-block'],
+    description: 'Padding and margin utilities (including logical properties)',
+    values: ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24', '32', '40', '48', '56', '64', '72', '96', 'auto', 'px', '0.5', '1.5', '2.5', '3.5']
+  },
+  // Fluid spacing
+  fluidSpacing: {
+    prefixes: ['p-fluid', 'm-fluid', 'gap-fluid'],
+    description: 'Fluid responsive spacing using clamp()',
+    values: ['xs', 'sm', 'base', 'md', 'lg', 'xl']
   },
   // Sizing
   sizing: {
@@ -60,6 +66,48 @@ const UTILITY_PATTERNS = {
       leading: ['none', 'tight', 'snug', 'normal', 'relaxed', 'loose'],
       tracking: ['tighter', 'tight', 'normal', 'wide', 'wider', 'widest']
     }
+  },
+  // Fluid Typography (Phase 1)
+  fluidTypography: {
+    prefixes: ['text-fluid'],
+    description: 'Fluid responsive font sizes using clamp()',
+    values: ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', 'hero', 'display', 'giant']
+  },
+  // Gradient Text (Phase 1)
+  gradientText: {
+    prefixes: ['text-gradient'],
+    description: 'Gradient text effects',
+    values: ['primary', 'secondary', 'rainbow', 'sunset', 'ocean', 'forest', 'fire', 'neon', 'gold', 'silver', 'chrome', 'holographic', 'aurora', 'animate']
+  },
+  // Text Effects (Phase 1)
+  textEffects: {
+    prefixes: ['text-stroke', 'text-glow', 'text-neon', 'text-3d', 'text-mask'],
+    description: 'Advanced text effects',
+    values: {
+      'text-stroke': ['1', '2', '3', '4', '5', 'white', 'black', 'current', 'primary'],
+      'text-glow': ['sm', '', 'md', 'lg', 'xl'],
+      'text-neon': ['blue', 'pink', 'green', 'red', 'yellow', 'purple', 'orange', 'cyan', 'white'],
+      'text-3d': ['', 'sm', 'lg'],
+      'text-mask': ['fade-b', 'fade-t', 'fade-r', 'fade-l']
+    }
+  },
+  // 3D Text
+  text3D: {
+    prefixes: ['text-emboss', 'text-engrave', 'text-outline'],
+    description: '3D text effects',
+    values: ['', '2']
+  },
+  // Glassmorphism (Phase 2)
+  glassmorphism: {
+    prefixes: ['glass'],
+    description: 'Glassmorphism effects with blur and transparency',
+    values: ['', 'sm', 'lg', 'xl', 'dark', 'light', 'frost', 'crystal', 'morphism', 'primary', 'blue', 'green', 'purple', 'orange', 'pink', 'cyan', 'noise', 'border-glow']
+  },
+  // Neumorphism (Phase 2)
+  neumorphism: {
+    prefixes: ['neu'],
+    description: 'Soft UI / Neumorphism effects',
+    values: ['', 'sm', 'lg', 'xl', 'inset', 'flat', 'concave', 'convex', 'pressed', 'dark', 'dark-inset', 'primary', 'primary-inset', 'blue', 'blue-inset', 'green', 'green-inset', 'purple', 'purple-inset', 'gray', 'gray-inset']
   },
   // Layout
   layout: {
@@ -120,24 +168,183 @@ const UTILITY_PATTERNS = {
   },
   // Transitions & Animations
   transitions: {
-    prefixes: ['transition', 'duration', 'ease', 'delay', 'animate'],
-    description: 'Transition and animation utilities',
+    prefixes: ['transition', 'duration', 'ease', 'delay'],
+    description: 'Transition utilities',
     values: {
       transition: ['none', 'all', 'colors', 'opacity', 'shadow', 'transform'],
       duration: ['75', '100', '150', '200', '300', '500', '700', '1000'],
-      ease: ['linear', 'in', 'out', 'in-out', 'spring-sm', 'spring-md', 'spring-lg'],
-      delay: ['75', '100', '150', '200', '300', '500', '700', '1000'],
-      animate: ['none', 'spin', 'ping', 'pulse', 'bounce', 'spring-sm', 'spring-md', 'spring-lg', 'bounce-in', 'bounce-out', 'elastic', 'scroll-fade-in', 'scroll-scale', 'swipe-left', 'swipe-right', 'shake', 'wiggle', 'pulse-glow']
+      ease: ['linear', 'in', 'out', 'in-out'],
+      delay: ['75', '100', '150', '200', '300', '500', '700', '1000']
     }
   },
-  // Interactive
+  // Physics-based Animations (Phase 3)
+  physicsAnimations: {
+    prefixes: ['ease-spring', 'animate-spring', 'animate-bounce', 'animate-elastic', 'animate-jello', 'animate-rubber'],
+    description: 'Physics-based spring and elastic animations',
+    values: {
+      'ease-spring': ['', 'bounce', 'stiff', 'soft', 'wobbly', 'gentle'],
+      'animate-spring': ['in', 'out'],
+      'animate-bounce': ['in', 'subtle'],
+      'animate-elastic': [''],
+      'animate-jello': [''],
+      'animate-rubber': ['band']
+    }
+  },
+  // Animation Orchestration (Phase 3)
+  animationOrchestration: {
+    prefixes: ['stagger', 'stagger-child', 'animate'],
+    description: 'Animation timing and orchestration',
+    values: {
+      stagger: ['50', '100', '150', '200', '250', '300', '400', '500'],
+      'stagger-child': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+      animate: ['once', 'twice', 'thrice', 'infinite', 'normal', 'reverse', 'alternate', 'fill-forwards', 'fill-backwards', 'fill-both', 'running', 'paused']
+    }
+  },
+  // Animated Gradients (Phase 3)
+  animatedGradients: {
+    prefixes: ['gradient'],
+    description: 'Animated gradient effects',
+    values: ['animate', 'animate-slow', 'animate-fast', 'shimmer', 'wave', 'pulse', 'rotate', 'mesh']
+  },
+  // 50+ Animations (Phase 3)
+  animations: {
+    prefixes: ['animate'],
+    description: 'Extended animation utilities',
+    values: [
+      'none', 'spin', 'spin-slow', 'ping', 'pulse', 'bounce',
+      'float', 'float-slow', 'pulse-ring', 'pulse-dot',
+      'wiggle', 'shake', 'swing', 'heartbeat', 'breathing', 'tada', 'wobble', 'flash', 'blink', 'pop',
+      'slide-in-left', 'slide-in-right', 'slide-in-up', 'slide-in-down',
+      'zoom-in', 'zoom-out', 'flip-in-x', 'flip-in-y',
+      'marquee', 'marquee-reverse', 'morph', 'rotate-3d',
+      'bg-pan-left', 'bg-pan-right', 'progress',
+      'scroll-fade-in', 'scroll-scale'
+    ]
+  },
+  // Skeleton Loading
+  skeleton: {
+    prefixes: ['skeleton'],
+    description: 'Skeleton loading animations',
+    values: ['', 'dark', 'pulse']
+  },
+  // Glow Effects
+  glowEffects: {
+    prefixes: ['glow', 'glow-pulse'],
+    description: 'Glow and pulse effects',
+    values: ['primary', 'blue', 'green', 'red', 'purple', 'pink', 'orange', 'yellow', 'cyan', 'primary-sm', 'primary-lg', 'blue-sm', 'blue-lg']
+  },
+  // Interactive (Phase 5)
   interactive: {
-    prefixes: ['cursor', 'pointer', 'select', 'resize', 'snap', 'touch'],
+    prefixes: ['cursor', 'select', 'resize', 'snap', 'touch', 'pointer-events'],
     description: 'Interactive state utilities',
     values: {
-      cursor: ['auto', 'default', 'pointer', 'wait', 'text', 'move', 'help', 'not-allowed', 'crosshair', 'zoom-in', 'zoom-out'],
-      select: ['none', 'text', 'all', 'auto'],
-      resize: ['none', 'x', 'y', 'both']
+      cursor: ['auto', 'default', 'pointer', 'wait', 'text', 'move', 'help', 'not-allowed', 'none', 'context-menu', 'progress', 'cell', 'crosshair', 'vertical-text', 'alias', 'copy', 'no-drop', 'grab', 'grabbing', 'all-scroll', 'col-resize', 'row-resize', 'n-resize', 's-resize', 'e-resize', 'w-resize', 'ne-resize', 'nw-resize', 'se-resize', 'sw-resize', 'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize', 'zoom-in', 'zoom-out'],
+      select: ['none', 'text', 'all', 'auto', 'contain'],
+      resize: ['none', 'x', 'y', 'both'],
+      touch: ['auto', 'none', 'manipulation', 'pan-x', 'pan-left', 'pan-right', 'pan-y', 'pan-up', 'pan-down', 'pinch-zoom'],
+      'pointer-events': ['none', 'auto', 'all', 'visible', 'painted', 'fill', 'stroke']
+    }
+  },
+  // Selection Utilities (Phase 5)
+  selection: {
+    prefixes: ['selection', 'selection-text', 'caret', 'accent'],
+    description: 'Selection and accent color utilities',
+    values: {
+      selection: ['primary', 'secondary', 'accent', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose'],
+      'selection-text': ['white', 'black', 'primary', 'secondary'],
+      caret: ['primary', 'secondary', 'transparent', 'current'],
+      accent: ['primary', 'auto', 'current']
+    }
+  },
+  // Extended Aspect Ratios (Phase 4)
+  aspectRatios: {
+    prefixes: ['aspect'],
+    description: 'Extended aspect ratio utilities',
+    values: ['auto', 'square', 'video', 'golden', 'silver', 'cinema', 'ultra', 'imax', 'photo', 'portrait', 'story', 'a4', 'letter', 'legal', 'film-35mm', 'anamorphic', 'tv', 'widescreen', 'superwide', 'vertical']
+  },
+  // Logical Properties - Position (Phase 4)
+  logicalPosition: {
+    prefixes: ['start', 'end', 'inset-inline', 'inset-block'],
+    description: 'Logical positioning utilities',
+    values: ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24', 'auto', 'full', '1/2', '1/3', '2/3', '1/4', '3/4']
+  },
+  // Logical Properties - Border (Phase 4)
+  logicalBorder: {
+    prefixes: ['border-s', 'border-e', 'border-bs', 'border-be', 'rounded-ss', 'rounded-se', 'rounded-es', 'rounded-ee', 'rounded-s', 'rounded-e'],
+    description: 'Logical border utilities',
+    values: ['', '0', '2', '4', '8', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full']
+  },
+  // Logical Properties - Float & Clear (Phase 4)
+  logicalFloat: {
+    prefixes: ['float', 'clear'],
+    description: 'Logical float and clear utilities',
+    values: ['start', 'end', 'left', 'right', 'none', 'both']
+  },
+  // Writing Mode & Direction (Phase 4)
+  writingMode: {
+    prefixes: ['writing', 'dir', 'bidi', 'text-orientation'],
+    description: 'Writing mode and text direction utilities',
+    values: {
+      writing: ['horizontal-tb', 'vertical-rl', 'vertical-lr'],
+      dir: ['ltr', 'rtl'],
+      bidi: ['normal', 'embed', 'isolate', 'override'],
+      'text-orientation': ['mixed', 'upright', 'sideways']
+    }
+  },
+  // Logical Size (Phase 4)
+  logicalSize: {
+    prefixes: ['inline-size', 'block-size', 'min-inline-size', 'max-inline-size', 'min-block-size', 'max-block-size'],
+    description: 'Logical size utilities',
+    values: ['0', 'auto', 'full', 'screen', 'min', 'max', 'fit', '1/2', '1/3', '2/3', '1/4', '3/4']
+  },
+  // Overflow Logical (Phase 4)
+  overflowLogical: {
+    prefixes: ['overflow-inline', 'overflow-block'],
+    description: 'Logical overflow utilities',
+    values: ['auto', 'hidden', 'scroll', 'visible', 'clip']
+  },
+  // Scroll Logical (Phase 4)
+  scrollLogical: {
+    prefixes: ['scroll-ms', 'scroll-me', 'scroll-mbs', 'scroll-mbe', 'scroll-ps', 'scroll-pe', 'scroll-pbs', 'scroll-pbe'],
+    description: 'Logical scroll margin/padding utilities',
+    values: ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24']
+  },
+  // Background Blur (Phase 4)
+  bgBlur: {
+    prefixes: ['bg-blur', 'bg-frosted'],
+    description: 'Background blur utilities',
+    values: ['xs', 'sm', '', 'md', 'lg', 'xl', '2xl', '3xl', 'dark']
+  },
+  // Performance Hints (Phase 5)
+  performance: {
+    prefixes: ['will-change', 'contain', 'content-visibility'],
+    description: 'Performance optimization utilities',
+    values: {
+      'will-change': ['auto', 'scroll', 'contents', 'transform', 'opacity'],
+      contain: ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint', 'inline-size', 'layout-paint', 'size-layout'],
+      'content-visibility': ['visible', 'hidden', 'auto']
+    }
+  },
+  // Advanced Rendering (Phase 5)
+  rendering: {
+    prefixes: ['color-scheme', 'image-render', 'text-render', 'print-color-adjust', 'forced-color-adjust'],
+    description: 'Advanced rendering utilities',
+    values: {
+      'color-scheme': ['normal', 'light', 'dark', 'light-dark', 'only-light', 'only-dark'],
+      'image-render': ['auto', 'crisp', 'pixelated', 'smooth', 'optimizeQuality'],
+      'text-render': ['auto', 'optimizeSpeed', 'optimizeLegibility', 'geometricPrecision'],
+      'print-color-adjust': ['economy', 'exact'],
+      'forced-color-adjust': ['auto', 'none']
+    }
+  },
+  // Backdrop Utilities (Phase 5)
+  backdrop: {
+    prefixes: ['backdrop-blur', 'backdrop-dark', 'backdrop-light', 'scrollbar-gutter'],
+    description: 'Dialog/modal backdrop utilities',
+    values: {
+      'backdrop-blur': ['sm', '', 'lg'],
+      'backdrop-dark': ['', 'er'],
+      'scrollbar-gutter': ['auto', 'stable', 'stable-both']
     }
   },
   // Accessibility
@@ -259,19 +466,63 @@ class CoralCSSCompletionProvider implements vscode.CompletionItemProvider {
       completions.push(item)
     }
 
-    // Add advanced features
+    // Add advanced features (Phases 1-6)
     const advancedFeatures = [
+      // Phase 1: Typography
+      { name: 'text-fluid-base', detail: 'Fluid typography', docs: 'Responsive font size using clamp() that scales smoothly between breakpoints.' },
+      { name: 'text-fluid-hero', detail: 'Hero fluid text', docs: 'Large hero text that scales from 3rem to 6rem based on viewport.' },
+      { name: 'text-gradient-rainbow', detail: 'Rainbow gradient text', docs: 'Animated rainbow gradient effect for text.' },
+      { name: 'text-gradient-aurora', detail: 'Aurora gradient text', docs: 'Aurora borealis-inspired gradient for text.' },
+      { name: 'text-neon-blue', detail: 'Neon blue text', docs: 'Glowing neon blue text effect with animated glow.' },
+      { name: 'text-stroke-2', detail: 'Text stroke', docs: 'Adds a 2px stroke outline to text.' },
+      { name: 'text-glow-lg', detail: 'Text glow', docs: 'Large glowing text effect.' },
+      { name: 'text-3d', detail: '3D text effect', docs: 'Creates a 3D shadow effect on text.' },
+      { name: 'text-emboss', detail: 'Embossed text', docs: 'Raised/embossed text effect.' },
+
+      // Phase 2: Glassmorphism & Neumorphism
+      { name: 'glass', detail: 'Glassmorphism', docs: 'Frosted glass effect with backdrop blur and transparency.' },
+      { name: 'glass-frost', detail: 'Frosted glass', docs: 'Heavy frosted glass effect with strong blur.' },
+      { name: 'glass-morphism', detail: 'Full glass morphism', docs: 'Complete glassmorphism effect with border and shadow.' },
+      { name: 'neu', detail: 'Neumorphism', docs: 'Soft UI shadow effect for raised elements.' },
+      { name: 'neu-inset', detail: 'Inset neumorphism', docs: 'Pressed/inset soft UI effect.' },
+      { name: 'neu-convex', detail: 'Convex neumorphism', docs: 'Convex soft UI with gradient highlight.' },
+
+      // Phase 3: Animations
+      { name: 'ease-spring', detail: 'Spring easing', docs: 'Physics-based spring easing function for natural motion.' },
+      { name: 'animate-spring-in', detail: 'Spring entrance', docs: 'Bouncy spring entrance animation.' },
+      { name: 'animate-elastic', detail: 'Elastic animation', docs: 'Elastic overshoot animation effect.' },
+      { name: 'animate-jello', detail: 'Jello wobble', docs: 'Wobbly jello-like animation effect.' },
+      { name: 'stagger-100', detail: 'Stagger delay', docs: 'Adds 100ms stagger delay for child animations.' },
+      { name: 'gradient-animate', detail: 'Animated gradient', docs: 'Smoothly animating gradient background.' },
+      { name: 'gradient-shimmer', detail: 'Shimmer effect', docs: 'Shimmering gradient loading effect.' },
+      { name: 'skeleton', detail: 'Skeleton loading', docs: 'Skeleton placeholder animation for loading states.' },
+      { name: 'glow-pulse', detail: 'Pulsing glow', docs: 'Animated pulsing glow effect.' },
+
+      // Phase 4: Layout
+      { name: 'aspect-golden', detail: 'Golden ratio', docs: 'Aspect ratio of 1.618 (golden ratio).' },
+      { name: 'aspect-cinema', detail: 'Cinemascope', docs: 'Aspect ratio of 2.35 (cinemascope film).' },
+      { name: 'ps-4', detail: 'Padding start', docs: 'Logical padding-inline-start for RTL support.' },
+      { name: 'me-4', detail: 'Margin end', docs: 'Logical margin-inline-end for RTL support.' },
+      { name: 'border-s', detail: 'Border start', docs: 'Logical border-inline-start for RTL support.' },
+      { name: 'rounded-ss', detail: 'Rounded start-start', docs: 'Logical border-start-start-radius.' },
+      { name: 'writing-vertical-rl', detail: 'Vertical writing', docs: 'Vertical writing mode, right-to-left.' },
+      { name: 'bg-frosted', detail: 'Frosted background', docs: 'Frosted glass background effect with blur and saturation.' },
+
+      // Phase 5: Interactive
+      { name: 'cursor-grab', detail: 'Grab cursor', docs: 'Displays grab hand cursor for draggable elements.' },
+      { name: 'selection-primary', detail: 'Selection color', docs: 'Sets text selection highlight to primary color.' },
+      { name: 'touch-manipulation', detail: 'Touch manipulation', docs: 'Enables panning and zooming but disables double-tap.' },
+      { name: 'will-change-transform', detail: 'Will change', docs: 'Hints browser to optimize for transform changes.' },
+      { name: 'contain-layout', detail: 'CSS containment', docs: 'Contains layout changes within element.' },
+      { name: 'content-visibility-auto', detail: 'Content visibility', docs: 'Enables browser to skip rendering off-screen content.' },
+      { name: 'color-scheme-dark', detail: 'Dark color scheme', docs: 'Indicates dark mode preference to the browser.' },
+      { name: 'scrollbar-gutter-stable', detail: 'Scrollbar gutter', docs: 'Reserves space for scrollbar to prevent layout shift.' },
+
+      // Legacy
       { name: 'smart-grid', detail: 'Auto-fit responsive grid', docs: 'Responsive grid that automatically adjusts column count based on available space.' },
-      { name: 'grid-masonry-tight', detail: 'Masonry grid layout', docs: 'CSS masonry layout for tight-packed elements.' },
       { name: 'p-smart', detail: 'Fluid responsive padding', docs: 'Padding that uses clamp() for fluid responsive sizing.' },
-      { name: 'text-perceptual', detail: 'Perceptual adaptive color', docs: 'Text color that maintains perceptual brightness across themes.' },
-      { name: 'contrast-high', detail: 'High contrast mode', docs: 'Increases contrast for better readability.' },
-      { name: 'animate-spring-md', detail: 'Spring animation', docs: 'Physics-based spring animation for natural movement.' },
-      { name: 'animate-scroll-fade-in', detail: 'Scroll fade animation', docs: 'Fade-in animation driven by scroll position.' },
       { name: 'accent-primary', detail: 'Primary accent color', docs: 'Sets the accent color to the primary theme color.' },
       { name: 'line-clamp-3', detail: 'Line clamping', docs: 'Limits text to 3 lines with ellipsis.' },
-      { name: 'color-scheme-dark', detail: 'Dark color scheme', docs: 'Indicates dark mode preference to the browser.' },
-      { name: 'print-color-adjust-exact', detail: 'Print color exact', docs: 'Preserves colors when printing.' },
     ]
 
     // Add Catppuccin theme colors
@@ -310,6 +561,31 @@ class CoralCSSCompletionProvider implements vscode.CompletionItemProvider {
       item.detail = arbitrary.detail
       item.documentation = new vscode.MarkdownString(`**Arbitrary Values**: ${arbitrary.detail}\n\n${arbitrary.docs}`)
       item.sortText = `4_${arbitrary.name}`
+      completions.push(item)
+    }
+
+    // Add component data attributes (Phase 6)
+    const componentAttributes = [
+      { name: 'data-coral-ai-chat', detail: 'AI Chat Interface', docs: 'ChatGPT/Claude-like AI chat interface component with streaming support.' },
+      { name: 'data-coral-kanban', detail: 'Kanban Board', docs: 'Trello-style drag-and-drop Kanban board component.' },
+      { name: 'data-coral-terminal', detail: 'Terminal Emulator', docs: 'Terminal/console emulator with themes and ANSI color support.' },
+      { name: 'data-coral-command', detail: 'Command Palette', docs: 'VSCode/Raycast style command palette component.' },
+      { name: 'data-coral-data-table', detail: 'Data Table', docs: 'Excel-like data grid with sorting and filtering.' },
+      { name: 'data-coral-virtual-list', detail: 'Virtual List', docs: 'Virtualized scrolling list for large datasets.' },
+      { name: 'data-coral-tree', detail: 'Tree View', docs: 'File explorer-style tree component.' },
+      { name: 'data-coral-code', detail: 'Code Block', docs: 'Syntax highlighted code block component.' },
+      { name: 'data-coral-accordion', detail: 'Accordion', docs: 'Collapsible accordion component.' },
+      { name: 'data-coral-tabs', detail: 'Tabs', docs: 'Tab navigation component.' },
+      { name: 'data-coral-modal', detail: 'Modal Dialog', docs: 'Accessible modal dialog component.' },
+      { name: 'data-coral-tooltip', detail: 'Tooltip', docs: 'Hoverable tooltip component.' },
+      { name: 'data-coral-dropdown', detail: 'Dropdown Menu', docs: 'Accessible dropdown menu component.' },
+    ]
+
+    for (const comp of componentAttributes) {
+      const item = new vscode.CompletionItem(comp.name, vscode.CompletionItemKind.Property)
+      item.detail = comp.detail
+      item.documentation = new vscode.MarkdownString(`**Component**: ${comp.detail}\n\n${comp.docs}\n\n\`\`\`html\n<div ${comp.name}></div>\n\`\`\``)
+      item.sortText = `5_${comp.name}`
       completions.push(item)
     }
 
@@ -477,8 +753,144 @@ class CoralCSSHoverProvider implements vscode.HoverProvider {
       }
     }
 
-    // Advanced features
+    // Advanced features (Phases 1-6)
     const advancedMap: Record<string, { name: string; description: string; css: string }> = {
+      // Phase 1: Typography
+      'text-fluid-base': {
+        name: 'Fluid Typography',
+        description: 'Responsive font size using clamp().',
+        css: 'font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);'
+      },
+      'text-fluid-hero': {
+        name: 'Hero Fluid Text',
+        description: 'Large responsive hero text.',
+        css: 'font-size: clamp(3rem, 2rem + 5vw, 6rem);'
+      },
+      'text-gradient-rainbow': {
+        name: 'Rainbow Gradient Text',
+        description: 'Animated rainbow gradient on text.',
+        css: 'background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);\nbackground-clip: text;\n-webkit-text-fill-color: transparent;'
+      },
+      'text-neon-blue': {
+        name: 'Neon Blue Text',
+        description: 'Glowing neon blue text effect.',
+        css: 'color: #00d4ff;\ntext-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff;'
+      },
+      'text-glow-lg': {
+        name: 'Text Glow',
+        description: 'Large glowing text effect.',
+        css: 'text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;'
+      },
+      'text-3d': {
+        name: '3D Text',
+        description: '3D shadow effect on text.',
+        css: 'text-shadow: 1px 1px 0 #ccc, 2px 2px 0 #bbb, 3px 3px 0 #aaa, 4px 4px 0 #999;'
+      },
+      'text-emboss': {
+        name: 'Embossed Text',
+        description: 'Raised embossed text effect.',
+        css: 'text-shadow: -1px -1px 0 rgba(0,0,0,0.3), 1px 1px 0 rgba(255,255,255,0.8);'
+      },
+
+      // Phase 2: Glassmorphism & Neumorphism
+      'glass': {
+        name: 'Glassmorphism',
+        description: 'Frosted glass effect.',
+        css: 'background: rgba(255, 255, 255, 0.1);\nbackdrop-filter: blur(10px);\nborder: 1px solid rgba(255, 255, 255, 0.2);'
+      },
+      'glass-frost': {
+        name: 'Frosted Glass',
+        description: 'Heavy frosted glass effect.',
+        css: 'background: rgba(255, 255, 255, 0.25);\nbackdrop-filter: blur(16px) saturate(180%);'
+      },
+      'glass-morphism': {
+        name: 'Glass Morphism',
+        description: 'Complete glassmorphism effect.',
+        css: 'background: rgba(255, 255, 255, 0.15);\nbackdrop-filter: blur(12px);\nborder: 1px solid rgba(255, 255, 255, 0.3);\nbox-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);'
+      },
+      'neu': {
+        name: 'Neumorphism',
+        description: 'Soft UI raised effect.',
+        css: 'background: #e0e0e0;\nbox-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;'
+      },
+      'neu-inset': {
+        name: 'Neumorphism Inset',
+        description: 'Soft UI pressed effect.',
+        css: 'background: #e0e0e0;\nbox-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;'
+      },
+
+      // Phase 3: Animations
+      'ease-spring': {
+        name: 'Spring Easing',
+        description: 'Physics-based spring timing function.',
+        css: 'transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);'
+      },
+      'animate-spring-in': {
+        name: 'Spring Entrance',
+        description: 'Bouncy spring entrance animation.',
+        css: 'animation: spring-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;'
+      },
+      'animate-elastic': {
+        name: 'Elastic Animation',
+        description: 'Elastic overshoot animation.',
+        css: 'animation: elastic 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);'
+      },
+      'gradient-animate': {
+        name: 'Animated Gradient',
+        description: 'Smoothly animating gradient background.',
+        css: 'background-size: 200% 200%;\nanimation: gradient-animate 3s ease infinite;'
+      },
+      'gradient-shimmer': {
+        name: 'Shimmer Effect',
+        description: 'Loading shimmer effect.',
+        css: 'background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);\nbackground-size: 200% 100%;\nanimation: shimmer 1.5s infinite;'
+      },
+      'skeleton': {
+        name: 'Skeleton Loading',
+        description: 'Skeleton placeholder animation.',
+        css: 'background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);\nbackground-size: 200% 100%;\nanimation: skeleton 1.5s ease-in-out infinite;'
+      },
+
+      // Phase 4: Layout
+      'aspect-golden': {
+        name: 'Golden Ratio',
+        description: 'Aspect ratio of 1.618.',
+        css: 'aspect-ratio: 1.618;'
+      },
+      'aspect-cinema': {
+        name: 'Cinemascope',
+        description: 'Aspect ratio of 2.35.',
+        css: 'aspect-ratio: 2.35;'
+      },
+      'bg-frosted': {
+        name: 'Frosted Background',
+        description: 'Frosted glass background.',
+        css: 'backdrop-filter: blur(12px) saturate(180%);\nbackground: rgba(255, 255, 255, 0.7);'
+      },
+
+      // Phase 5: Interactive & Performance
+      'will-change-transform': {
+        name: 'Will Change',
+        description: 'Hints browser to optimize for transforms.',
+        css: 'will-change: transform;'
+      },
+      'contain-layout': {
+        name: 'CSS Containment',
+        description: 'Contains layout changes within element.',
+        css: 'contain: layout;'
+      },
+      'content-visibility-auto': {
+        name: 'Content Visibility',
+        description: 'Skip rendering off-screen content.',
+        css: 'content-visibility: auto;\ncontain-intrinsic-size: auto 500px;'
+      },
+      'scrollbar-gutter-stable': {
+        name: 'Scrollbar Gutter',
+        description: 'Reserves space for scrollbar.',
+        css: 'scrollbar-gutter: stable;'
+      },
+
+      // Legacy
       'grid-auto-fit': {
         name: 'Smart Grid',
         description: 'Auto-fit responsive grid with minmax columns.',
@@ -488,16 +900,6 @@ class CoralCSSHoverProvider implements vscode.HoverProvider {
         name: 'Smart Spacing',
         description: 'Fluid responsive padding.',
         css: 'padding: clamp(1rem, 2.5vw, 1.5rem);'
-      },
-      'text-perceptual': {
-        name: 'Perceptual Color',
-        description: 'Adaptive text color for readability.',
-        css: 'color: color-mix(in oklch, canvasText 85%, currentColor);'
-      },
-      'animate-spring-md': {
-        name: 'Spring Animation',
-        description: 'Physics-based spring animation.',
-        css: 'animation: spring-md 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);'
       },
       'animate-scroll-fade-in': {
         name: 'Scroll Animation',
@@ -518,6 +920,76 @@ class CoralCSSHoverProvider implements vscode.HoverProvider {
         name: 'Color Scheme',
         description: 'Indicates dark mode preference.',
         css: 'color-scheme: dark;'
+      }
+    }
+
+    // Handle logical properties
+    const logicalMatch = className.match(/^(ps|pe|pbs|pbe|pli|plb|ms|me|mbs|mbe|mli|mlb)-(\d+|auto)$/)
+    if (logicalMatch) {
+      const propMap: Record<string, string> = {
+        ps: 'padding-inline-start',
+        pe: 'padding-inline-end',
+        pbs: 'padding-block-start',
+        pbe: 'padding-block-end',
+        pli: 'padding-inline',
+        plb: 'padding-block',
+        ms: 'margin-inline-start',
+        me: 'margin-inline-end',
+        mbs: 'margin-block-start',
+        mbe: 'margin-block-end',
+        mli: 'margin-inline',
+        mlb: 'margin-block'
+      }
+      const property = propMap[logicalMatch[1]] || logicalMatch[1]
+      const value = logicalMatch[2] === 'auto' ? 'auto' : `${this.spacingScale[parseInt(logicalMatch[2])] || logicalMatch[2]}rem`
+      return {
+        name: 'Logical Spacing',
+        description: `Sets ${property} to ${value} (RTL-aware)`,
+        css: `${property}: ${value};`
+      }
+    }
+
+    // Handle fluid typography
+    const fluidMatch = className.match(/^text-fluid-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|hero|display|giant)$/)
+    if (fluidMatch) {
+      const fluidSizes: Record<string, string> = {
+        xs: 'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',
+        sm: 'clamp(0.875rem, 0.8rem + 0.4vw, 1rem)',
+        base: 'clamp(1rem, 0.9rem + 0.5vw, 1.125rem)',
+        lg: 'clamp(1.125rem, 1rem + 0.6vw, 1.25rem)',
+        xl: 'clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem)',
+        '2xl': 'clamp(1.5rem, 1.2rem + 1.5vw, 2rem)',
+        '3xl': 'clamp(1.875rem, 1.5rem + 1.9vw, 2.5rem)',
+        '4xl': 'clamp(2.25rem, 1.8rem + 2.25vw, 3rem)',
+        '5xl': 'clamp(3rem, 2.2rem + 4vw, 4rem)',
+        hero: 'clamp(3rem, 2rem + 5vw, 6rem)',
+        display: 'clamp(4rem, 2.5rem + 7.5vw, 8rem)',
+        giant: 'clamp(6rem, 3rem + 15vw, 12rem)'
+      }
+      return {
+        name: 'Fluid Typography',
+        description: `Responsive font size that scales with viewport.`,
+        css: `font-size: ${fluidSizes[fluidMatch[1]]};`
+      }
+    }
+
+    // Handle glass utilities
+    const glassMatch = className.match(/^glass(-sm|-lg|-xl|-dark|-light|-frost|-crystal|-morphism)?$/)
+    if (glassMatch) {
+      return {
+        name: 'Glassmorphism',
+        description: 'Frosted glass effect with backdrop blur.',
+        css: 'background: rgba(255, 255, 255, 0.1);\nbackdrop-filter: blur(10px);\nborder: 1px solid rgba(255, 255, 255, 0.2);'
+      }
+    }
+
+    // Handle neu utilities
+    const neuMatch = className.match(/^neu(-sm|-lg|-xl|-inset|-flat|-concave|-convex|-pressed|-dark)?$/)
+    if (neuMatch) {
+      return {
+        name: 'Neumorphism',
+        description: 'Soft UI shadow effect.',
+        css: 'box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;'
       }
     }
 

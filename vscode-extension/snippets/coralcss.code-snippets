@@ -306,5 +306,271 @@
     "body": [
       "${1:sm|md|lg|xl|2xl}:${2:class}"
     ]
+  },
+  "CoralCSS Fluid Typography": {
+    "prefix": "coral:fluid-text",
+    "description": "Fluid responsive typography",
+    "body": [
+      "class=\"text-fluid-${1|base,xs,sm,lg,xl,2xl,3xl,4xl,5xl,hero,display,giant|}\""
+    ]
+  },
+  "CoralCSS Gradient Text Rainbow": {
+    "prefix": "coral:text-gradient",
+    "description": "Gradient text effect",
+    "body": [
+      "class=\"text-gradient-${1|rainbow,primary,secondary,sunset,ocean,forest,fire,neon,gold,silver,chrome,holographic,aurora|}\""
+    ]
+  },
+  "CoralCSS Neon Text": {
+    "prefix": "coral:neon",
+    "description": "Neon glowing text",
+    "body": [
+      "class=\"text-neon-${1|blue,pink,green,red,yellow,purple,orange,cyan,white|}\""
+    ]
+  },
+  "CoralCSS Text Glow": {
+    "prefix": "coral:text-glow",
+    "description": "Glowing text effect",
+    "body": [
+      "class=\"text-glow-${1|sm,,md,lg,xl|}\""
+    ]
+  },
+  "CoralCSS Text 3D": {
+    "prefix": "coral:text-3d",
+    "description": "3D text shadow effect",
+    "body": [
+      "class=\"text-3d${1|-sm,,-lg|}\""
+    ]
+  },
+  "CoralCSS Glassmorphism Card": {
+    "prefix": "coral:glass-card",
+    "description": "Glass effect card",
+    "body": [
+      "class=\"glass rounded-xl p-6 border border-white/20\""
+    ]
+  },
+  "CoralCSS Glass Frost": {
+    "prefix": "coral:glass-frost",
+    "description": "Frosted glass effect",
+    "body": [
+      "class=\"glass-frost rounded-lg p-4\""
+    ]
+  },
+  "CoralCSS Neumorphism": {
+    "prefix": "coral:neu",
+    "description": "Neumorphism soft UI",
+    "body": [
+      "class=\"neu rounded-xl p-6\""
+    ]
+  },
+  "CoralCSS Neumorphism Inset": {
+    "prefix": "coral:neu-inset",
+    "description": "Pressed neumorphism effect",
+    "body": [
+      "class=\"neu-inset rounded-lg p-4\""
+    ]
+  },
+  "CoralCSS Spring Easing": {
+    "prefix": "coral:ease-spring",
+    "description": "Physics-based spring easing",
+    "body": [
+      "class=\"ease-spring${1|-bounce,-stiff,-soft,-wobbly,-gentle|} duration-300\""
+    ]
+  },
+  "CoralCSS Spring Animation": {
+    "prefix": "coral:animate-spring",
+    "description": "Spring entrance animation",
+    "body": [
+      "class=\"animate-spring-${1|in,out|}\""
+    ]
+  },
+  "CoralCSS Elastic Animation": {
+    "prefix": "coral:elastic",
+    "description": "Elastic bounce animation",
+    "body": [
+      "class=\"animate-elastic\""
+    ]
+  },
+  "CoralCSS Stagger Children": {
+    "prefix": "coral:stagger",
+    "description": "Staggered animation delay",
+    "body": [
+      "class=\"stagger-${1|50,100,150,200,250,300,400,500|}\""
+    ]
+  },
+  "CoralCSS Animated Gradient": {
+    "prefix": "coral:gradient-animate",
+    "description": "Animated gradient background",
+    "body": [
+      "class=\"bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 gradient-animate\""
+    ]
+  },
+  "CoralCSS Shimmer Loading": {
+    "prefix": "coral:shimmer",
+    "description": "Shimmer loading effect",
+    "body": [
+      "class=\"gradient-shimmer rounded\""
+    ]
+  },
+  "CoralCSS Skeleton Loading": {
+    "prefix": "coral:skeleton-new",
+    "description": "Skeleton loading placeholder",
+    "body": [
+      "class=\"skeleton h-4 rounded\""
+    ]
+  },
+  "CoralCSS Glow Pulse": {
+    "prefix": "coral:glow-pulse",
+    "description": "Pulsing glow effect",
+    "body": [
+      "class=\"glow-pulse glow-${1|primary,blue,green,red,purple,pink,orange,yellow,cyan|}\""
+    ]
+  },
+  "CoralCSS Aspect Golden": {
+    "prefix": "coral:aspect-golden",
+    "description": "Golden ratio aspect",
+    "body": [
+      "class=\"aspect-golden\""
+    ]
+  },
+  "CoralCSS Aspect Cinema": {
+    "prefix": "coral:aspect-cinema",
+    "description": "Cinemascope aspect ratio",
+    "body": [
+      "class=\"aspect-cinema\""
+    ]
+  },
+  "CoralCSS Logical Padding": {
+    "prefix": "coral:padding-logical",
+    "description": "RTL-aware logical padding",
+    "body": [
+      "class=\"ps-${1:4} pe-${2:4}\""
+    ]
+  },
+  "CoralCSS Logical Margin": {
+    "prefix": "coral:margin-logical",
+    "description": "RTL-aware logical margin",
+    "body": [
+      "class=\"ms-${1:4} me-${2:4}\""
+    ]
+  },
+  "CoralCSS Logical Border Radius": {
+    "prefix": "coral:rounded-logical",
+    "description": "RTL-aware border radius",
+    "body": [
+      "class=\"rounded-ss-${1|sm,md,lg,xl|} rounded-se-${2|sm,md,lg,xl|}\""
+    ]
+  },
+  "CoralCSS Writing Vertical": {
+    "prefix": "coral:writing-vertical",
+    "description": "Vertical writing mode",
+    "body": [
+      "class=\"writing-vertical-${1|rl,lr|}\""
+    ]
+  },
+  "CoralCSS Frosted Background": {
+    "prefix": "coral:bg-frosted",
+    "description": "Frosted glass background",
+    "body": [
+      "class=\"bg-frosted rounded-lg p-4\""
+    ]
+  },
+  "CoralCSS Selection Color": {
+    "prefix": "coral:selection",
+    "description": "Custom text selection color",
+    "body": [
+      "class=\"selection-${1|primary,blue,green,red,purple,pink|}\""
+    ]
+  },
+  "CoralCSS Touch Manipulation": {
+    "prefix": "coral:touch",
+    "description": "Touch action utility",
+    "body": [
+      "class=\"touch-${1|manipulation,pan-x,pan-y,pinch-zoom,none|}\""
+    ]
+  },
+  "CoralCSS Will Change": {
+    "prefix": "coral:will-change",
+    "description": "Performance optimization hint",
+    "body": [
+      "class=\"will-change-${1|transform,opacity,scroll,contents|}\""
+    ]
+  },
+  "CoralCSS Containment": {
+    "prefix": "coral:contain",
+    "description": "CSS containment for performance",
+    "body": [
+      "class=\"contain-${1|layout,paint,content,strict,size|}\""
+    ]
+  },
+  "CoralCSS Content Visibility": {
+    "prefix": "coral:content-visibility",
+    "description": "Skip off-screen rendering",
+    "body": [
+      "class=\"content-visibility-auto\""
+    ]
+  },
+  "CoralCSS Color Scheme": {
+    "prefix": "coral:color-scheme",
+    "description": "Browser color scheme preference",
+    "body": [
+      "class=\"color-scheme-${1|light,dark,light-dark|}\""
+    ]
+  },
+  "CoralCSS AI Chat Component": {
+    "prefix": "coral:ai-chat",
+    "description": "AI Chat Interface component",
+    "body": [
+      "<div data-coral-ai-chat></div>"
+    ]
+  },
+  "CoralCSS Kanban Component": {
+    "prefix": "coral:kanban",
+    "description": "Kanban Board component",
+    "body": [
+      "<div data-coral-kanban></div>"
+    ]
+  },
+  "CoralCSS Terminal Component": {
+    "prefix": "coral:terminal",
+    "description": "Terminal Emulator component",
+    "body": [
+      "<div data-coral-terminal></div>"
+    ]
+  },
+  "CoralCSS Float Animation": {
+    "prefix": "coral:float",
+    "description": "Floating animation",
+    "body": [
+      "class=\"animate-float${1|-slow|}\""
+    ]
+  },
+  "CoralCSS Wiggle Animation": {
+    "prefix": "coral:wiggle",
+    "description": "Wiggle attention animation",
+    "body": [
+      "class=\"animate-wiggle\""
+    ]
+  },
+  "CoralCSS Heartbeat Animation": {
+    "prefix": "coral:heartbeat",
+    "description": "Heartbeat pulse animation",
+    "body": [
+      "class=\"animate-heartbeat\""
+    ]
+  },
+  "CoralCSS Slide In": {
+    "prefix": "coral:slide-in",
+    "description": "Slide in animation",
+    "body": [
+      "class=\"animate-slide-in-${1|left,right,up,down|}\""
+    ]
+  },
+  "CoralCSS Zoom Animation": {
+    "prefix": "coral:zoom",
+    "description": "Zoom animation",
+    "body": [
+      "class=\"animate-zoom-${1|in,out|}\""
+    ]
   }
 }
