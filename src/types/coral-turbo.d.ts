@@ -1,9 +1,9 @@
 /**
- * Type declarations for @aspect/coral-turbo
+ * Type declarations for @coral-css/turbo
  * This module is optional and may not be installed
  */
 
-declare module '@aspect/coral-turbo' {
+declare module '@coral-css/turbo' {
   export interface TurboParsedClass {
     raw: string
     utility: string

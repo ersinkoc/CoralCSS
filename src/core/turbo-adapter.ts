@@ -11,7 +11,7 @@
 import type { ParsedClass } from '../types'
 
 /**
- * Turbo engine interface (matches @aspect/coral-turbo exports)
+ * Turbo engine interface (matches @coral-css/turbo exports)
  */
 interface TurboEngine {
   parse(classString: string): TurboParsedClass[]
@@ -101,8 +101,8 @@ export async function initTurbo(): Promise<boolean> {
 
   initPromise = (async () => {
     try {
-      // Try to import @aspect/coral-turbo
-      const turboModule = await import('@aspect/coral-turbo')
+      // Try to import @coral-css/turbo
+      const turboModule = await import('@coral-css/turbo')
 
       // Create engine with preferred backend
       const backend = currentConfig.preferNative ? 'auto' : 'wasm'
