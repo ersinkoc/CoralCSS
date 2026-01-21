@@ -30,6 +30,9 @@ interface CacheEntry {
 /**
  * CSS Cache for storing generated CSS with LRU eviction and TTL support
  *
+ * Uses Map's natural insertion order for O(1) LRU operations.
+ * When an entry is accessed, it's deleted and re-inserted to move it to the end.
+ *
  * @example
  * ```typescript
  * const cache = new CSSCache({ maxSize: 500, ttl: 60000 })
@@ -44,7 +47,6 @@ export class CSSCache {
   private maxSize: number
   private ttl: number
   private enabled: boolean
-  private accessOrder: string[] // Track access order for LRU
 
   constructor(options: CacheOptions = {}) {
     this.cache = new Map()
@@ -53,7 +55,6 @@ export class CSSCache {
     this.maxSize = options.maxSize ?? 1000
     this.ttl = options.ttl ?? Infinity
     this.enabled = options.enabled ?? true
-    this.accessOrder = []
   }
 
   /**
@@ -82,13 +83,14 @@ export class CSSCache {
     // Check TTL
     if (this.ttl !== Infinity && Date.now() - entry.timestamp > this.ttl) {
       this.cache.delete(className)
-      this.removeFromAccessOrder(className)
       this.misses++
       return undefined
     }
 
-    // Update access order for LRU
-    this.updateAccessOrder(className)
+    // Update access order for LRU - O(1) operation
+    // Delete and re-insert to move to end of Map's iteration order
+    this.cache.delete(className)
+    this.cache.set(className, entry)
 
     this.hits++
     return entry.value
@@ -96,7 +98,7 @@ export class CSSCache {
 
   /**
    * Store CSS for a class name
-   * Evicts oldest entry if at max capacity
+   * Evicts oldest entry if at max capacity (O(1) operation)
    *
    * @example
    * ```typescript
@@ -108,9 +110,14 @@ export class CSSCache {
       return
     }
 
-    // Evict oldest if at capacity
-    if (this.cache.size >= this.maxSize && !this.cache.has(className)) {
-      const oldestKey = this.accessOrder.shift()
+    // If key exists, delete it first to update its position
+    if (this.cache.has(className)) {
+      this.cache.delete(className)
+    }
+    // Evict oldest (first item in Map iteration order) if at capacity
+    else if (this.cache.size >= this.maxSize) {
+      // Map.keys().next() is O(1) - gets first key
+      const oldestKey = this.cache.keys().next().value
       if (oldestKey !== undefined) {
         this.cache.delete(oldestKey)
       }
@@ -120,8 +127,6 @@ export class CSSCache {
       value: css,
       timestamp: Date.now()
     })
-
-    this.updateAccessOrder(className)
   }
 
   /**
@@ -147,7 +152,6 @@ export class CSSCache {
     // Check TTL
     if (this.ttl !== Infinity && Date.now() - entry.timestamp > this.ttl) {
       this.cache.delete(className)
-      this.removeFromAccessOrder(className)
       return false
     }
 
@@ -158,11 +162,7 @@ export class CSSCache {
    * Delete a cached entry
    */
   delete(className: string): boolean {
-    const deleted = this.cache.delete(className)
-    if (deleted) {
-      this.removeFromAccessOrder(className)
-    }
-    return deleted
+    return this.cache.delete(className)
   }
 
   /**
@@ -175,7 +175,6 @@ export class CSSCache {
    */
   clear(): void {
     this.cache.clear()
-    this.accessOrder = []
     this.hits = 0
     this.misses = 0
   }
@@ -320,30 +319,11 @@ export class CSSCache {
     for (const [key, entry] of this.cache.entries()) {
       if (now - entry.timestamp > this.ttl) {
         this.cache.delete(key)
-        this.removeFromAccessOrder(key)
         removed++
       }
     }
 
     return removed
-  }
-
-  /**
-   * Update access order for LRU (move to end)
-   */
-  private updateAccessOrder(className: string): void {
-    this.removeFromAccessOrder(className)
-    this.accessOrder.push(className)
-  }
-
-  /**
-   * Remove from access order
-   */
-  private removeFromAccessOrder(className: string): void {
-    const index = this.accessOrder.indexOf(className)
-    if (index > -1) {
-      this.accessOrder.splice(index, 1)
-    }
   }
 }
 

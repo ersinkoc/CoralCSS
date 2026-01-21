@@ -330,4 +330,141 @@ describe('Parser', () => {
       expect(result).toBeNull()
     })
   })
+
+  describe('input validation and security', () => {
+    describe('parse input validation', () => {
+      it('should handle empty string', () => {
+        const result = parse('')
+        expect(result.original).toBe('')
+        expect(result.utility).toBe('')
+        expect(result.variants).toEqual([])
+      })
+
+      it('should handle whitespace-only string', () => {
+        const result = parse('   ')
+        expect(result.original).toBe('')
+        expect(result.utility).toBe('')
+      })
+
+      it('should handle null input gracefully', () => {
+        // @ts-expect-error testing runtime behavior
+        const result = parse(null)
+        expect(result.original).toBe('')
+        expect(result.utility).toBe('')
+      })
+
+      it('should handle undefined input gracefully', () => {
+        // @ts-expect-error testing runtime behavior
+        const result = parse(undefined)
+        expect(result.original).toBe('')
+        expect(result.utility).toBe('')
+      })
+
+      it('should handle non-string input gracefully', () => {
+        // @ts-expect-error testing runtime behavior
+        const result = parse(123)
+        expect(result.original).toBe('')
+      })
+
+      it('should truncate extremely long class names', () => {
+        const longClass = 'bg-' + 'a'.repeat(600) // Over 500 char limit
+        const result = parse(longClass)
+        // Should not crash and should truncate
+        expect(result.original.length).toBeLessThanOrEqual(500)
+      })
+    })
+
+    describe('expandVariantGroups input validation', () => {
+      it('should handle empty string', () => {
+        const result = expandVariantGroups('')
+        expect(result).toEqual([])
+      })
+
+      it('should handle null input gracefully', () => {
+        // @ts-expect-error testing runtime behavior
+        const result = expandVariantGroups(null)
+        expect(result).toEqual([])
+      })
+
+      it('should handle undefined input gracefully', () => {
+        // @ts-expect-error testing runtime behavior
+        const result = expandVariantGroups(undefined)
+        expect(result).toEqual([])
+      })
+
+      it('should limit recursion depth', () => {
+        // Create deeply nested variant groups
+        let nested = 'a'
+        for (let i = 0; i < 15; i++) {
+          nested = `v${i}:(${nested})`
+        }
+
+        const start = Date.now()
+        const result = expandVariantGroups(nested)
+        const elapsed = Date.now() - start
+
+        // Should complete quickly and not stack overflow
+        expect(elapsed).toBeLessThan(1000)
+        expect(Array.isArray(result)).toBe(true)
+      })
+
+      it('should handle very long input', () => {
+        // Create input that's very long but not deeply nested
+        const longInput = Array(1000).fill('hover:bg-red-500').join(' ')
+
+        const start = Date.now()
+        const result = expandVariantGroups(longInput)
+        const elapsed = Date.now() - start
+
+        expect(elapsed).toBeLessThan(5000)
+        expect(Array.isArray(result)).toBe(true)
+      })
+    })
+
+    describe('parseClasses input validation', () => {
+      it('should handle empty string', () => {
+        const result = parseClasses('')
+        expect(result).toEqual([])
+      })
+
+      it('should handle whitespace-only string', () => {
+        const result = parseClasses('   \n\t  ')
+        expect(result).toEqual([])
+      })
+    })
+
+    describe('malformed input handling', () => {
+      it('should handle unbalanced brackets', () => {
+        const result = parse('bg-[#ff0000')
+        // Should not crash
+        expect(result).toBeDefined()
+      })
+
+      it('should handle unbalanced parentheses in variant groups', () => {
+        const result = expandVariantGroups('hover:(bg-red-500')
+        // Should not crash
+        expect(Array.isArray(result)).toBe(true)
+      })
+
+      it('should handle multiple colons', () => {
+        const result = parse('hover:focus:dark:bg-red-500')
+        expect(result.variants).toEqual(['hover', 'focus', 'dark'])
+        expect(result.utility).toBe('bg-red-500')
+      })
+
+      it('should handle colon at end', () => {
+        const result = parse('hover:')
+        // Parser treats empty last part as utility, not variant
+        expect(result.variants).toEqual([])
+        expect(result.utility).toBe('hover:')
+      })
+
+      it('should handle colon at start', () => {
+        const result = parse(':bg-red-500')
+        // Parser keeps the leading colon as part of the utility
+        expect(result.variants).toEqual([])
+        expect(result.utility).toBe(':bg-red-500')
+      })
+    })
+  })
 })

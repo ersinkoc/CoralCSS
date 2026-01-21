@@ -58,7 +58,12 @@ const defaultConfig: ResolvedConfig = {
 }
 
 /**
- * Deep merge utility
+ * Keys that should never be merged (prototype pollution prevention)
+ */
+const UNSAFE_MERGE_KEYS = new Set(['__proto__', 'constructor', 'prototype'])
+
+/**
+ * Deep merge utility with prototype pollution protection
  */
 function deepMerge<T extends object>(target: T, ...sources: DeepPartial<T>[]): T {
   const result = { ...target }
@@ -69,6 +74,11 @@ function deepMerge<T extends object>(target: T, ...sources: DeepPartial<T>[]): T
     }
 
     for (const key of Object.keys(source) as (keyof T)[]) {
+      // Prototype pollution protection - skip dangerous keys
+      if (UNSAFE_MERGE_KEYS.has(key as string)) {
+        continue
+      }
+
       const sourceValue = source[key]
       const targetValue = result[key]
 
@@ -123,6 +133,7 @@ export class Kernel implements Coral {
   private _transformer: Transformer
   private _extractor: Extractor
   private _initialized: boolean
+  private _readyPromise: Promise<void>
 
   constructor(options: CoralOptions = {}) {
     this._plugins = new Map()
@@ -160,7 +171,21 @@ export class Kernel implements Coral {
 
     // Mark as initialized and call onReady
     this._initialized = true
-    this.callOnReady()
+    this._readyPromise = this.callOnReady()
+  }
+
+  /**
+   * Wait for all plugins to be ready
+   * Call this if you need to ensure all async plugin initialization is complete
+   *
+   * @example
+   * ```typescript
+   * const kernel = new Kernel(options)
+   * await kernel.ready() // Wait for all plugins to initialize
+   * ```
+   */
+  async ready(): Promise<void> {
+    return this._readyPromise
   }
 
   /**

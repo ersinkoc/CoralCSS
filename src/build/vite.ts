@@ -71,6 +71,20 @@ const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID
  * })
  * ```
  */
+/**
+ * Convert glob pattern to regex
+ * Cached compilation for performance
+ */
+function globToRegex(pattern: string): RegExp {
+  const regexStr = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars except * and ?
+    .replace(/\*\*/g, '<<<GLOBSTAR>>>') // Temp placeholder for **
+    .replace(/\*/g, '[^/]*') // * matches anything except /
+    .replace(/<<<GLOBSTAR>>>/g, '.*') // ** matches anything
+    .replace(/\?/g, '.') // ? matches single char
+  return new RegExp(`^${regexStr}$`)
+}
+
 export function coralVitePlugin(options: VitePluginOptions = {}): VitePlugin {
   const {
     include = ['**/*.{html,jsx,tsx,vue,svelte,astro}'],
@@ -87,6 +101,10 @@ export function coralVitePlugin(options: VitePluginOptions = {}): VitePlugin {
   let generatedCSS = ''
   let isProduction = false
 
+  // Pre-compiled regex patterns for include/exclude (compiled once in configResolved)
+  let includePatterns: RegExp[] = []
+  let excludePatterns: RegExp[] = []
+
   return {
     name: 'coral-vite',
     enforce: 'pre',
@@ -100,6 +118,10 @@ export function coralVitePlugin(options: VitePluginOptions = {}): VitePlugin {
       // Load preset
       const plugins = coralPreset({ darkMode })
       plugins.forEach((plugin) => coral.use(plugin))
+
+      // Pre-compile include/exclude patterns once
+      includePatterns = include.map(globToRegex)
+      excludePatterns = exclude.map(globToRegex)
     },
 
     resolveId(id) {
@@ -115,16 +137,9 @@ export function coralVitePlugin(options: VitePluginOptions = {}): VitePlugin {
     },
 
     transform(code, id) {
-      // Check if file should be processed
-      const shouldProcess = include.some((pattern) => {
-        const regex = new RegExp(pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*'))
-        return regex.test(id)
-      })
-
-      const shouldExclude = exclude.some((pattern) => {
-        const regex = new RegExp(pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*'))
-        return regex.test(id)
-      })
+      // Check if file should be processed using pre-compiled patterns (O(1) regex test)
+      const shouldProcess = includePatterns.some((regex) => regex.test(id))
+      const shouldExclude = excludePatterns.some((regex) => regex.test(id))
 
       if (!shouldProcess || shouldExclude) {
         return null
@@ -155,13 +170,11 @@ export function coralVitePlugin(options: VitePluginOptions = {}): VitePlugin {
     },
 
     handleHotUpdate({ file, server }) {
-      // Check if file should trigger CSS regeneration
-      const shouldProcess = include.some((pattern) => {
-        const regex = new RegExp(pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*'))
-        return regex.test(file)
-      })
+      // Check if file should trigger CSS regeneration using pre-compiled patterns
+      const shouldProcess = includePatterns.some((regex) => regex.test(file))
+      const shouldExclude = excludePatterns.some((regex) => regex.test(file))
 
-      if (shouldProcess) {
+      if (shouldProcess && !shouldExclude) {
         // Invalidate virtual module to trigger reload
         const module = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_MODULE_ID)
         if (module) {

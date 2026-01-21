@@ -6,7 +6,7 @@
  */
 
 import type { CSSProperties, CSSValue } from '../types'
-import { kebabCase } from './string'
+import { kebabCase, sanitizeCSSValue } from './string'
 
 /**
  * Serialize CSS properties object to CSS string
@@ -39,13 +39,20 @@ export function serializeProperties(properties: CSSProperties): string {
 
 /**
  * Format a CSS value
+ * Sanitizes string values to prevent CSS injection
  */
 export function formatValue(value: CSSValue): string {
   if (typeof value === 'number') {
     // 0 doesn't need units, others might be unitless
     return value === 0 ? '0' : String(value)
   }
-  return value
+  // Sanitize string values to prevent CSS injection attacks
+  const sanitized = sanitizeCSSValue(value)
+  if (sanitized === null) {
+    console.warn(`CoralCSS: Blocked potentially dangerous CSS value: ${value.slice(0, 50)}...`)
+    return 'unset'
+  }
+  return sanitized
 }
 
 /**

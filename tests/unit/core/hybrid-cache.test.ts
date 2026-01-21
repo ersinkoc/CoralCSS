@@ -561,6 +561,234 @@ describe('Hybrid Cache', () => {
       cache.close()
     })
 
+    it('should use request coalescing for concurrent persistent reads', async () => {
+      let persistentReadCount = 0
+      const storedEntries = new Map<string, any>()
+      storedEntries.set('coalesce-key', {
+        key: 'coalesce-key',
+        value: 'persistent-value',
+        version: 'v1',
+        expiresAt: Infinity,
+        dependencies: [],
+        hash: 'abc',
+        timestamp: Date.now(),
+      })
+
+      const mockDB: any = {
+        objectStoreNames: { contains: () => true },
+        transaction: () => ({
+          objectStore: () => ({
+            get: (key: string) => {
+              persistentReadCount++
+              const request: any = {
+                result: storedEntries.get(key),
+                onsuccess: null,
+              }
+              // Simulate slow persistent read
+              setTimeout(() => request.onsuccess?.({ target: request }), 50)
+              return request
+            },
+            put: (entry: any) => {
+              storedEntries.set(entry.key, entry)
+              const request: any = { onsuccess: null }
+              setTimeout(() => request.onsuccess?.({ target: request }), 0)
+              return request
+            },
+          }),
+        }),
+        close: vi.fn(),
+      }
+
+      const originalIndexedDB = globalThis.indexedDB
+      ;(globalThis as any).indexedDB = {
+        open: () => {
+          const request: any = {
+            result: mockDB,
+            onsuccess: null,
+          }
+          setTimeout(() => request.onsuccess?.(), 0)
+          return request
+        },
+      }
+
+      const cache = new HybridCache({
+        usePersistent: true,
+        version: 'v1',
+      })
+
+      // Clear memory cache to force persistent reads
+      ;(cache as any).memoryCache.clear()
+
+      // Multiple concurrent gets for same key should coalesce
+      const results = await Promise.all([
+        cache.get('coalesce-key'),
+        cache.get('coalesce-key'),
+        cache.get('coalesce-key'),
+        cache.get('coalesce-key'),
+        cache.get('coalesce-key'),
+      ])
+
+      // All should return the same value
+      expect(results).toEqual([
+        'persistent-value',
+        'persistent-value',
+        'persistent-value',
+        'persistent-value',
+        'persistent-value',
+      ])
+
+      // Only ONE persistent read should have been made due to coalescing
+      expect(persistentReadCount).toBe(1)
+
+      cache.close()
+      globalThis.indexedDB = originalIndexedDB
+    })
+
+    it('should clean up pending reads after completion', async () => {
+      const storedEntries = new Map<string, any>()
+      storedEntries.set('cleanup-key', {
+        key: 'cleanup-key',
+        value: 'value',
+        version: 'v1',
+        expiresAt: Infinity,
+        dependencies: [],
+        hash: 'abc',
+        timestamp: Date.now(),
+      })
+
+      const mockDB: any = {
+        objectStoreNames: { contains: () => true },
+        transaction: () => ({
+          objectStore: () => ({
+            get: (key: string) => {
+              const request: any = {
+                result: storedEntries.get(key),
+                onsuccess: null,
+              }
+              setTimeout(() => request.onsuccess?.({ target: request }), 10)
+              return request
+            },
+            put: (entry: any) => {
+              storedEntries.set(entry.key, entry)
+              const request: any = { onsuccess: null }
+              setTimeout(() => request.onsuccess?.({ target: request }), 0)
+              return request
+            },
+          }),
+        }),
+        close: vi.fn(),
+      }
+
+      const originalIndexedDB = globalThis.indexedDB
+      ;(globalThis as any).indexedDB = {
+        open: () => {
+          const request: any = {
+            result: mockDB,
+            onsuccess: null,
+          }
+          setTimeout(() => request.onsuccess?.(), 0)
+          return request
+        },
+      }
+
+      const cache = new HybridCache({
+        usePersistent: true,
+        version: 'v1',
+      })
+
+      // Clear memory
+      ;(cache as any).memoryCache.clear()
+
+      // First request
+      await cache.get('cleanup-key')
+
+      // Pending reads should be cleaned up after completion
+      expect((cache as any).pendingReads.size).toBe(0)
+
+      cache.close()
+      globalThis.indexedDB = originalIndexedDB
+    })
+
+    it('should not coalesce reads for different keys', async () => {
+      let persistentReadCount = 0
+      const storedEntries = new Map<string, any>()
+      storedEntries.set('key1', {
+        key: 'key1',
+        value: 'value1',
+        version: 'v1',
+        expiresAt: Infinity,
+        dependencies: [],
+        hash: 'abc',
+        timestamp: Date.now(),
+      })
+      storedEntries.set('key2', {
+        key: 'key2',
+        value: 'value2',
+        version: 'v1',
+        expiresAt: Infinity,
+        dependencies: [],
+        hash: 'def',
+        timestamp: Date.now(),
+      })
+
+      const mockDB: any = {
+        objectStoreNames: { contains: () => true },
+        transaction: () => ({
+          objectStore: () => ({
+            get: (key: string) => {
+              persistentReadCount++
+              const request: any = {
+                result: storedEntries.get(key),
+                onsuccess: null,
+              }
+              setTimeout(() => request.onsuccess?.({ target: request }), 10)
+              return request
+            },
+            put: (entry: any) => {
+              storedEntries.set(entry.key, entry)
+              const request: any = { onsuccess: null }
+              setTimeout(() => request.onsuccess?.({ target: request }), 0)
+              return request
+            },
+          }),
+        }),
+        close: vi.fn(),
+      }
+
+      const originalIndexedDB = globalThis.indexedDB
+      ;(globalThis as any).indexedDB = {
+        open: () => {
+          const request: any = {
+            result: mockDB,
+            onsuccess: null,
+          }
+          setTimeout(() => request.onsuccess?.(), 0)
+          return request
+        },
+      }
+
+      const cache = new HybridCache({
+        usePersistent: true,
+        version: 'v1',
+      })
+
+      ;(cache as any).memoryCache.clear()
+
+      // Different keys should NOT be coalesced
+      const [result1, result2] = await Promise.all([
+        cache.get('key1'),
+        cache.get('key2'),
+      ])
+
+      expect(result1).toBe('value1')
+      expect(result2).toBe('value2')
+      // Two separate reads for different keys
+      expect(persistentReadCount).toBe(2)
+
+      cache.close()
+      globalThis.indexedDB = originalIndexedDB
+    })
+
     it('should handle mixed operations', async () => {
       const cache = new HybridCache({ usePersistent: false })
 

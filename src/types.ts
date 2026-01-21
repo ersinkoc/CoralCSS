@@ -1320,4 +1320,6 @@ export interface Coral {
   getVariants(): Variant[]
   /** Reset instance state */
   reset(): void
+  /** Wait for all plugins to be ready (including async onReady hooks) */
+  ready(): Promise<void>
 }

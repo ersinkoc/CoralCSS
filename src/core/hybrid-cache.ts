@@ -253,17 +253,16 @@ class IndexedDBCache {
 }
 
 /**
- * Simple in-memory LRU cache
+ * Simple in-memory LRU cache with O(1) operations
+ * Uses Map's natural insertion order for LRU tracking
  */
 class MemoryLRUCache<T = string> {
   private cache: Map<string, CacheEntry<T>>
   private maxSize: number
-  private accessOrder: string[]
 
   constructor(maxSize: number = 1000) {
     this.cache = new Map()
     this.maxSize = maxSize
-    this.accessOrder = []
   }
 
   get(key: string): T | undefined {
@@ -273,20 +272,27 @@ class MemoryLRUCache<T = string> {
     }
 
     // Check expiration
-    if (entry.expiresAt < Date.now()) {
+    if (entry.expiresAt !== Infinity && entry.expiresAt < Date.now()) {
       this.delete(key)
       return undefined
     }
 
-    // Update access order
-    this.updateAccessOrder(key)
+    // Update access order using Map's insertion order - O(1)
+    // Delete and re-insert to move to end
+    this.cache.delete(key)
+    this.cache.set(key, entry)
+
     return entry.value
   }
 
   set(key: string, value: T, ttl: number = Infinity): void {
-    // Evict oldest if at capacity
-    if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
-      const oldestKey = this.accessOrder.shift()
+    // If key exists, delete it first to update position
+    if (this.cache.has(key)) {
+      this.cache.delete(key)
+    }
+    // Evict oldest (first in Map iteration order) if at capacity - O(1)
+    else if (this.cache.size >= this.maxSize) {
+      const oldestKey = this.cache.keys().next().value
       if (oldestKey !== undefined) {
         this.cache.delete(oldestKey)
       }
@@ -300,8 +306,6 @@ class MemoryLRUCache<T = string> {
       dependencies: [],
       hash: ''
     })
-
-    this.updateAccessOrder(key)
   }
 
   has(key: string): boolean {
@@ -310,7 +314,7 @@ class MemoryLRUCache<T = string> {
       return false
     }
 
-    if (entry.expiresAt < Date.now()) {
+    if (entry.expiresAt !== Infinity && entry.expiresAt < Date.now()) {
       this.delete(key)
       return false
     }
@@ -319,13 +323,11 @@ class MemoryLRUCache<T = string> {
   }
 
   delete(key: string): boolean {
-    this.removeFromAccessOrder(key)
     return this.cache.delete(key)
   }
 
   clear(): void {
     this.cache.clear()
-    this.accessOrder = []
   }
 
   size(): number {
@@ -343,18 +345,6 @@ class MemoryLRUCache<T = string> {
     }
 
     return validKeys
-  }
-
-  private updateAccessOrder(key: string): void {
-    this.removeFromAccessOrder(key)
-    this.accessOrder.push(key)
-  }
-
-  private removeFromAccessOrder(key: string): void {
-    const index = this.accessOrder.indexOf(key)
-    if (index > -1) {
-      this.accessOrder.splice(index, 1)
-    }
   }
 }
 
@@ -387,6 +377,9 @@ export class HybridCache {
   private version: string
   private usePersistent: boolean
 
+  // Track pending persistent reads to avoid concurrent reads for same key
+  private pendingReads: Map<string, Promise<string | null>> = new Map()
+
   constructor(options: HybridCacheOptions = {}) {
     this.memoryCache = new MemoryLRUCache(options.maxMemorySize ?? options.memoryCacheSize ?? 1000)
     this.ttl = options.ttl ?? Infinity
@@ -401,34 +394,68 @@ export class HybridCache {
   /**
    * Get cached value
    * Checks memory first, then persistent storage
+   * Uses request coalescing to prevent concurrent reads for same key
    */
   async get(key: string): Promise<string | null> {
-    // Check memory first (fastest)
+    // Check memory first (fastest, no race condition)
     const memResult = this.memoryCache.get(key)
     if (memResult !== undefined) {
       this.hits++
       return memResult
     }
 
-    // Check persistent cache
+    // Check if there's already a pending read for this key
+    const pendingRead = this.pendingReads.get(key)
+    if (pendingRead) {
+      // Wait for the existing read to complete
+      return pendingRead
+    }
+
+    // Check persistent cache with request coalescing
     if (this.persistentCache) {
+      // Create a promise for this read and store it
+      const readPromise = this.readFromPersistent(key)
+      this.pendingReads.set(key, readPromise)
+
       try {
-        const entry = await this.persistentCache.get(key)
-        if (entry && entry.version === this.version) {
-          // Check expiration
-          if (entry.expiresAt === Infinity || entry.expiresAt > Date.now()) {
-            // Populate memory cache
-            this.memoryCache.set(key, entry.value, this.ttl)
-            this.hits++
-            return entry.value
-          } else {
-            // Remove expired entry
-            await this.persistentCache.delete(key)
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to read from persistent cache:', error)
+        const result = await readPromise
+        return result
+      } finally {
+        // Clean up pending read tracker
+        this.pendingReads.delete(key)
       }
+    }
+
+    this.misses++
+    return null
+  }
+
+  /**
+   * Internal method to read from persistent cache
+   * Separated to enable request coalescing
+   */
+  private async readFromPersistent(key: string): Promise<string | null> {
+    if (!this.persistentCache) {
+      this.misses++
+      return null
+    }
+
+    try {
+      const entry = await this.persistentCache.get(key)
+      if (entry && entry.version === this.version) {
+        // Check expiration
+        if (entry.expiresAt === Infinity || entry.expiresAt > Date.now()) {
+          // Populate memory cache
+          this.memoryCache.set(key, entry.value, this.ttl)
+          this.hits++
+          return entry.value
+        } else {
+          // Remove expired entry
+          await this.persistentCache.delete(key)
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to read from persistent cache:', error)
     }
 
     this.misses++

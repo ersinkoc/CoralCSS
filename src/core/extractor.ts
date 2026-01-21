@@ -6,7 +6,16 @@
  */
 
 import { dedupeStrings } from '../utils/string'
-// Patterns are used by regex directly in the code below
+
+/**
+ * Maximum input length to prevent ReDoS attacks
+ */
+const MAX_INPUT_LENGTH = 1_000_000 // 1MB
+
+/**
+ * Maximum class name length (reasonable limit)
+ */
+const MAX_CLASS_LENGTH = 200
 
 /**
  * Extractor options
@@ -16,6 +25,8 @@ export interface ExtractorOptions {
   attributify?: boolean
   /** Custom extraction patterns */
   patterns?: RegExp[]
+  /** Maximum input length (default: 1MB) */
+  maxInputLength?: number
 }
 
 /**
@@ -93,6 +104,17 @@ export class Extractor {
    * ```
    */
   extractFromHTML(html: string): string[] {
+    // Input validation to prevent ReDoS
+    const maxLength = this.options.maxInputLength ?? MAX_INPUT_LENGTH
+    if (!html || html.length > maxLength) {
+      if (html && html.length > maxLength) {
+        console.warn(`CoralCSS Extractor: Input exceeds max length (${maxLength}), truncating`)
+        html = html.slice(0, maxLength)
+      } else {
+        return []
+      }
+    }
+
     const classes: string[] = []
 
     // Extract from class attributes
@@ -126,6 +148,17 @@ export class Extractor {
    * ```
    */
   extract(content: string): string[] {
+    // Input validation to prevent ReDoS
+    const maxLength = this.options.maxInputLength ?? MAX_INPUT_LENGTH
+    if (!content || content.length > maxLength) {
+      if (content && content.length > maxLength) {
+        console.warn(`CoralCSS Extractor: Input exceeds max length (${maxLength}), truncating`)
+        content = content.slice(0, maxLength)
+      } else {
+        return []
+      }
+    }
+
     const classes: string[] = []
 
     // Extract from class/className attributes
@@ -209,20 +242,30 @@ export class Extractor {
 
   /**
    * Extract from string literals that look like utility classes
+   * Uses a ReDoS-safe approach by avoiding nested quantifiers
    */
   private extractStringLiterals(content: string): string[] {
     const classes: string[] = []
 
-    // Match quoted strings that look like class names
-    // This is a heuristic - looks for common utility patterns
-    const pattern = /["'`]([a-z][a-z0-9-:[\]()./]*(?:\s+[a-z][a-z0-9-:[\]()./]*)*)["'`]/gi
+    // ReDoS-safe pattern: match simple quoted strings, then validate contents
+    // Avoids nested quantifiers that cause catastrophic backtracking
+    const pattern = /["'`]([^"'`]{1,500})["'`]/g
     let match: RegExpExecArray | null
 
     while ((match = pattern.exec(content)) !== null) {
-      const value = match[1]!
-      // Only include if it looks like utility classes
+      const value = match[1]
+      if (!value) continue
+
+      // Only process if it looks like it might contain class names
+      // Quick check before splitting to avoid unnecessary work
+      if (!/^[a-z]/i.test(value)) continue
+
+      // Split and validate each potential class
       const parts = this.splitClasses(value)
       for (const part of parts) {
+        // Skip if too long (prevents processing malicious input)
+        if (part.length > MAX_CLASS_LENGTH) continue
+
         if (this.looksLikeUtility(part)) {
           classes.push(part)
         }
@@ -306,13 +349,26 @@ export class Extractor {
 
   /**
    * Check if a string looks like a utility class
+   * Uses anchored patterns with limited character classes to prevent ReDoS
    */
   private looksLikeUtility(str: string): boolean {
-    // Common utility patterns
+    // Quick length check first
+    if (!str || str.length > MAX_CLASS_LENGTH) {
+      return false
+    }
+
+    // Simple character-based checks (faster than regex for initial filter)
+    const firstChar = str[0]
+    if (!firstChar || (firstChar !== '-' && (firstChar < 'a' || firstChar > 'z'))) {
+      return false
+    }
+
+    // Common utility patterns - all anchored and using non-greedy matching
+    // These patterns avoid nested quantifiers
     const patterns = [
-      /^-?[a-z]+-[a-z0-9[\]().:%-]+$/, // Standard utilities
-      /^[a-z]+:[a-z]+-[a-z0-9[\]().:%-]+$/, // With variants
-      /^-?[a-z]+$/, // Simple utilities (flex, block, etc.)
+      /^-?[a-z]+$/,                           // Simple utilities (flex, block, etc.)
+      /^-?[a-z]+-[a-z0-9[\]().:%/-]+$/,       // Standard utilities (limited charset)
+      /^[a-z]+:-?[a-z]+-[a-z0-9[\]().:%/-]+$/, // With single variant prefix
     ]
 
     return patterns.some((p) => p.test(str))

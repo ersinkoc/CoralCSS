@@ -19,6 +19,29 @@ import {
 } from './parser-cache'
 
 /**
+ * Maximum allowed class name length to prevent DoS
+ */
+const MAX_CLASS_LENGTH = 500
+
+/**
+ * Maximum recursion depth for variant group expansion
+ */
+const MAX_VARIANT_GROUP_DEPTH = 10
+
+/**
+ * Empty parsed class result for invalid inputs
+ */
+const EMPTY_PARSED_CLASS: ParsedClass = {
+  original: '',
+  variants: [],
+  utility: '',
+  negative: false,
+  arbitrary: null,
+  important: false,
+  opacity: null,
+}
+
+/**
  * Parse a class name into its components
  *
  * @example
@@ -52,8 +75,27 @@ import {
  * ```
  */
 export function parse(className: string): ParsedClass {
-  const original = className
-  let remaining = className
+  // Input validation
+  if (!className || typeof className !== 'string') {
+    return { ...EMPTY_PARSED_CLASS }
+  }
+
+  // Trim whitespace
+  const trimmed = className.trim()
+
+  // Empty or whitespace-only check
+  if (!trimmed) {
+    return { ...EMPTY_PARSED_CLASS }
+  }
+
+  // Length check to prevent DoS
+  if (trimmed.length > MAX_CLASS_LENGTH) {
+    console.warn(`CoralCSS Parser: Class name exceeds max length (${MAX_CLASS_LENGTH}), returning empty result`)
+    return { ...EMPTY_PARSED_CLASS, original: trimmed.slice(0, MAX_CLASS_LENGTH) }
+  }
+
+  const original = trimmed
+  let remaining = trimmed
   const variants: string[] = []
   let negative = false
   let arbitrary: string | null = null
@@ -120,18 +162,41 @@ export function parse(className: string): ParsedClass {
  * // ['dark:hover:bg-gray-800', 'dark:hover:text-white']
  * ```
  */
-export function expandVariantGroups(input: string): string[] {
+export function expandVariantGroups(input: string, depth = 0): string[] {
+  // Depth limit to prevent stack overflow from circular/deep nesting
+  if (depth > MAX_VARIANT_GROUP_DEPTH) {
+    console.warn(`CoralCSS Parser: Variant group depth exceeds max (${MAX_VARIANT_GROUP_DEPTH}), stopping expansion`)
+    return [input]
+  }
+
+  // Input validation
+  if (!input || typeof input !== 'string') {
+    return []
+  }
+
   const result: string[] = []
   const str = input.trim()
+
+  // Empty check
+  if (!str) {
+    return []
+  }
+
+  // Length check
+  if (str.length > MAX_CLASS_LENGTH * 10) { // Allow longer for grouped classes
+    console.warn(`CoralCSS Parser: Variant group input too long, returning as-is`)
+    return [str]
+  }
+
   let pos = 0
 
   // Helper to find balanced closing parenthesis
   function findClosingParen(s: string, start: number): number {
-    let depth = 1
+    let parenDepth = 1
     for (let i = start; i < s.length; i++) {
-      if (s[i] === '(') {depth++}
-      if (s[i] === ')') {depth--}
-      if (depth === 0) {return i}
+      if (s[i] === '(') {parenDepth++}
+      if (s[i] === ')') {parenDepth--}
+      if (parenDepth === 0) {return i}
     }
     return -1
   }
@@ -172,8 +237,8 @@ export function expandVariantGroups(input: string): string[] {
       const content = str.slice(pos + 1, closePos)
       pos = closePos + 1
 
-      // Recursively expand the content
-      const expanded = expandVariantGroups(content)
+      // Recursively expand the content with incremented depth
+      const expanded = expandVariantGroups(content, depth + 1)
 
       // Add each expanded class with the variant prefix
       for (const expandedClass of expanded) {

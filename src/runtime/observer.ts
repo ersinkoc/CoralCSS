@@ -95,7 +95,7 @@ export class DOMObserver {
   }
 
   /**
-   * Stop observing the DOM
+   * Stop observing the DOM and clean up resources
    */
   stop(): void {
     if (this.observer) {
@@ -107,6 +107,10 @@ export class DOMObserver {
       clearTimeout(this.debounceTimer)
       this.debounceTimer = null
     }
+
+    // Clear class caches to prevent memory leaks
+    this.seenClasses.clear()
+    this.pendingClasses.clear()
   }
 
   /**

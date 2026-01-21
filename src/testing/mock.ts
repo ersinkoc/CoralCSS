@@ -133,6 +133,10 @@ export function createTestCoral(options: MockCoralOptions = {}): MockCoral {
     getGenerationCount(className: string): number {
       return classGenerationCount.get(className) || 0
     },
+
+    ready(): Promise<void> {
+      return baseCoral.ready()
+    },
   }
 
   return mock

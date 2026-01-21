@@ -17,6 +17,8 @@ import {
   isWhitespace,
   dedupeStrings,
   joinWithSpace,
+  isDangerousCSSValue,
+  sanitizeCSSValue,
 } from '../../../src/utils/string'
 
 describe('String Utilities', () => {
@@ -287,6 +289,101 @@ describe('String Utilities', () => {
 
     it('should handle all falsy values', () => {
       expect(joinWithSpace(undefined, null, false)).toBe('')
+    })
+  })
+
+  describe('isDangerousCSSValue', () => {
+    describe('safe values', () => {
+      it('should allow normal CSS values', () => {
+        expect(isDangerousCSSValue('#ff0000')).toBe(false)
+        expect(isDangerousCSSValue('1rem')).toBe(false)
+        expect(isDangerousCSSValue('100%')).toBe(false)
+        expect(isDangerousCSSValue('auto')).toBe(false)
+      })
+
+      it('should allow CSS functions', () => {
+        expect(isDangerousCSSValue('calc(100% - 20px)')).toBe(false)
+        expect(isDangerousCSSValue('rgb(255, 0, 0)')).toBe(false)
+        expect(isDangerousCSSValue('rgba(255, 0, 0, 0.5)')).toBe(false)
+        expect(isDangerousCSSValue('hsl(120, 50%, 50%)')).toBe(false)
+        expect(isDangerousCSSValue('var(--my-color)')).toBe(false)
+      })
+
+      it('should allow safe url() values', () => {
+        expect(isDangerousCSSValue('url(https://example.com/image.png)')).toBe(false)
+        expect(isDangerousCSSValue('url("https://example.com/image.png")')).toBe(false)
+        expect(isDangerousCSSValue("url('https://example.com/image.png')")).toBe(false)
+      })
+
+      it('should allow data:image URLs for SVG patterns', () => {
+        expect(isDangerousCSSValue('url("data:image/svg+xml,<svg></svg>")')).toBe(false)
+        expect(isDangerousCSSValue('url("data:image/png;base64,ABC123")')).toBe(false)
+        expect(isDangerousCSSValue('url("data:image/jpeg;base64,ABC123")')).toBe(false)
+        expect(isDangerousCSSValue('url("data:image/gif;base64,ABC123")')).toBe(false)
+      })
+
+      it('should allow empty or falsy values', () => {
+        expect(isDangerousCSSValue('')).toBe(false)
+      })
+    })
+
+    describe('dangerous values', () => {
+      it('should block javascript: protocol', () => {
+        expect(isDangerousCSSValue('url(javascript:alert(1))')).toBe(true)
+        expect(isDangerousCSSValue('url("javascript:alert(1)")')).toBe(true)
+        expect(isDangerousCSSValue('javascript:void(0)')).toBe(true)
+        expect(isDangerousCSSValue('JAVASCRIPT:alert(1)')).toBe(true)
+      })
+
+      it('should block vbscript: protocol', () => {
+        expect(isDangerousCSSValue('url(vbscript:msgbox(1))')).toBe(true)
+        expect(isDangerousCSSValue('VBSCRIPT:alert(1)')).toBe(true)
+      })
+
+      it('should block IE expression()', () => {
+        expect(isDangerousCSSValue('expression(alert(1))')).toBe(true)
+        expect(isDangerousCSSValue('EXPRESSION(alert(1))')).toBe(true)
+        expect(isDangerousCSSValue('width: expression(document.body.clientWidth)')).toBe(true)
+      })
+
+      it('should block behavior:', () => {
+        expect(isDangerousCSSValue('behavior:url(script.htc)')).toBe(true)
+        expect(isDangerousCSSValue('BEHAVIOR:url(script.htc)')).toBe(true)
+      })
+
+      it('should block -moz-binding:', () => {
+        expect(isDangerousCSSValue('-moz-binding:url(xss.xml#xss)')).toBe(true)
+        expect(isDangerousCSSValue('-MOZ-BINDING:url(xss.xml)')).toBe(true)
+      })
+
+      it('should block @import', () => {
+        expect(isDangerousCSSValue('@import url(evil.css)')).toBe(true)
+        expect(isDangerousCSSValue('@IMPORT url(evil.css)')).toBe(true)
+      })
+
+      it('should block non-image data: URLs', () => {
+        expect(isDangerousCSSValue('url("data:text/html,<script>alert(1)</script>")')).toBe(true)
+        expect(isDangerousCSSValue('url("data:application/javascript,alert(1)")')).toBe(true)
+        expect(isDangerousCSSValue('url(data:text/css,body{background:red})')).toBe(true)
+      })
+    })
+  })
+
+  describe('sanitizeCSSValue', () => {
+    it('should return safe values unchanged', () => {
+      expect(sanitizeCSSValue('#ff0000')).toBe('#ff0000')
+      expect(sanitizeCSSValue('calc(100% - 20px)')).toBe('calc(100% - 20px)')
+      expect(sanitizeCSSValue('url("data:image/svg+xml,<svg></svg>")')).toBe('url("data:image/svg+xml,<svg></svg>")')
+    })
+
+    it('should return null for dangerous values', () => {
+      expect(sanitizeCSSValue('url(javascript:alert(1))')).toBeNull()
+      expect(sanitizeCSSValue('expression(alert(1))')).toBeNull()
+      expect(sanitizeCSSValue('@import url(evil.css)')).toBeNull()
+    })
+
+    it('should handle empty values', () => {
+      expect(sanitizeCSSValue('')).toBe('')
     })
   })
 })

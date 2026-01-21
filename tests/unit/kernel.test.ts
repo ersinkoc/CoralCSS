@@ -1562,4 +1562,221 @@ describe('Kernel', () => {
       expect(instance).toBeDefined()
     })
   })
+
+  describe('ready() method', () => {
+    it('should return a Promise that resolves after all plugins are ready', async () => {
+      let readyCalled = false
+
+      // Register plugin via constructor options to ensure it's included in ready()
+      const instance = createCoral({
+        plugins: [
+          {
+            name: 'async-plugin',
+            version: '1.0.0',
+            install: () => {},
+            onReady: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 50))
+              readyCalled = true
+            },
+          },
+        ],
+      }) as Kernel
+
+      await instance.ready()
+      expect(readyCalled).toBe(true)
+    })
+
+    it('should be callable multiple times and resolve consistently', async () => {
+      const instance = createCoral({
+        plugins: [
+          {
+            name: 'test-plugin',
+            version: '1.0.0',
+            install: () => {},
+            onReady: async () => {},
+          },
+        ],
+      }) as Kernel
+
+      // Both calls should resolve successfully
+      await instance.ready()
+      await instance.ready()
+      // No error means it works
+      expect(true).toBe(true)
+    })
+
+    it('should resolve immediately if no plugins have onReady', async () => {
+      const instance = createCoral({
+        plugins: [
+          {
+            name: 'sync-plugin',
+            version: '1.0.0',
+            install: () => {},
+          },
+        ],
+      }) as Kernel
+
+      const start = Date.now()
+      await instance.ready()
+      const elapsed = Date.now() - start
+      expect(elapsed).toBeLessThan(50)
+    })
+
+    it('should handle plugins with onReady errors gracefully', async () => {
+      let errorHandled = false
+
+      const instance = createCoral({
+        plugins: [
+          {
+            name: 'error-plugin',
+            version: '1.0.0',
+            install: () => {},
+            onReady: async () => {
+              throw new Error('Async error')
+            },
+            onError: () => {
+              errorHandled = true
+            },
+          },
+        ],
+      }) as Kernel
+
+      // ready() should not throw
+      await expect(instance.ready()).resolves.toBeUndefined()
+      expect(errorHandled).toBe(true)
+    })
+
+    it('should wait for all async plugins before resolving', async () => {
+      const order: string[] = []
+
+      const instance = createCoral({
+        plugins: [
+          {
+            name: 'plugin-1',
+            version: '1.0.0',
+            install: () => {},
+            onReady: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 30))
+              order.push('plugin-1')
+            },
+          },
+          {
+            name: 'plugin-2',
+            version: '1.0.0',
+            install: () => {},
+            onReady: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 10))
+              order.push('plugin-2')
+            },
+          },
+        ],
+      }) as Kernel
+
+      await instance.ready()
+      // Both plugins should have completed
+      expect(order).toContain('plugin-1')
+      expect(order).toContain('plugin-2')
+    })
+
+    it('should call onReady for plugins added via use() after initialization', async () => {
+      let readyCalled = false
+      const instance = createCoral() as Kernel
+
+      instance.use({
+        name: 'late-plugin',
+        version: '1.0.0',
+        install: () => {},
+        onReady: async () => {
+          readyCalled = true
+        },
+      })
+
+      // For plugins added after initialization, onReady is called immediately (fire-and-forget)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      expect(readyCalled).toBe(true)
+    })
+  })
+
+  describe('prototype pollution protection', () => {
+    it('should ignore __proto__ in config', () => {
+      const maliciousConfig = JSON.parse('{"__proto__":{"polluted":"yes"}}')
+
+      const instance = createCoral({
+        theme: maliciousConfig,
+      }) as Kernel
+
+      // __proto__ should not be set on Object.prototype
+      expect(({} as Record<string, unknown>).polluted).toBeUndefined()
+      expect(instance).toBeDefined()
+    })
+
+    it('should ignore constructor in config', () => {
+      const maliciousConfig = {
+        constructor: {
+          prototype: {
+            polluted: 'yes',
+          },
+        },
+        colors: {
+          primary: '#000',
+        },
+      }
+
+      const instance = createCoral({
+        theme: maliciousConfig as Record<string, unknown>,
+      }) as Kernel
+
+      // Should not pollute Object.prototype
+      expect(({} as Record<string, unknown>).polluted).toBeUndefined()
+      expect(instance).toBeDefined()
+    })
+
+    it('should ignore prototype in nested config', () => {
+      const instance = createCoral({
+        theme: {
+          colors: {
+            prototype: { polluted: 'yes' },
+            primary: '#fff',
+          },
+        } as Record<string, unknown>,
+      }) as Kernel
+
+      expect(({} as Record<string, unknown>).polluted).toBeUndefined()
+      expect(instance).toBeDefined()
+    })
+
+    it('should still merge safe properties', () => {
+      const instance = createCoral({
+        theme: {
+          colors: {
+            primary: '#ff0000',
+            secondary: '#00ff00',
+          },
+        },
+      }) as Kernel
+
+      expect(instance.config.theme.colors).toHaveProperty('primary', '#ff0000')
+      expect(instance.config.theme.colors).toHaveProperty('secondary', '#00ff00')
+    })
+
+    it('should handle deeply nested prototype pollution attempts', () => {
+      const maliciousConfig = {
+        extend: {
+          colors: {
+            nested: {
+              __proto__: { polluted: 'yes' },
+              safe: '#000',
+            },
+          },
+        },
+      }
+
+      const instance = createCoral({
+        theme: maliciousConfig as Record<string, unknown>,
+      }) as Kernel
+
+      expect(({} as Record<string, unknown>).polluted).toBeUndefined()
+      expect(instance).toBeDefined()
+    })
+  })
 })

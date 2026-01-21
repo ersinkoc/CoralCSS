@@ -557,7 +557,7 @@ describe('Generator important modifier', () => {
     expect(result?.properties.backgroundColor).toBe('red !important')
   })
 
-  it('should handle non-string/number values in important modifier', () => {
+  it('should recursively apply !important to nested object values', () => {
     const theme = {} as Theme
     const variants = new Map<string, Variant>()
     const generator = new Generator(theme, variants)
@@ -580,7 +580,8 @@ describe('Generator important modifier', () => {
     }
 
     const result = generator.generateWithVariants(parsed, matchResult)
-    expect(result?.properties['--custom']).toEqual({ nested: 'value' })
+    // Now correctly applies !important recursively to nested values
+    expect(result?.properties['--custom']).toEqual({ nested: 'value !important' })
   })
 })
 

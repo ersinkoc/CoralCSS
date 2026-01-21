@@ -401,4 +401,112 @@ describe('Extractor', () => {
       expect(classes).toContain('bg-red-500')
     })
   })
+
+  describe('security and input validation', () => {
+    describe('input length limits', () => {
+      it('should handle very long input without hanging (ReDoS protection)', () => {
+        const extractor = new Extractor()
+        // Create a long input that could cause ReDoS with naive regex
+        const longInput = 'a'.repeat(100000)
+
+        const start = Date.now()
+        const classes = extractor.extract(longInput)
+        const elapsed = Date.now() - start
+
+        // Should complete quickly, not hang
+        expect(elapsed).toBeLessThan(5000) // 5 seconds max
+        expect(Array.isArray(classes)).toBe(true)
+      })
+
+      it('should truncate extremely long input', () => {
+        const extractor = new Extractor()
+        // Create input over 1MB
+        const veryLongInput = '<div class="p-4"></div>'.repeat(100000)
+
+        const start = Date.now()
+        const classes = extractor.extractFromHTML(veryLongInput)
+        const elapsed = Date.now() - start
+
+        // Should complete reasonably quickly
+        expect(elapsed).toBeLessThan(10000) // 10 seconds max
+        expect(Array.isArray(classes)).toBe(true)
+      })
+
+      it('should handle extremely long class names', () => {
+        const extractor = new Extractor()
+        const longClassName = 'a'.repeat(500)
+        const html = `<div class="${longClassName}"></div>`
+
+        // Should not crash or hang
+        const classes = extractor.extractFromHTML(html)
+        expect(Array.isArray(classes)).toBe(true)
+        // The extractor extracts the class, but the utility pattern matcher won't match it
+      })
+    })
+
+    describe('malicious input patterns', () => {
+      it('should handle nested brackets safely', () => {
+        const extractor = new Extractor()
+        const malicious = 'class="[[[[[[[[[[[[[[[[[[[[p-4]]]]]]]]]]]]]]]]]]]]"'
+
+        const start = Date.now()
+        const classes = extractor.extract(malicious)
+        const elapsed = Date.now() - start
+
+        expect(elapsed).toBeLessThan(1000)
+        expect(Array.isArray(classes)).toBe(true)
+      })
+
+      it('should handle repeated patterns safely', () => {
+        const extractor = new Extractor()
+        // Pattern that could cause backtracking
+        const malicious = `class="${'a-'.repeat(1000)}b"`
+
+        const start = Date.now()
+        const classes = extractor.extract(malicious)
+        const elapsed = Date.now() - start
+
+        expect(elapsed).toBeLessThan(1000)
+        expect(Array.isArray(classes)).toBe(true)
+      })
+
+      it('should handle alternating quotes safely', () => {
+        const extractor = new Extractor()
+        const malicious = `${"'\"".repeat(1000)}`
+
+        const start = Date.now()
+        const classes = extractor.extract(malicious)
+        const elapsed = Date.now() - start
+
+        expect(elapsed).toBeLessThan(1000)
+        expect(Array.isArray(classes)).toBe(true)
+      })
+    })
+
+    describe('null and undefined handling', () => {
+      it('should handle null-like input gracefully', () => {
+        const extractor = new Extractor()
+
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extractFromHTML(null)).toEqual([])
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extractFromHTML(undefined)).toEqual([])
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extract(null)).toEqual([])
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extract(undefined)).toEqual([])
+      })
+
+      it('should handle non-string input gracefully', () => {
+        const extractor = new Extractor()
+
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extractFromHTML(123)).toEqual([])
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extractFromHTML({})).toEqual([])
+        // @ts-expect-error testing runtime behavior
+        expect(extractor.extract([])).toEqual([])
+      })
+    })
+  })
 })

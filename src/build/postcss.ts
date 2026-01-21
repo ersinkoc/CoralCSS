@@ -8,7 +8,10 @@
 import { createCoral } from '../kernel'
 import { coralPreset } from '../presets/coral'
 import { generateThemeCSS } from '../theme/dark'
+import { extractClasses } from '../core/extractor'
 import type { Coral, CoralOptions, DarkModeStrategy } from '../types'
+import * as fs from 'fs'
+import * as path from 'path'
 
 /**
  * PostCSS plugin options
@@ -456,26 +459,105 @@ function generateComponentsCSS(): string {
 }
 
 /**
- * Scan content files for classes
- * Note: This is a simplified implementation. In production,
- * you'd use fast-glob or similar to read files.
+ * Convert a glob pattern to a RegExp
  */
-function scanContentFiles(_patterns: string[]): string[] {
-  // In a real implementation, this would:
-  // 1. Use fast-glob to find matching files
-  // 2. Read each file
-  // 3. Extract classes using regex
-  // For now, return empty array - classes will be extracted
-  // during PostCSS processing of actual CSS files
+function globToRegex(pattern: string): RegExp {
+  const regexStr = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars except * and ?
+    .replace(/\*\*/g, '<<<GLOBSTAR>>>') // Temp placeholder for **
+    .replace(/\*/g, '[^/\\\\]*') // * matches anything except path separators
+    .replace(/<<<GLOBSTAR>>>/g, '.*') // ** matches anything
+    .replace(/\?/g, '.') // ? matches single char
+  return new RegExp(`^${regexStr}$`)
+}
 
-  // This is a placeholder - actual implementation would need
-  // file system access which isn't available in browser context
-  console.warn(
-    'CoralCSS PostCSS: Content scanning requires Node.js. ' +
-      'Classes will be extracted from processed files.'
-  )
+/**
+ * Recursively walk directory and collect files matching patterns
+ */
+function walkDirectory(
+  dir: string,
+  includePatterns: RegExp[],
+  excludePatterns: RegExp[],
+  results: string[] = [],
+  basePath: string = dir
+): string[] {
+  try {
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
 
-  return []
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name)
+      const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/')
+
+      // Check if excluded
+      const isExcluded = excludePatterns.some((regex) => regex.test(relativePath))
+      if (isExcluded) continue
+
+      if (entry.isDirectory()) {
+        // Recurse into subdirectories
+        walkDirectory(fullPath, includePatterns, excludePatterns, results, basePath)
+      } else if (entry.isFile()) {
+        // Check if file matches include patterns
+        const isIncluded = includePatterns.some((regex) => regex.test(relativePath))
+        if (isIncluded) {
+          results.push(fullPath)
+        }
+      }
+    }
+  } catch (error) {
+    // Silently ignore errors (e.g., permission denied)
+  }
+
+  return results
+}
+
+/**
+ * Scan content files for classes
+ * Reads files matching the glob patterns and extracts class names
+ */
+function scanContentFiles(patterns: string[]): string[] {
+  if (patterns.length === 0) {
+    return []
+  }
+
+  // Default exclude patterns
+  const defaultExcludes = ['node_modules/**', '.git/**', 'dist/**', 'build/**']
+
+  // Separate include and exclude patterns
+  const includePatterns: RegExp[] = []
+  const excludePatterns: RegExp[] = defaultExcludes.map(globToRegex)
+
+  for (const pattern of patterns) {
+    if (pattern.startsWith('!')) {
+      excludePatterns.push(globToRegex(pattern.slice(1)))
+    } else {
+      includePatterns.push(globToRegex(pattern))
+    }
+  }
+
+  if (includePatterns.length === 0) {
+    return []
+  }
+
+  // Get the base directory (current working directory)
+  const baseDir = process.cwd()
+
+  // Find all matching files
+  const files = walkDirectory(baseDir, includePatterns, excludePatterns)
+
+  // Extract classes from all files
+  const allClasses = new Set<string>()
+
+  for (const file of files) {
+    try {
+      const content = fs.readFileSync(file, 'utf-8')
+      const classes = extractClasses(content)
+      classes.forEach((cls) => allClasses.add(cls))
+    } catch {
+      // Silently ignore read errors
+    }
+  }
+
+  return Array.from(allClasses)
 }
 
 export default coralPostCSSPlugin

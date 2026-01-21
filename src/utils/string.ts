@@ -70,6 +70,93 @@ export function escapeSelector(selector: string): string {
 }
 
 /**
+ * Dangerous CSS patterns that could lead to XSS or code execution
+ * These are checked case-insensitively
+ */
+const DANGEROUS_CSS_PATTERNS = [
+  // JavaScript execution vectors (outside of url())
+  /javascript\s*:/i,
+  /vbscript\s*:/i,
+  // Note: data: URLs are handled separately in url() check to allow data:image/*
+
+  // Legacy IE expression execution
+  /expression\s*\(/i,
+  /behavior\s*:/i,
+
+  // Firefox-specific binding
+  /-moz-binding\s*:/i,
+
+  // Import can load external stylesheets with malicious content
+  /@import/i,
+]
+
+/**
+ * Check if a CSS value contains potentially dangerous content
+ * Used to sanitize arbitrary values in class names
+ *
+ * @example
+ * ```typescript
+ * isDangerousCSSValue('url(javascript:alert(1))') // true
+ * isDangerousCSSValue('expression(alert(1))') // true
+ * isDangerousCSSValue('#ff0000') // false
+ * isDangerousCSSValue('calc(100% - 20px)') // false
+ * ```
+ */
+export function isDangerousCSSValue(value: string): boolean {
+  if (!value) return false
+
+  // Check against dangerous patterns
+  for (const pattern of DANGEROUS_CSS_PATTERNS) {
+    if (pattern.test(value)) {
+      return true
+    }
+  }
+
+  // Check for url() with dangerous protocols
+  const urlMatch = value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/gi)
+  if (urlMatch) {
+    for (const match of urlMatch) {
+      const urlContent = match.replace(/url\s*\(\s*['"]?/i, '').replace(/['"]?\s*\)$/, '')
+      const trimmedUrl = urlContent.trim()
+      // Block dangerous protocols in url():
+      // - javascript: and vbscript: can execute scripts
+      // - data: URLs are allowed only for images (data:image/*)
+      // - data:text/html can execute scripts and must be blocked
+      if (/^(javascript|vbscript)\s*:/i.test(trimmedUrl)) {
+        return true
+      }
+      // Block data: URLs that aren't images
+      if (/^data\s*:/i.test(trimmedUrl) && !/^data\s*:\s*image\//i.test(trimmedUrl)) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+/**
+ * Sanitize a CSS value by removing or escaping dangerous content
+ * Returns null if the value is too dangerous to sanitize
+ *
+ * @example
+ * ```typescript
+ * sanitizeCSSValue('calc(100% - 20px)') // 'calc(100% - 20px)'
+ * sanitizeCSSValue('url(javascript:alert(1))') // null (dangerous)
+ * ```
+ */
+export function sanitizeCSSValue(value: string): string | null {
+  if (!value) return value
+
+  // If it contains dangerous patterns, reject entirely
+  if (isDangerousCSSValue(value)) {
+    return null
+  }
+
+  return value
+}
+
+/**
  * Escape special characters for use in RegExp
  *
  * @example

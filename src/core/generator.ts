@@ -42,6 +42,128 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 }
 
 /**
+ * Variant wrapper type - can be string, CSS transformer, or match-based factory
+ */
+type VariantWrapper =
+  | string
+  | ((css: string) => string)
+  | ((matches: RegExpMatchArray | null) => string)
+
+/**
+ * Resolve a variant wrapper to just the wrapper string (for simple use cases)
+ * Used by CSSGenerator which needs the raw wrapper string
+ */
+function resolveWrapperString(
+  wrapper: VariantWrapper,
+  matches: RegExpMatchArray | null
+): string | null {
+  if (typeof wrapper === 'string') {
+    return wrapper
+  }
+
+  if (typeof wrapper === 'function') {
+    try {
+      const result = wrapper(matches as never)
+      if (typeof result === 'string' && (result.startsWith('@') || result.startsWith(':'))) {
+        return result
+      }
+    } catch {
+      // If calling fails, wrapper is likely expecting CSS string, not matches
+      return null
+    }
+  }
+
+  return null
+}
+
+/**
+ * Resolve a variant wrapper into a standard wrapper function
+ * Handles the three possible wrapper types in a type-safe manner
+ */
+function resolveWrapperFunction(
+  wrapper: VariantWrapper,
+  matches: RegExpMatchArray | null
+): ((css: string) => string) | null {
+  if (typeof wrapper === 'string') {
+    // Simple string wrapper
+    return (cssStr: string) => `${wrapper} {\n${cssStr}\n}`
+  }
+
+  if (typeof wrapper === 'function') {
+    // Try calling with matches to see if it's a factory function
+    // Factory functions return a string (the wrapper), not wrapped CSS
+    try {
+      const result = wrapper(matches as never) // Use 'never' to allow both signatures
+
+      if (typeof result === 'string') {
+        // Check if result looks like a wrapper string (starts with @) or wrapped CSS
+        // Factory functions return things like '@media (min-width: 768px)'
+        // CSS transformer functions return actual CSS with selectors and properties
+        const isWrapperString = result.startsWith('@') || result.startsWith(':')
+        if (isWrapperString) {
+          // It's a factory function that returned a wrapper string
+          return (cssStr: string) => `${result} {\n${cssStr}\n}`
+        }
+        // It seems to be a CSS transformer that already wrapped the CSS
+        // This shouldn't happen for wrappers, but handle it gracefully
+        return () => result
+      }
+    } catch {
+      // If calling with matches fails, it might be expecting CSS string
+      // Return the wrapper as-is to be called later with CSS
+      return wrapper as (css: string) => string
+    }
+  }
+
+  return null
+}
+
+/**
+ * Flatten nested CSS properties into an array of [key, value] pairs
+ * Handles nested objects like { padding: { top: '1rem', bottom: '2rem' } }
+ * by converting them to flat properties like 'padding-top', 'padding-bottom'
+ */
+function flattenProperties(properties: CSSProperties, prefix = ''): Array<[string, string | number]> {
+  const result: Array<[string, string | number]> = []
+
+  for (const [key, value] of Object.entries(properties)) {
+    const fullKey = prefix ? `${prefix}-${key}` : key
+
+    if (typeof value === 'string' || typeof value === 'number') {
+      result.push([fullKey, value])
+    } else if (typeof value === 'object' && value !== null) {
+      // Recursively flatten nested objects
+      result.push(...flattenProperties(value as CSSProperties, fullKey))
+    }
+  }
+
+  return result
+}
+
+/**
+ * Recursively apply !important to all CSS property values, including nested objects
+ */
+function applyImportantRecursive(properties: CSSProperties): CSSProperties {
+  const result: CSSProperties = {}
+
+  for (const [key, value] of Object.entries(properties)) {
+    if (typeof value === 'string') {
+      // Avoid double !important
+      result[key] = value.includes('!important') ? value : `${value} !important`
+    } else if (typeof value === 'number') {
+      result[key] = `${value} !important`
+    } else if (typeof value === 'object' && value !== null) {
+      // Recursively handle nested objects
+      result[key] = applyImportantRecursive(value as CSSProperties)
+    } else {
+      result[key] = value
+    }
+  }
+
+  return result
+}
+
+/**
  * Apply opacity to a color value
  */
 function applyOpacityToColor(color: string, opacity: number): string {
@@ -191,17 +313,9 @@ export class Generator {
     // Apply variants
     baseCSS.variants = parsed.variants
 
-    // Handle important modifier
+    // Handle important modifier - recursively apply to all values including nested objects
     if (parsed.important) {
-      const importantProps: CSSProperties = {}
-      for (const [key, value] of Object.entries(baseCSS.properties)) {
-        if (typeof value === 'string' || typeof value === 'number') {
-          importantProps[key] = `${value} !important`
-        } else {
-          importantProps[key] = value
-        }
-      }
-      baseCSS.properties = importantProps
+      baseCSS.properties = applyImportantRecursive(baseCSS.properties)
     }
 
     // Handle opacity modifier
@@ -283,24 +397,10 @@ export class Generator {
 
       // Collect wrappers (for at-rules like media queries)
       if (variant.wrapper) {
-        // Convert string wrapper to function, supporting dynamic wrappers
-        let wrapperFn: (css: string) => string
-        if (typeof variant.wrapper === 'string') {
-          wrapperFn = (cssStr: string) => `${variant.wrapper} {\n${cssStr}\n}`
-        } else if (typeof variant.wrapper === 'function') {
-          // Check if wrapper is a factory function that takes matches
-          const wrapperResult = (variant.wrapper as unknown as (m: RegExpMatchArray | null) => string)(matches)
-          if (typeof wrapperResult === 'string') {
-            // It's a factory function that returns wrapper string
-            wrapperFn = (cssStr: string) => `${wrapperResult} {\n${cssStr}\n}`
-          } else {
-            // It's a regular wrapper function
-            wrapperFn = variant.wrapper as (css: string) => string
-          }
-        } else {
-          continue
+        const wrapperFn = resolveWrapperFunction(variant.wrapper, matches)
+        if (wrapperFn) {
+          wrappers.push(wrapperFn)
         }
-        wrappers.push(wrapperFn)
       }
     }
 
@@ -594,23 +694,21 @@ export class CSSGenerator {
 
       // Collect wrappers for at-rules
       if (variant.wrapper) {
-        if (typeof variant.wrapper === 'string') {
-          wrappers.push(variant.wrapper)
-        } else if (typeof variant.wrapper === 'function') {
-          const wrapperResult = (variant.wrapper as unknown as (m: RegExpMatchArray | null) => string)(matches)
-          if (typeof wrapperResult === 'string') {
-            wrappers.push(wrapperResult)
-          }
+        const wrapperStr = resolveWrapperString(variant.wrapper, matches)
+        if (wrapperStr) {
+          wrappers.push(wrapperStr)
         }
       }
     }
 
-    // Format properties
-    const propsString = Object.entries(properties)
+    // Apply !important if needed (recursively for nested properties)
+    const finalProps = isImportant ? applyImportantRecursive(properties) : properties
+
+    // Format properties (handles nested objects via flattenProperties)
+    const propsString = flattenProperties(finalProps)
       .map(([key, value]) => {
         const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-        const cssValue = isImportant ? `${value} !important` : value
-        return `${cssKey}: ${cssValue}`
+        return `${cssKey}: ${value}`
       })
       .join('; ')
 

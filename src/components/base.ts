@@ -333,11 +333,26 @@ export abstract class BaseComponent {
     this.removeAllEventListeners()
 
     // Legacy cleanup for boundHandlers (backward compatibility)
+    // Key format is 'eventName-uniqueId' so we extract the event name before the last dash
     this.boundHandlers.forEach((handler, key) => {
-      const event = key.split('-')[0]
+      // Find the last dash to separate event name from unique suffix
+      const lastDashIndex = key.lastIndexOf('-')
+      const event = lastDashIndex > 0 ? key.substring(0, lastDashIndex) : key
+
       if (event) {
-        this.element.removeEventListener(event, handler)
-        document.removeEventListener(event, handler)
+        // Try to remove from all possible targets since we don't know where it was added
+        try {
+          this.element.removeEventListener(event, handler)
+        } catch { /* ignore */ }
+        try {
+          document.removeEventListener(event, handler)
+        } catch { /* ignore */ }
+        // Also try window for events like resize, scroll
+        if (typeof window !== 'undefined') {
+          try {
+            window.removeEventListener(event, handler)
+          } catch { /* ignore */ }
+        }
       }
     })
     this.boundHandlers.clear()
