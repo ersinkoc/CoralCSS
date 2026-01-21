@@ -89,6 +89,21 @@ describe('Color Utilities', () => {
       expect(parseRgbString('invalid')).toBeNull()
       expect(parseRgbString('#ff6b6b')).toBeNull()
     })
+
+    it('should clamp out of range RGB values', () => {
+      const result = parseRgbString('rgb(999, -50, 128)')
+      expect(result).toEqual({ r: 255, g: 0, b: 128 })
+    })
+
+    it('should clamp out of range alpha values', () => {
+      const result = parseRgbString('rgba(128, 128, 128, 2.5)')
+      expect(result).toEqual({ r: 128, g: 128, b: 128, a: 1 })
+    })
+
+    it('should clamp negative alpha values', () => {
+      const result = parseRgbString('rgba(128, 128, 128, -0.5)')
+      expect(result).toEqual({ r: 128, g: 128, b: 128, a: 0 })
+    })
   })
 
   describe('rgbToHsl', () => {

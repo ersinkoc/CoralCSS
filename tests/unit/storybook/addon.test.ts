@@ -207,6 +207,27 @@ describe('Storybook Addon', () => {
         { value: 'custom3', label: 'custom3' },
       ])
     })
+
+    it('should handle empty themes array', () => {
+      const items = createToolbarItems({ themes: [] })
+      expect(items.themeSelector.options).toEqual([])
+    })
+
+    it('should handle single theme', () => {
+      const items = createToolbarItems({ themes: ['single'] })
+      expect(items.themeSelector.options).toEqual([
+        { value: 'single', label: 'single' },
+      ])
+    })
+
+    it('should work with both callbacks', () => {
+      const onDarkModeToggle = vi.fn()
+      const onThemeChange = vi.fn()
+      const items = createToolbarItems({ onDarkModeToggle, onThemeChange })
+
+      expect(items.darkModeToggle.onClick).toBe(onDarkModeToggle)
+      expect(items.themeSelector.onChange).toBe(onThemeChange)
+    })
   })
 
   describe('createEventEmitter', () => {

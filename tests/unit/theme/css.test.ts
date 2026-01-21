@@ -7,9 +7,15 @@ import {
   generateZIndexCSS,
   generateTypographyCSS,
   generateEffectsCSS,
+  generateBreakpointsCSS,
+  generateResetCSS,
   generateThemeCSSComplete,
   generateComponentsCSS,
   generateBaseCSS,
+  defaultThemeCSS,
+  minimalThemeCSS,
+  resetOnlyCSS,
+  systemDarkModeCSS,
 } from '../../../src/theme/css'
 
 describe('Theme CSS', () => {
@@ -125,6 +131,80 @@ describe('Theme CSS', () => {
     it('should generate duration CSS variables', () => {
       const css = generateEffectsCSS()
       expect(css).toContain('--duration-')
+    })
+
+    it('should generate drop shadow CSS variables', () => {
+      const css = generateEffectsCSS()
+      expect(css).toContain('--drop-shadow-')
+    })
+  })
+
+  describe('generateBreakpointsCSS', () => {
+    it('should generate breakpoint CSS variables', () => {
+      const css = generateBreakpointsCSS()
+      expect(css).toContain('--screen-')
+    })
+
+    it('should handle string screen values', () => {
+      const css = generateBreakpointsCSS()
+      // String values like '640px' should be included
+      expect(css).toContain('--screen-')
+    })
+  })
+
+  describe('generateResetCSS', () => {
+    it('should generate reset CSS', () => {
+      const css = generateResetCSS()
+      expect(css).toBeDefined()
+      expect(typeof css).toBe('string')
+    })
+
+    it('should contain box-sizing rule', () => {
+      const css = generateResetCSS()
+      expect(css).toContain('box-sizing: border-box')
+    })
+
+    it('should contain body margin reset', () => {
+      const css = generateResetCSS()
+      expect(css).toContain('margin: 0')
+    })
+  })
+
+  describe('pre-generated CSS exports', () => {
+    it('should export defaultThemeCSS', () => {
+      expect(defaultThemeCSS).toBeDefined()
+      expect(typeof defaultThemeCSS).toBe('string')
+    })
+
+    it('should export minimalThemeCSS', () => {
+      expect(minimalThemeCSS).toBeDefined()
+      expect(typeof minimalThemeCSS).toBe('string')
+    })
+
+    it('should export resetOnlyCSS', () => {
+      expect(resetOnlyCSS).toBeDefined()
+      expect(typeof resetOnlyCSS).toBe('string')
+    })
+
+    it('should export systemDarkModeCSS', () => {
+      expect(systemDarkModeCSS).toBeDefined()
+      expect(typeof systemDarkModeCSS).toBe('string')
+    })
+
+    it('defaultThemeCSS should include semantic tokens', () => {
+      expect(defaultThemeCSS).toContain('--background')
+    })
+
+    it('minimalThemeCSS should have minimal content', () => {
+      expect(minimalThemeCSS).toBeDefined()
+    })
+
+    it('resetOnlyCSS should be same as generateResetCSS', () => {
+      expect(resetOnlyCSS).toBe(generateResetCSS())
+    })
+
+    it('systemDarkModeCSS should use media dark mode', () => {
+      expect(systemDarkModeCSS).toContain('prefers-color-scheme')
     })
   })
 

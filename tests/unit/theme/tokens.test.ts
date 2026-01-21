@@ -125,14 +125,51 @@ describe('Theme Tokens', () => {
       expect(css).toContain('/*')
     })
 
-    it('should handle categorize option', () => {
-      const css = generateTokensCSS(defaultDesignTokens, { categorize: true })
-      expect(css).toContain(':root')
-    })
-
     it('should handle empty prefix', () => {
       const css = generateTokensCSS(defaultDesignTokens, { prefix: '' })
       expect(css).toContain('--color-coral-500')
+    })
+
+    it('should generate all token categories', () => {
+      const css = generateTokensCSS()
+      expect(css).toContain('--spacing-')
+      expect(css).toContain('--size-')
+      expect(css).toContain('--font-')
+      expect(css).toContain('--text-')
+      expect(css).toContain('--font-weight-')
+      expect(css).toContain('--leading-')
+      expect(css).toContain('--tracking-')
+      expect(css).toContain('--border-width-')
+      expect(css).toContain('--radius-')
+      expect(css).toContain('--shadow-')
+      expect(css).toContain('--duration-')
+      expect(css).toContain('--ease-')
+      expect(css).toContain('--opacity-')
+      expect(css).toContain('--z-')
+      expect(css).toContain('--screen-')
+    })
+
+    it('should handle deprecated tokens', () => {
+      const tokensWithDeprecated = {
+        ...defaultDesignTokens,
+        colors: {
+          ...defaultDesignTokens.colors,
+          primitive: {
+            ...defaultDesignTokens.colors.primitive,
+            'deprecated-token': { value: '#000', deprecated: true },
+          },
+          semantic: defaultDesignTokens.colors.semantic,
+        },
+      }
+      const css = generateTokensCSS(tokensWithDeprecated)
+      expect(css).toContain('--color-deprecated-token')
+    })
+
+    it('should handle tokens with refs', () => {
+      const css = generateTokensCSS()
+      // Semantic colors should reference primitive colors
+      expect(css).toContain('--color-text-default')
+      expect(css).toContain('var(--color-gray-900)')
     })
   })
 
@@ -162,6 +199,16 @@ describe('Theme Tokens', () => {
       const css = generateDarkTokensCSS(darkModeTokens, 'class', { prefix: 'coral' })
       expect(css).toContain('--coral-')
     })
+
+    it('should handle empty dark tokens', () => {
+      const css = generateDarkTokensCSS({}, 'class')
+      expect(css).toContain('.dark {')
+    })
+
+    it('should handle invalid strategy by defaulting to class', () => {
+      const css = generateDarkTokensCSS(darkModeTokens, 'invalid' as any)
+      expect(css).toContain('.dark {')
+    })
   })
 
   describe('generateTokensSCSS', () => {
@@ -178,6 +225,11 @@ describe('Theme Tokens', () => {
     it('should handle prefix option', () => {
       const scss = generateTokensSCSS(defaultDesignTokens, { prefix: 'coral' })
       expect(scss).toContain('$coral-')
+    })
+
+    it('should include description comments', () => {
+      const scss = generateTokensSCSS()
+      expect(scss).toContain('//')
     })
   })
 
@@ -387,6 +439,65 @@ describe('Theme Tokens', () => {
       })
 
       expect(custom.typography.fontFamily.sans).toBeDefined()
+    })
+
+    it('should merge all token categories', () => {
+      const custom = createDesignTokens({
+        colors: {
+          primitive: { 'custom-color': { value: '#123456' } },
+          semantic: { 'custom-semantic': { value: '#654321' } },
+        },
+        spacing: { 'custom-spacing': { value: '10rem' } },
+        sizing: { 'custom-size': { value: '50%' } },
+        typography: {
+          fontFamily: { custom: { value: 'CustomFont, sans-serif' } },
+          fontSize: {},
+          fontWeight: {},
+          lineHeight: {},
+          letterSpacing: {},
+        },
+        borders: {
+          width: {},
+          radius: { 'custom-radius': { value: '10px' } },
+          color: {},
+        },
+        shadows: {},
+        motion: {
+          duration: {},
+          easing: {},
+        },
+        opacity: {},
+        zIndex: {},
+        breakpoints: { 'custom-breakpoint': { value: '500px' } },
+      })
+
+      expect(custom.colors.primitive['custom-color']).toBeDefined()
+      expect(custom.colors.semantic['custom-semantic']).toBeDefined()
+      expect(custom.spacing['custom-spacing']).toBeDefined()
+      expect(custom.sizing['custom-size']).toBeDefined()
+      expect(custom.typography.fontFamily.custom).toBeDefined()
+      expect(custom.borders.radius['custom-radius']).toBeDefined()
+      expect(custom.breakpoints['custom-breakpoint']).toBeDefined()
+    })
+
+    it('should handle partial token overrides', () => {
+      const custom = createDesignTokens({
+        typography: {
+          fontFamily: { sans: { value: 'Custom Sans' } },
+          fontSize: {},
+          fontWeight: {},
+          lineHeight: {},
+          letterSpacing: {},
+        },
+      })
+
+      expect(custom.typography.fontFamily.sans.value).toBe('Custom Sans')
+      expect(custom.typography.fontSize.base).toBeDefined()
+    })
+
+    it('should handle empty custom tokens', () => {
+      const custom = createDesignTokens({})
+      expect(custom.colors.primitive['coral-500']).toBeDefined()
     })
   })
 

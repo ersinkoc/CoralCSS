@@ -386,4 +386,31 @@ describe('String Utilities', () => {
       expect(sanitizeCSSValue('')).toBe('')
     })
   })
+
+  describe('Edge Cases', () => {
+    it('should handle dedupeStrings with empty strings', () => {
+      expect(dedupeStrings(['a', '', 'b', '', 'a'])).toEqual(['a', '', 'b'])
+    })
+
+    it('should handle generateId with prefix', () => {
+      const id1 = generateId('test')
+      const id2 = generateId('test')
+      expect(id1).not.toBe(id2)
+      expect(id1).toContain('test')
+    })
+
+    it('should handle generateId without prefix', () => {
+      const id = generateId()
+      expect(typeof id).toBe('string')
+      expect(id.length).toBeGreaterThan(0)
+    })
+
+    it('should handle capitalize with already capitalized string', () => {
+      expect(capitalize('Hello')).toBe('Hello')
+    })
+
+    it('should handle capitalize with empty string', () => {
+      expect(capitalize('')).toBe('')
+    })
+  })
 })

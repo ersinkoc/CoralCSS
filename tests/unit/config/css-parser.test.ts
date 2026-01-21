@@ -103,6 +103,17 @@ describe('CSS Parser', () => {
         expect(config.sourceNot).toContain('./node_modules/**')
       })
 
+      it('should parse multiple source not directives', () => {
+        const css = `
+          @coral source not "./node_modules/**";
+          @coral source not "./dist/**";
+        `
+        const config = parseCSSConfig(css)
+        expect(config.sourceNot).toContain('./node_modules/**')
+        expect(config.sourceNot).toContain('./dist/**')
+        expect(config.sourceNot).toHaveLength(2)
+      })
+
       it('should parse inline source (safelist)', () => {
         const css = `@coral source inline("text-primary bg-blue-500");`
         const config = parseCSSConfig(css)
@@ -431,6 +442,26 @@ describe('CSS Parser', () => {
       expect(merged.safelist).toContain('also-keep')
     })
 
+    it('should handle safelist when jsConfig has no safelist', () => {
+      const jsConfig = {}
+      const cssConfig: ParsedCSSConfig = {
+        safelist: ['new-class'],
+      }
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.safelist).toContain('new-class')
+    })
+
+    it('should handle safelist when cssConfig has no safelist', () => {
+      const jsConfig = {
+        safelist: ['existing-class'],
+      }
+      const cssConfig: ParsedCSSConfig = {}
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.safelist).toContain('existing-class')
+    })
+
     it('should handle string blocklist in jsConfig', () => {
       const jsConfig = {
         blocklist: 'block-this' as any,
@@ -442,6 +473,50 @@ describe('CSS Parser', () => {
       const merged = mergeConfigs(jsConfig, cssConfig)
       expect(merged.blocklist).toContain('block-this')
       expect(merged.blocklist).toContain('also-block')
+    })
+
+    it('should handle blocklist when jsConfig has no blocklist', () => {
+      const jsConfig = {}
+      const cssConfig: ParsedCSSConfig = {
+        blocklist: ['new-block'],
+      }
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.blocklist).toContain('new-block')
+    })
+
+    it('should handle blocklist when cssConfig has no blocklist', () => {
+      const jsConfig = {
+        blocklist: ['existing-block'],
+      }
+      const cssConfig: ParsedCSSConfig = {}
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.blocklist).toContain('existing-block')
+    })
+
+    it('should handle null safelist in jsConfig', () => {
+      const jsConfig = {
+        safelist: null as any,
+      }
+      const cssConfig: ParsedCSSConfig = {
+        safelist: ['new-class'],
+      }
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.safelist).toContain('new-class')
+    })
+
+    it('should handle null blocklist in jsConfig', () => {
+      const jsConfig = {
+        blocklist: null as any,
+      }
+      const cssConfig: ParsedCSSConfig = {
+        blocklist: ['new-block'],
+      }
+
+      const merged = mergeConfigs(jsConfig, cssConfig)
+      expect(merged.blocklist).toContain('new-block')
     })
   })
 
@@ -542,6 +617,29 @@ describe('CSS Parser', () => {
     it('should return valid for properly nested braces', () => {
       const css = `@coral theme { --color: red; }
         @coral preset material { --primary: blue; }`
+      const result = validateCSSConfig(css)
+      expect(result.valid).toBe(true)
+    })
+
+    it('should handle CSS with comments', () => {
+      const css = `
+        /* This is a comment */
+        @coral theme { --color: red; }
+        // Another comment
+        @coral source "./src/**/*.html";
+      `
+      const result = validateCSSConfig(css)
+      expect(result.valid).toBe(true)
+    })
+
+    it('should handle CSS with multiple braces on same line', () => {
+      const css = `@coral theme {{ --color: red; }}`
+      const result = validateCSSConfig(css)
+      expect(result.valid).toBe(true)
+    })
+
+    it('should handle CSS with escaped braces in strings', () => {
+      const css = `@coral theme { --content: "{bracket}"; }`
       const result = validateCSSConfig(css)
       expect(result.valid).toBe(true)
     })

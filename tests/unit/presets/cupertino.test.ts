@@ -148,6 +148,16 @@ describe('Cupertino Preset', () => {
       const config = cupertinoPresetConfig({})
       expect(config.darkMode).toBe('media')
     })
+
+    it('should handle selector strategy', () => {
+      const config = cupertinoPresetConfig({ darkMode: 'selector' })
+      expect(config.darkMode).toBe('selector')
+    })
+
+    it('should handle auto strategy', () => {
+      const config = cupertinoPresetConfig({ darkMode: 'auto' })
+      expect(config.darkMode).toBe('auto')
+    })
   })
 
   describe('Default Export', () => {

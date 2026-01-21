@@ -200,6 +200,12 @@ describe('Matcher', () => {
       const result = matcher.match('p-4')
       expect(result?.rule.name).toBe('priority-high')
     })
+
+    it('should handle match with no rules', () => {
+      const emptyMatcher = new Matcher()
+      const result = emptyMatcher.match('anything')
+      expect(result).toBeNull()
+    })
   })
 
   describe('matchAll', () => {
@@ -231,6 +237,25 @@ describe('Matcher', () => {
       matcher.clear()
       expect(matcher.getRules()).toEqual([])
     })
+
+    it('should invalidate cache after clearing', () => {
+      matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({ color: 'red' }) })
+      const match1 = matcher.match('test')
+      expect(match1).not.toBeNull()
+
+      matcher.clear()
+      const match2 = matcher.match('test')
+      expect(match2).toBeNull()
+    })
+
+    it('should clear match cache', () => {
+      matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({ color: 'red' }) })
+      matcher.match('test')
+      expect(matcher.size).toBe(1)
+
+      matcher.clear()
+      expect(matcher.size).toBe(0)
+    })
   })
 
   describe('size', () => {
@@ -239,6 +264,11 @@ describe('Matcher', () => {
       matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({}) })
       expect(matcher.size).toBe(1)
     })
+
+    it('should return 0 for new matcher', () => {
+      const newMatcher = new Matcher()
+      expect(newMatcher.size).toBe(0)
+    })
   })
 })
 
@@ -246,5 +276,71 @@ describe('createMatcher', () => {
   it('should create a matcher instance', () => {
     const matcher = createMatcher()
     expect(matcher).toBeInstanceOf(Matcher)
+  })
+
+  it('should create a matcher with no rules', () => {
+    const matcher = createMatcher()
+    expect(matcher.size).toBe(0)
+    expect(matcher.getRules()).toEqual([])
+  })
+
+  it('should be equivalent to new Matcher()', () => {
+    const matcher1 = createMatcher()
+    const matcher2 = new Matcher()
+    expect(matcher1.size).toBe(matcher2.size)
+  })
+
+  it('should create a fresh matcher each time', () => {
+    const matcher1 = createMatcher()
+    const matcher2 = createMatcher()
+    // They should be different instances
+    expect(matcher1).not.toBe(matcher2)
+  })
+
+  it('should have same methods as new Matcher()', () => {
+    const matcher = createMatcher()
+    expect(typeof matcher.addRule).toBe('function')
+    expect(typeof matcher.match).toBe('function')
+    expect(typeof matcher.matchAll).toBe('function')
+    expect(typeof matcher.removeRule).toBe('function')
+    expect(typeof matcher.clear).toBe('function')
+  })
+
+  it('should work with addRule', () => {
+    const matcher = createMatcher()
+    matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({ display: 'block' }) })
+    expect(matcher.size).toBe(1)
+  })
+
+  it('should work with match', () => {
+    const matcher = createMatcher()
+    matcher.addRule({ name: 'flex', pattern: /^flex$/, generate: () => ({ display: 'flex' }) })
+    const result = matcher.match('flex')
+    expect(result).not.toBeNull()
+  })
+
+  it('should work with clear', () => {
+    const matcher = createMatcher()
+    matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({}) })
+    expect(matcher.size).toBe(1)
+    matcher.clear()
+    expect(matcher.size).toBe(0)
+  })
+
+  it('should work with removeRule', () => {
+    const matcher = createMatcher()
+    matcher.addRule({ name: 'test', pattern: /^test$/, generate: () => ({}) })
+    expect(matcher.size).toBe(1)
+    const removed = matcher.removeRule('test')
+    expect(removed).toBe(true)
+    expect(matcher.size).toBe(0)
+  })
+})
+
+describe('Edge Cases', () => {
+  it('should handle clear when no rules exist', () => {
+    const newMatcher = new Matcher()
+    expect(() => newMatcher.clear()).not.toThrow()
+    expect(newMatcher.size).toBe(0)
   })
 })

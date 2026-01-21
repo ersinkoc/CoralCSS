@@ -628,5 +628,42 @@ describe('Browser Fallbacks System', () => {
       // Should preserve the gradient
       expect(result).toContain('conic-gradient(red, blue)')
     })
+
+    it('should trigger toSRGB else branch with very small values', () => {
+      // Very small l value (near 0) triggers the else branch in toSRGB
+      // L = toLinear((0 + 16) / 156) = toLinear(0.1026) ≈ -0.0033 (negative!)
+      // After Math.max(0, ...), this becomes 0
+      // toSRGB receives values <= 0.0031308, hitting the else branch
+      const result = convertOKLABToRGB('oklab(0 0 0)')
+      expect(result).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+    })
+
+    it('should trigger toSRGB if branch with large values', () => {
+      // Large l value triggers the if branch in toSRGB (x > 0.0031308)
+      // L = toLinear((1 + 16) / 156) = toLinear(0.09) ≈ -0.0049 (still negative!)
+      // Need even larger l value to get positive L
+      // l=100: (100+16)/156 = 0.743, toLinear returns 0.743^3 ≈ 0.41
+      // 0.41 > 0.0031308, so if branch is hit
+      const result = convertOKLABToRGB('oklab(100 0 0)')
+      expect(result).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+    })
+
+    it('should handle extreme positive a and b values', () => {
+      // Extreme values should still work through the conversion
+      const result = convertOKLABToRGB('oklab(0.5 0.5 0.5)')
+      expect(result).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+    })
+
+    it('should handle extreme negative a and b values', () => {
+      // Extreme negative values should still work
+      const result = convertOKLABToRGB('oklab(0.5 -0.5 -0.5)')
+      expect(result).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+    })
+
+    it('should hit toSRGB if branch with moderate lightness', () => {
+      // Test with l=50 which should give positive L value
+      const result = convertOKLABToRGB('oklab(50 0.1 0.1)')
+      expect(result).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+    })
   })
 })

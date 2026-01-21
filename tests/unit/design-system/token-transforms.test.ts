@@ -175,6 +175,31 @@ describe('Token Transforms', () => {
         expect(result).toMatch(/^#[0-9a-f]{6}$/i)
       })
 
+      it('should convert hsla to hex with alpha', () => {
+        const transform = transforms['value/color/hex']
+        const token = createMockToken({
+          value: 'hsla(9, 100%, 64%, 0.5)',
+          original: { $value: 'hsla(9, 100%, 64%, 0.5)', $type: 'color' },
+        })
+
+        const result = transform.transform!(token, {} as PlatformConfig)
+
+        // hsla with alpha should produce 8-character hex (#rrggbbaa)
+        expect(result).toMatch(/^#[0-9a-f]{8}$/i)
+      })
+
+      it('should handle hsla with grayscale and alpha', () => {
+        const transform = transforms['value/color/hex']
+        const token = createMockToken({
+          value: 'hsla(0, 0%, 50%, 0.75)',
+          original: { $value: 'hsla(0, 0%, 50%, 0.75)', $type: 'color' },
+        })
+
+        const result = transform.transform!(token, {} as PlatformConfig)
+
+        expect(result).toMatch(/^#[0-9a-f]{8}$/i)
+      })
+
       it('should filter color tokens only', () => {
         const transform = transforms['value/color/hex']
         const colorToken = createMockToken({

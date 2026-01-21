@@ -81,6 +81,48 @@ describe('Angular Utils', () => {
       expect(result).toContain('hover:bg-blue-500')
     })
 
+    it('should handle text color utilities', () => {
+      const result = merge('text-red-500', 'text-blue-600')
+      // Different colors are kept, only same color conflicts are resolved
+      expect(result).toContain('text-blue-600')
+      expect(result).toContain('text-red-500')
+    })
+
+    it('should handle border color utilities', () => {
+      const result = merge('border-red-500', 'border-blue-600')
+      expect(result).toContain('border-blue-600')
+      expect(result).toContain('border-red-500')
+    })
+
+    it('should handle ring color utilities', () => {
+      const result = merge('ring-red-500', 'ring-blue-600')
+      expect(result).toContain('ring-blue-600')
+      expect(result).toContain('ring-red-500')
+    })
+
+    it('should handle fill color utilities', () => {
+      const result = merge('fill-red-500', 'fill-blue-600')
+      expect(result).toContain('fill-blue-600')
+      expect(result).toContain('fill-red-500')
+    })
+
+    it('should handle stroke color utilities', () => {
+      const result = merge('stroke-red-500', 'stroke-blue-600')
+      expect(result).toContain('stroke-blue-600')
+      expect(result).toContain('stroke-red-500')
+    })
+
+    it('should handle multiple variant prefixes', () => {
+      const result = merge('hover:focus:bg-red-500', 'hover:focus:bg-red-600')
+      expect(result).toBe('hover:focus:bg-red-600')
+    })
+
+    it('should handle utilities without dash prefix', () => {
+      const result = merge('flex', 'block')
+      expect(result).toContain('flex')
+      expect(result).toContain('block')
+    })
+
     it('should handle negative utilities', () => {
       const result = merge('-mt-2', '-mt-4')
       expect(result).toBe('-mt-4')
@@ -216,6 +258,120 @@ describe('Angular Utils', () => {
       })
 
       expect(button()).toBe('px-4 py-2 bg-blue-500 text-lg shadow-lg')
+    })
+
+    it('should not apply compound variants when conditions do not match', () => {
+      const button = cva('px-4 py-2', {
+        variants: {
+          intent: {
+            primary: 'bg-blue-500',
+            secondary: 'bg-gray-500',
+          },
+          size: {
+            sm: 'text-sm',
+            lg: 'text-lg',
+          },
+        },
+        defaultVariants: {
+          intent: 'primary',
+        },
+        compoundVariants: [
+          {
+            intent: 'primary',
+            size: 'lg',
+            class: 'shadow-lg',
+          },
+        ],
+      })
+
+      // size is 'sm', not 'lg', so shadow-lg should not apply
+      expect(button({ size: 'sm' })).toBe('px-4 py-2 bg-blue-500 text-sm')
+    })
+
+    it('should apply multiple compound variants', () => {
+      const button = cva('px-4 py-2', {
+        variants: {
+          intent: {
+            primary: 'bg-blue-500',
+            danger: 'bg-red-500',
+          },
+          size: {
+            sm: 'text-sm',
+            lg: 'text-lg',
+          },
+        },
+        compoundVariants: [
+          {
+            intent: 'primary',
+            size: 'lg',
+            class: 'shadow-lg',
+          },
+          {
+            intent: 'danger',
+            size: 'sm',
+            class: 'uppercase',
+          },
+        ],
+      })
+
+      expect(button({ intent: 'primary', size: 'lg' })).toBe('px-4 py-2 bg-blue-500 text-lg shadow-lg')
+      expect(button({ intent: 'danger', size: 'sm' })).toBe('px-4 py-2 bg-red-500 text-sm uppercase')
+    })
+
+    it('should handle compound variants with partial matches', () => {
+      const button = cva('px-4 py-2', {
+        variants: {
+          intent: {
+            primary: 'bg-blue-500',
+          },
+          size: {
+            sm: 'text-sm',
+            lg: 'text-lg',
+          },
+          rounded: {
+            true: 'rounded',
+            false: 'rounded-none',
+          },
+        },
+        compoundVariants: [
+          {
+            intent: 'primary',
+            size: 'lg',
+            class: 'shadow-lg',
+          },
+        ],
+      })
+
+      // Only intent matches, size doesn't, so shadow-lg should not apply
+      expect(button({ intent: 'primary', size: 'sm', rounded: true })).toBe('px-4 py-2 bg-blue-500 text-sm rounded')
+    })
+
+    it('should handle undefined variant values', () => {
+      const button = cva('px-4 py-2', {
+        variants: {
+          intent: {
+            primary: 'bg-blue-500',
+            secondary: 'bg-gray-500',
+          },
+          size: {
+            sm: 'text-sm',
+            lg: 'text-lg',
+          },
+        },
+        defaultVariants: {
+          intent: 'primary',
+        },
+        compoundVariants: [
+          {
+            size: 'lg',
+            class: 'text-bold',
+          },
+        ],
+      })
+
+      // intent is default (primary), size is not set (undefined)
+      const result = button()
+      expect(result).toBe('px-4 py-2 bg-blue-500')
     })
   })
 })

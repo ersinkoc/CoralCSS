@@ -753,6 +753,93 @@ describe('Kernel', () => {
       const variant = variants.find(v => v.name === 'auto-match')
       expect(variant?.match).toBe('auto-match')
     })
+
+    it('should allow setData and getData for plugin data storage', () => {
+      let retrievedValue: unknown = null
+
+      coral.use({
+        name: 'test-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          ctx.setData('test-key', 'test-value')
+          retrievedValue = ctx.getData('test-key')
+        },
+      })
+
+      expect(retrievedValue).toBe('test-value')
+    })
+
+    it('should return undefined for non-existent data keys', () => {
+      let retrievedValue: unknown = 'default'
+
+      coral.use({
+        name: 'test-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          retrievedValue = ctx.getData('non-existent-key')
+        },
+      })
+
+      expect(retrievedValue).toBeUndefined()
+    })
+
+    it('should allow plugins to emit kernel events', () => {
+      let eventData: unknown = null
+
+      coral.on('plugin:test-event', (data) => {
+        eventData = data
+      })
+
+      coral.use({
+        name: 'test-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          ctx.emit('plugin:test-event', { message: 'test' })
+        },
+      })
+
+      expect(eventData).toEqual({ message: 'test' })
+    })
+
+    it('should allow emit with custom string event', () => {
+      let emitted = false
+
+      coral.on('custom:event', () => {
+        emitted = true
+      })
+
+      coral.use({
+        name: 'test-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          ctx.emit('custom:event' as any)
+        },
+      })
+
+      expect(emitted).toBe(true)
+    })
+
+    it('should share data between plugins via setData/getData', () => {
+      let secondPluginValue: unknown = null
+
+      coral.use({
+        name: 'first-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          ctx.setData('shared-data', { value: 42 })
+        },
+      })
+
+      coral.use({
+        name: 'second-plugin',
+        version: '1.0.0',
+        install: (ctx) => {
+          secondPluginValue = ctx.getData('shared-data')
+        },
+      })
+
+      expect(secondPluginValue).toEqual({ value: 42 })
+    })
   })
 
   describe('generate edge cases', () => {

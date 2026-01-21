@@ -477,4 +477,111 @@ describe('BaseComponent', () => {
       accordion.destroy()
     })
   })
+
+  describe('BaseComponent removeEventListener coverage', () => {
+    it('should use protected removeEventListener method', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      // Create a mock handler
+      const handler = vi.fn()
+      sw.addEventListener(el, 'click', handler)
+
+      // Get count after adding our listener
+      const countWithOurListener = (sw as any).trackedListeners.length
+
+      // Access protected method through subclass
+      ;(sw as any).removeEventListener(el, 'click', handler)
+
+      // Verify the listener was removed from tracking
+      expect((sw as any).trackedListeners.length).toBe(countWithOurListener - 1)
+
+      sw.destroy()
+    })
+
+    it('should filter tracked listeners on removeEventListener', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      const handler1 = vi.fn()
+      const handler2 = vi.fn()
+
+      // Get initial count (Switch may have internal listeners)
+      const initialCount = (sw as any).trackedListeners.length
+
+      // Add multiple listeners
+      sw.addEventListener(el, 'click', handler1)
+      sw.addEventListener(el, 'mouseover', handler2)
+
+      const afterAddCount = (sw as any).trackedListeners.length
+      expect(afterAddCount).toBe(initialCount + 2)
+
+      // Remove one listener
+      ;(sw as any).removeEventListener(el, 'click', handler1)
+
+      // Verify one listener was removed
+      expect((sw as any).trackedListeners.length).toBe(afterAddCount - 1)
+
+      sw.destroy()
+    })
+  })
+
+  describe('BaseComponent boundHandlers legacy cleanup', () => {
+    it('should clean up boundHandlers on destroy', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      // Simulate legacy boundHandlers
+      const handler = vi.fn()
+      ;(sw as any).boundHandlers.set('click-123', handler)
+      ;(sw as any).boundHandlers.set('mousedown-456', handler)
+
+      // Call destroy which should trigger legacy cleanup
+      sw.destroy()
+
+      // boundHandlers should be cleared
+      expect((sw as any).boundHandlers.size).toBe(0)
+    })
+
+    it('should handle empty boundHandlers gracefully', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      // boundHandlers is empty by default
+      expect((sw as any).boundHandlers.size).toBe(0)
+
+      // Should not throw
+      sw.destroy()
+    })
+
+    it('should parse event name from boundHandlers key format', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      // Add handler with legacy key format 'eventName-uniqueId'
+      const handler = vi.fn()
+      ;(sw as any).boundHandlers.set('resize-abc123', handler)
+      ;(sw as any).boundHandlers.set('click-xyz789', handler)
+
+      // Destroy should parse and use event names ('resize', 'click')
+      sw.destroy()
+
+      // Should not throw and handlers should be cleared
+      expect((sw as any).boundHandlers.size).toBe(0)
+    })
+
+    it('should handle boundHandlers key without dash', () => {
+      const el = createElement('div', { 'data-coral-switch': '' })
+      const sw = new Switch(el)
+
+      // Add handler with key format that has no dash
+      const handler = vi.fn()
+      ;(sw as any).boundHandlers.set('singlekey', handler)
+
+      // Should handle gracefully
+      sw.destroy()
+
+      expect((sw as any).boundHandlers.size).toBe(0)
+    })
+  })
 })

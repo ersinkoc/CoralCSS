@@ -3,7 +3,7 @@
  * Tests for CDN runtime
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createCoralCDN, getCoralCDN } from '../../../src/runtime/cdn'
+import { createCoralCDN, getCoralCDN, resetGlobalInstance } from '../../../src/runtime/cdn'
 
 describe('CDN Runtime', () => {
   beforeEach(() => {
@@ -192,6 +192,43 @@ describe('CDN Runtime', () => {
       expect(cdn).toBeDefined()
       cdn.stop()
       cdn.destroy()
+    })
+
+    it('should return same instance on subsequent calls', () => {
+      resetGlobalInstance()
+      const cdn1 = getCoralCDN()
+      const cdn2 = getCoralCDN()
+      expect(cdn1).toBe(cdn2)
+      resetGlobalInstance()
+    })
+
+    it('should create new instance after reset', () => {
+      const cdn1 = getCoralCDN()
+      resetGlobalInstance()
+      const cdn2 = getCoralCDN()
+      expect(cdn1).not.toBe(cdn2)
+      cdn2.stop()
+      cdn2.destroy()
+    })
+  })
+
+  describe('resetGlobalInstance', () => {
+    it('should destroy existing global instance', () => {
+      const cdn = getCoralCDN()
+      cdn.generate(['bg-red-500'])
+      expect(cdn.getCSS()).toContain('bg-red-500')
+
+      resetGlobalInstance()
+
+      const newCdn = getCoralCDN()
+      expect(newCdn.getCSS()).toBe('')
+      newCdn.stop()
+      newCdn.destroy()
+    })
+
+    it('should handle reset when no instance exists', () => {
+      resetGlobalInstance()
+      expect(() => resetGlobalInstance()).not.toThrow()
     })
   })
 

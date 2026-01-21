@@ -154,7 +154,7 @@ export function rgbToHex(rOrColor: number | RGB | RGBA, g?: number, b?: number):
  * ```
  */
 export function parseRgbString(str: string): RGB | RGBA | null {
-  const match = str.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/)
+  const match = str.match(/rgba?\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*(?:,\s*(-?[\d.]+))?\s*\)/)
   if (!match) {
     return null
   }
@@ -167,7 +167,7 @@ export function parseRgbString(str: string): RGB | RGBA | null {
   }
 
   if (a !== undefined) {
-    return { ...result, a: clamp(parseFloat(a), 0, 1) }
+    return { ...result, a: clamp(parseFloat(a!), 0, 1) }
   }
 
   return result

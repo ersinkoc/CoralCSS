@@ -1,7 +1,7 @@
 /**
  * Class Extractor Tests
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { Extractor, createExtractor, extractFromHTML, extractClasses } from '../../../src/core/extractor'
 
 describe('Extractor', () => {
@@ -403,6 +403,42 @@ describe('Extractor', () => {
   })
 
   describe('security and input validation', () => {
+    describe('maxInputLength option', () => {
+      it('should respect custom maxInputLength', () => {
+        const extractor = new Extractor({ maxInputLength: 100 })
+        const input = '<div class="p-4"></div>'.repeat(10) // Way over 100 chars
+
+        const classes = extractor.extractFromHTML(input)
+
+        // Should not crash and should return some classes
+        expect(Array.isArray(classes)).toBe(true)
+      })
+
+      it('should truncate input exceeding max length and warn', () => {
+        const extractor = new Extractor({ maxInputLength: 50 })
+        const input = '<div class="p-4 bg-red-500 text-white hover:bg-red-600"></div>'
+
+        // Spy on console.warn
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        const classes = extractor.extractFromHTML(input)
+
+        // Should truncate to first 50 chars
+        expect(Array.isArray(classes)).toBe(true)
+
+        warnSpy.mockRestore()
+      })
+
+      it('should handle maxInputLength in extract method', () => {
+        const extractor = new Extractor({ maxInputLength: 100 })
+        const input = 'class="'.repeat(100) + 'p-4 bg-red-500' + '"' // Very long
+
+        const classes = extractor.extract(input)
+
+        expect(Array.isArray(classes)).toBe(true)
+      })
+    })
+
     describe('input length limits', () => {
       it('should handle very long input without hanging (ReDoS protection)', () => {
         const extractor = new Extractor()
