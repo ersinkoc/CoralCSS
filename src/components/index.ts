@@ -279,6 +279,36 @@ export type {
   OutputType,
 } from './terminal'
 
+// Batch 8 Components (New)
+export { OTPInput, createOTPInput } from './otp-input'
+export type { OTPInputConfig, OTPInputState } from './otp-input'
+
+export { InfiniteScroll, createInfiniteScroll } from './infinite-scroll'
+export type { InfiniteScrollConfig, InfiniteScrollState } from './infinite-scroll'
+
+export { Masonry, createMasonry } from './masonry'
+export type { MasonryConfig, MasonryState } from './masonry'
+
+export { SplitView, createSplitView } from './split-view'
+export type { SplitViewConfig, SplitViewState } from './split-view'
+
+// Batch 9 Components (Modern UI)
+export { Spotlight, createSpotlight } from './spotlight'
+export type { SpotlightConfig, SpotlightState, SpotlightItem } from './spotlight'
+
+export { Dock, createDock } from './dock'
+export type { DockConfig, DockState, DockItem } from './dock'
+
+export { CompareSlider, createCompareSlider } from './compare-slider'
+export type { CompareSliderConfig, CompareSliderState } from './compare-slider'
+
+// Batch 10 Components (Enterprise)
+export { DataGrid, createDataGrid } from './data-grid'
+export type { DataGridConfig, DataGridState, DataGridColumn, DataGridSort, DataGridFilter, DataGridPagination } from './data-grid'
+
+export { StepperForm, createStepperForm } from './stepper-form'
+export type { StepperFormConfig, StepperFormState, StepperFormStep, ValidationRule, FieldValidation } from './stepper-form'
+
 // Imports for initComponents and registries
 import { Button, ButtonGroup } from './button'
 import { Dialog } from './dialog'
@@ -455,6 +485,27 @@ import { Terminal } from './terminal'
 import { createAIChat } from './ai-chat'
 import { createKanban } from './kanban'
 import { createTerminal } from './terminal'
+// Batch 8
+import { OTPInput } from './otp-input'
+import { InfiniteScroll } from './infinite-scroll'
+import { Masonry } from './masonry'
+import { SplitView } from './split-view'
+import { createOTPInput } from './otp-input'
+import { createInfiniteScroll } from './infinite-scroll'
+import { createMasonry } from './masonry'
+import { createSplitView } from './split-view'
+// Batch 9
+import { Spotlight } from './spotlight'
+import { Dock } from './dock'
+import { CompareSlider } from './compare-slider'
+import { createSpotlight } from './spotlight'
+import { createDock } from './dock'
+import { createCompareSlider } from './compare-slider'
+// Batch 10
+import { DataGrid } from './data-grid'
+import { createDataGrid } from './data-grid'
+import { StepperForm } from './stepper-form'
+import { createStepperForm } from './stepper-form'
 
 /**
  * Auto-initialize all components from data attributes
@@ -572,6 +623,21 @@ export function initComponents(): void {
   autoInit('[data-coral-ai-chat]', AIChat as never)
   autoInit('[data-coral-kanban]', Kanban as never)
   autoInit('[data-coral-terminal]', Terminal as never)
+
+  // Batch 8 components
+  autoInit('[data-coral-otp-input]', OTPInput as never)
+  autoInit('[data-coral-infinite-scroll]', InfiniteScroll as never)
+  autoInit('[data-coral-masonry]', Masonry as never)
+  autoInit('[data-coral-split-view]', SplitView as never)
+
+  // Batch 9 components
+  autoInit('[data-coral-spotlight]', Spotlight as never)
+  autoInit('[data-coral-dock]', Dock as never)
+  autoInit('[data-coral-compare-slider]', CompareSlider as never)
+
+  // Batch 10 components
+  autoInit('[data-coral-data-grid]', DataGrid as never)
+  autoInit('[data-coral-stepper-form]', StepperForm as never)
 }
 
 /**
@@ -671,6 +737,18 @@ export const components = {
   AIChat,
   Kanban,
   Terminal,
+  // Batch 8
+  OTPInput,
+  InfiniteScroll,
+  Masonry,
+  SplitView,
+  // Batch 9
+  Spotlight,
+  Dock,
+  CompareSlider,
+  // Batch 10
+  DataGrid,
+  StepperForm,
 }
 
 /**
@@ -771,6 +849,18 @@ export const factories = {
   createAIChat,
   createKanban,
   createTerminal,
+  // Batch 8
+  createOTPInput,
+  createInfiniteScroll,
+  createMasonry,
+  createSplitView,
+  // Batch 9
+  createSpotlight,
+  createDock,
+  createCompareSlider,
+  // Batch 10
+  createDataGrid,
+  createStepperForm,
 }
 
 export default components

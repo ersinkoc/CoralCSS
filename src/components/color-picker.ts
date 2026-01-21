@@ -8,6 +8,15 @@
 import type { ComponentConfig, ComponentState } from '../types'
 import { BaseComponent, createComponentFactory } from './base'
 
+/** Keyboard navigation step for hue slider (degrees) */
+const HUE_STEP = 5
+/** Keyboard navigation step for alpha slider */
+const ALPHA_STEP = 0.05
+/** Keyboard navigation step for saturation/lightness panel (percentage) */
+const SATURATION_STEP = 5
+/** Default coral color */
+const DEFAULT_COLOR = '#ff7f50'
+
 export interface ColorPickerConfig extends ComponentConfig {
   /** Default color */
   defaultValue?: string
@@ -45,7 +54,7 @@ export class ColorPicker extends BaseComponent {
 
   protected getDefaultConfig(): ColorPickerConfig {
     return {
-      defaultValue: '#ff7f50',
+      defaultValue: DEFAULT_COLOR,
       format: 'hex',
       showAlpha: false,
       disabled: false,
@@ -54,9 +63,9 @@ export class ColorPicker extends BaseComponent {
 
   protected getInitialState(): ColorPickerState {
     const config = this.config as ColorPickerConfig
-    const hsl = this.hexToHsl(config.defaultValue || '#ff7f50')
+    const hsl = this.hexToHsl(config.defaultValue || DEFAULT_COLOR)
     return {
-      color: config.defaultValue || '#ff7f50',
+      color: config.defaultValue || DEFAULT_COLOR,
       hue: hsl.h,
       saturation: hsl.s,
       lightness: hsl.l,
@@ -128,22 +137,72 @@ export class ColorPicker extends BaseComponent {
       this.addEventListener(swatch, 'click', handleClick)
     })
 
-    // Close on outside click
+    // Close on outside click - use tracked listener for proper cleanup
     const handleOutsideClick = (e: Event) => {
       if (!(this.state as ColorPickerState).isOpen) {return}
       if (!this.element.contains(e.target as Node)) {
         this.close()
       }
     }
-    document.addEventListener('click', handleOutsideClick)
+    this.addEventListener(document, 'click', handleOutsideClick)
   }
 
   private setupSlider(slider: HTMLElement, type: 'hue' | 'alpha'): void {
     let isDragging = false
 
+    // Make slider focusable and add ARIA
+    slider.setAttribute('tabindex', '0')
+    slider.setAttribute('role', 'slider')
+    slider.setAttribute('aria-label', type === 'hue' ? 'Hue' : 'Alpha')
+    slider.setAttribute('aria-valuemin', '0')
+    slider.setAttribute('aria-valuemax', type === 'hue' ? '360' : '1')
+
+    // Keyboard support for accessibility
+    const handleKeydown = (e: KeyboardEvent) => {
+      const state = this.state as ColorPickerState
+      const step = type === 'hue' ? HUE_STEP : ALPHA_STEP
+      let currentValue = type === 'hue' ? state.hue : state.alpha
+      let newValue = currentValue
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowUp':
+          e.preventDefault()
+          newValue = currentValue + step
+          break
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          e.preventDefault()
+          newValue = currentValue - step
+          break
+        case 'Home':
+          e.preventDefault()
+          newValue = 0
+          break
+        case 'End':
+          e.preventDefault()
+          newValue = type === 'hue' ? 360 : 1
+          break
+        default:
+          return
+      }
+
+      // Clamp value
+      if (type === 'hue') {
+        newValue = Math.max(0, Math.min(360, newValue))
+        this.setState({ hue: newValue })
+      } else {
+        newValue = Math.max(0, Math.min(1, newValue))
+        this.setState({ alpha: newValue })
+      }
+      this.updateColor()
+    }
+    this.addEventListener(slider, 'keydown', handleKeydown as EventListener)
+
     const updateValue = (e: MouseEvent | TouchEvent) => {
       const rect = slider.getBoundingClientRect()
-      const clientX = 'touches' in e ? e.touches[0]!.clientX : e.clientX
+      const touch = 'touches' in e && e.touches.length > 0 ? e.touches[0] : null
+      const clientX = touch ? touch.clientX : (e as MouseEvent).clientX
       const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
 
       if (type === 'hue') {
@@ -171,10 +230,11 @@ export class ColorPicker extends BaseComponent {
 
     this.addEventListener(slider, 'mousedown', handleStart)
     this.addEventListener(slider, 'touchstart', handleStart)
-    document.addEventListener('mousemove', handleMove)
-    document.addEventListener('touchmove', handleMove)
-    document.addEventListener('mouseup', handleEnd)
-    document.addEventListener('touchend', handleEnd)
+    // Track document listeners for proper cleanup on destroy
+    this.addEventListener(document, 'mousemove', handleMove)
+    this.addEventListener(document, 'touchmove', handleMove)
+    this.addEventListener(document, 'mouseup', handleEnd)
+    this.addEventListener(document, 'touchend', handleEnd)
   }
 
   private setupSaturationPanel(): void {
@@ -182,10 +242,60 @@ export class ColorPicker extends BaseComponent {
 
     let isDragging = false
 
+    // Make saturation panel focusable and add ARIA
+    this.saturationPanel.setAttribute('tabindex', '0')
+    this.saturationPanel.setAttribute('role', 'slider')
+    this.saturationPanel.setAttribute('aria-label', 'Color saturation and lightness')
+    this.saturationPanel.setAttribute('aria-valuemin', '0')
+    this.saturationPanel.setAttribute('aria-valuemax', '100')
+
+    // Keyboard support for accessibility (2D navigation)
+    const handleKeydown = (e: KeyboardEvent) => {
+      const state = this.state as ColorPickerState
+      const step = SATURATION_STEP
+      let { saturation, lightness } = state
+
+      switch (e.key) {
+        case 'ArrowRight':
+          e.preventDefault()
+          saturation = Math.min(100, saturation + step)
+          break
+        case 'ArrowLeft':
+          e.preventDefault()
+          saturation = Math.max(0, saturation - step)
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          lightness = Math.min(100, lightness + step)
+          break
+        case 'ArrowDown':
+          e.preventDefault()
+          lightness = Math.max(0, lightness - step)
+          break
+        case 'Home':
+          e.preventDefault()
+          saturation = 0
+          lightness = 100 // Top-left corner
+          break
+        case 'End':
+          e.preventDefault()
+          saturation = 100
+          lightness = 0 // Bottom-right corner
+          break
+        default:
+          return
+      }
+
+      this.setState({ saturation, lightness })
+      this.updateColor()
+    }
+    this.addEventListener(this.saturationPanel, 'keydown', handleKeydown as EventListener)
+
     const updateValue = (e: MouseEvent | TouchEvent) => {
       const rect = this.saturationPanel!.getBoundingClientRect()
-      const clientX = 'touches' in e ? e.touches[0]!.clientX : e.clientX
-      const clientY = 'touches' in e ? e.touches[0]!.clientY : e.clientY
+      const touch = 'touches' in e && e.touches.length > 0 ? e.touches[0] : null
+      const clientX = touch ? touch.clientX : (e as MouseEvent).clientX
+      const clientY = touch ? touch.clientY : (e as MouseEvent).clientY
 
       const saturation = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100))
       const lightness = Math.max(0, Math.min(100, 100 - ((clientY - rect.top) / rect.height) * 100))
@@ -211,10 +321,11 @@ export class ColorPicker extends BaseComponent {
 
     this.addEventListener(this.saturationPanel, 'mousedown', handleStart)
     this.addEventListener(this.saturationPanel, 'touchstart', handleStart)
-    document.addEventListener('mousemove', handleMove)
-    document.addEventListener('touchmove', handleMove)
-    document.addEventListener('mouseup', handleEnd)
-    document.addEventListener('touchend', handleEnd)
+    // Track document listeners for proper cleanup on destroy
+    this.addEventListener(document, 'mousemove', handleMove)
+    this.addEventListener(document, 'touchmove', handleMove)
+    this.addEventListener(document, 'mouseup', handleEnd)
+    this.addEventListener(document, 'touchend', handleEnd)
   }
 
   private updateColor(): void {

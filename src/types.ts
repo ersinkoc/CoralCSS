@@ -257,6 +257,8 @@ export interface Rule {
   priority?: number
   /** Autocomplete suggestions */
   autocomplete?: string[] | ((theme: Theme) => string[])
+  /** Media query variants (e.g., '@media (prefers-reduced-motion: reduce)') */
+  variants?: string[]
 }
 
 /**

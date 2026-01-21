@@ -65,6 +65,8 @@ export { advancedEffectsPlugin } from './advanced-effects'
 export { keyframesPlugin } from './keyframes'
 export { logicalPropertiesPlugin } from './logical-properties'
 export { interactiveUtilitiesPlugin } from './interactive'
+// Tailwind 4.1+ Full Compatibility Layer
+export { tailwind4CompatPlugin } from './tailwind4-compat'
 
 import type { Plugin } from '../../../types'
 
@@ -128,6 +130,8 @@ import { advancedEffectsPlugin } from './advanced-effects'
 import { keyframesPlugin } from './keyframes'
 import { logicalPropertiesPlugin } from './logical-properties'
 import { interactiveUtilitiesPlugin } from './interactive'
+// Tailwind 4.1+ Full Compatibility Layer
+import { tailwind4CompatPlugin } from './tailwind4-compat'
 
 /**
  * Get all core utility plugins
@@ -194,6 +198,8 @@ export function coreUtilitiesPlugins(): Plugin[] {
     keyframesPlugin(),
     logicalPropertiesPlugin(),
     interactiveUtilitiesPlugin(),
+    // Tailwind 4.1+ Full Compatibility Layer
+    tailwind4CompatPlugin(),
   ]
 }
 

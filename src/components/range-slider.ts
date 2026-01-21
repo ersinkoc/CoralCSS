@@ -71,6 +71,31 @@ export class RangeSlider extends BaseComponent {
     }
   }
 
+  protected override validateConfig(): void {
+    super.validateConfig()
+    const config = this.config as RangeSliderConfig
+
+    // Ensure min < max
+    if (config.min !== undefined && config.max !== undefined && config.min >= config.max) {
+      this.warnConfig(`min (${config.min}) must be less than max (${config.max}). Swapping values.`)
+      const temp = config.min
+      config.min = config.max
+      config.max = temp
+    }
+
+    // Ensure step is positive
+    if (config.step !== undefined && config.step <= 0) {
+      this.warnConfig(`step must be positive, got ${config.step}. Using default 1.`)
+      config.step = 1
+    }
+
+    // Ensure minRange is non-negative
+    if (config.minRange !== undefined && config.minRange < 0) {
+      this.warnConfig(`minRange must be non-negative, got ${config.minRange}. Using 0.`)
+      config.minRange = 0
+    }
+  }
+
   protected setupAria(): void {
     const config = this.config as RangeSliderConfig
     this.element.setAttribute('role', 'group')
@@ -207,9 +232,9 @@ export class RangeSlider extends BaseComponent {
       handle.focus()
     }
 
-    const handleMove = (e: MouseEvent | TouchEvent) => {
+    const handleMove = (e: Event) => {
       if (!isDragging) {return}
-      const value = this.getValueFromEvent(e)
+      const value = this.getValueFromEvent(e as MouseEvent | TouchEvent)
 
       if (type === 'min') {
         this.setMinValue(value)
@@ -231,10 +256,11 @@ export class RangeSlider extends BaseComponent {
 
     this.addEventListener(handle, 'mousedown', handleStart)
     this.addEventListener(handle, 'touchstart', handleStart)
-    document.addEventListener('mousemove', handleMove)
-    document.addEventListener('touchmove', handleMove)
-    document.addEventListener('mouseup', handleEnd)
-    document.addEventListener('touchend', handleEnd)
+    // Track document listeners for proper cleanup on destroy
+    this.addEventListener(document, 'mousemove', handleMove)
+    this.addEventListener(document, 'touchmove', handleMove)
+    this.addEventListener(document, 'mouseup', handleEnd)
+    this.addEventListener(document, 'touchend', handleEnd)
   }
 
   private getValueFromEvent(e: MouseEvent | TouchEvent): number {
@@ -242,14 +268,22 @@ export class RangeSlider extends BaseComponent {
 
     const config = this.config as RangeSliderConfig
     const rect = this.track.getBoundingClientRect()
-    const clientX = 'touches' in e ? e.touches[0]!.clientX : e.clientX
-    const clientY = 'touches' in e ? e.touches[0]!.clientY : e.clientY
+    const touch = 'touches' in e && e.touches.length > 0 ? e.touches[0] : null
+    const clientX = touch ? touch.clientX : (e as MouseEvent).clientX
+    const clientY = touch ? touch.clientY : (e as MouseEvent).clientY
+
+    // Check for RTL direction
+    const isRTL = getComputedStyle(this.element).direction === 'rtl'
 
     let percent: number
     if (config.orientation === 'vertical') {
       percent = 1 - (clientY - rect.top) / rect.height
     } else {
       percent = (clientX - rect.left) / rect.width
+      // Invert for RTL languages
+      if (isRTL) {
+        percent = 1 - percent
+      }
     }
 
     percent = Math.max(0, Math.min(1, percent))

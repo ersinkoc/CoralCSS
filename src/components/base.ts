@@ -9,6 +9,16 @@ import type { ComponentConfig, ComponentState, ComponentContext, ComponentHooks,
 import { generateId, trapFocus, releaseFocusTrap, lockScroll, unlockScroll } from '../utils'
 
 /**
+ * Tracked event listener entry for proper cleanup
+ */
+interface TrackedListener {
+  target: EventTarget
+  event: string
+  handler: EventListener
+  options?: AddEventListenerOptions
+}
+
+/**
  * Base component class that all headless components extend
  */
 export abstract class BaseComponent {
@@ -19,6 +29,7 @@ export abstract class BaseComponent {
   protected config: ComponentConfig
   protected hooks: ComponentHooks
   protected boundHandlers: Map<string, EventListener> = new Map()
+  protected trackedListeners: TrackedListener[] = []
   protected stateListeners: Set<StateListener> = new Set()
 
   constructor(element: HTMLElement, config: Partial<ComponentConfig> = {}) {
@@ -47,9 +58,28 @@ export abstract class BaseComponent {
   protected abstract getInitialState(): ComponentState
 
   /**
+   * Validate configuration and warn about invalid values
+   * Subclasses can override to add specific validation
+   */
+  protected validateConfig(): void {
+    // Base validation - subclasses should call super.validateConfig()
+    // and add their own validation logic
+  }
+
+  /**
+   * Log a configuration warning
+   */
+  protected warnConfig(message: string): void {
+    console.warn(`[${this.name}] Config warning: ${message}`)
+  }
+
+  /**
    * Initialize the component
    */
   protected init(): void {
+    // Validate configuration
+    this.validateConfig()
+
     // Generate unique ID if not present
     if (!this.element.id) {
       this.element.id = generateId(this.name)
@@ -155,6 +185,7 @@ export abstract class BaseComponent {
 
   /**
    * Add event listener with cleanup tracking
+   * All listeners added via this method will be automatically removed on destroy()
    */
   protected addEventListener(
     target: EventTarget,
@@ -162,13 +193,13 @@ export abstract class BaseComponent {
     handler: EventListener,
     options?: AddEventListenerOptions
   ): void {
-    const key = `${event}-${handler.toString().slice(0, 50)}`
-    this.boundHandlers.set(key, handler)
+    // Track listener for cleanup
+    this.trackedListeners.push({ target, event, handler, options })
     target.addEventListener(event, handler, options)
   }
 
   /**
-   * Remove event listener
+   * Remove event listener and stop tracking it
    */
   protected removeEventListener(
     target: EventTarget,
@@ -177,6 +208,20 @@ export abstract class BaseComponent {
     options?: EventListenerOptions
   ): void {
     target.removeEventListener(event, handler, options)
+    // Remove from tracked listeners
+    this.trackedListeners = this.trackedListeners.filter(
+      (l) => !(l.target === target && l.event === event && l.handler === handler)
+    )
+  }
+
+  /**
+   * Remove all tracked event listeners
+   */
+  protected removeAllEventListeners(): void {
+    for (const { target, event, handler, options } of this.trackedListeners) {
+      target.removeEventListener(event, handler, options)
+    }
+    this.trackedListeners = []
   }
 
   /**
@@ -284,7 +329,10 @@ export abstract class BaseComponent {
    * Destroy the component and clean up
    */
   destroy(): void {
-    // Remove all event listeners
+    // Remove all tracked event listeners (works for any target: element, document, window, etc.)
+    this.removeAllEventListeners()
+
+    // Legacy cleanup for boundHandlers (backward compatibility)
     this.boundHandlers.forEach((handler, key) => {
       const event = key.split('-')[0]
       if (event) {

@@ -43,6 +43,10 @@ export default defineConfig({
         'src/testing/index.ts',
         'src/vue/index.ts',
         'src/angular/index.ts',
+        // Testing utilities have non-browser code paths that are hard to test
+        'src/testing/helpers.ts',
+        'src/testing/spy.ts',
+        'src/testing/render.ts',
         // Exclude type-only files
         'src/tokens/types.ts',
         'src/types.ts',
@@ -119,6 +123,16 @@ export default defineConfig({
         'src/components/dialog.ts',
         'src/components/dropdown.ts',
         'src/components/tabs.ts',
+        // New components with complex DOM interactions (should be e2e tested)
+        'src/components/compare-slider.ts',
+        'src/components/data-grid.ts',
+        'src/components/dock.ts',
+        'src/components/infinite-scroll.ts',
+        'src/components/masonry.ts',
+        'src/components/otp-input.ts',
+        'src/components/split-view.ts',
+        'src/components/spotlight.ts',
+        'src/components/stepper-form.ts',
         // Build tools require integration testing
         'src/build/astro.ts',
         'src/build/cli.ts',

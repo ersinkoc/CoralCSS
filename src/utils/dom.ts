@@ -13,6 +13,27 @@ export function isBrowser(): boolean {
 }
 
 /**
+ * Escape HTML special characters to prevent XSS attacks
+ *
+ * @example
+ * ```typescript
+ * escapeHtml('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ * ```
+ */
+export function escapeHtml(str: string): string {
+  if (!str) return ''
+  const escapeMap: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+  return str.replace(/[&<>"']/g, (char) => escapeMap[char] || char)
+}
+
+/**
  * Safe querySelector that returns typed element or null
  *
  * @example
@@ -357,30 +378,54 @@ export function releaseFocusTrap(container: HTMLElement): void {
 
 /**
  * Set focus trap and track it
+ * If a trap already exists on the container, it will be released first
  */
 export function setFocusTrap(container: HTMLElement): () => void {
+  // Release any existing trap on this container first
+  releaseFocusTrap(container)
+
   const cleanup = trapFocus(container)
   focusTrapCleanups.set(container, cleanup)
   return () => releaseFocusTrap(container)
 }
 
-// Store scroll lock state
+// Store scroll lock state with reference counting
 let scrollLockCleanup: (() => void) | null = null
+let scrollLockCount = 0
 
 /**
- * Unlock body scroll
+ * Unlock body scroll (decrements lock count)
  */
 export function unlockScroll(): void {
-  if (scrollLockCleanup) {
+  if (scrollLockCount > 0) {
+    scrollLockCount--
+  }
+
+  // Only actually unlock when all locks are released
+  if (scrollLockCount === 0 && scrollLockCleanup) {
     scrollLockCleanup()
     scrollLockCleanup = null
   }
 }
 
 /**
- * Lock scroll and track it
+ * Lock scroll and track it (supports multiple concurrent locks)
+ * Each call increments the lock count, scroll is only unlocked when count reaches 0
  */
 export function setScrollLock(): () => void {
-  scrollLockCleanup = lockScroll()
-  return unlockScroll
+  scrollLockCount++
+
+  // Only create the actual lock on first request
+  if (scrollLockCount === 1) {
+    scrollLockCleanup = lockScroll()
+  }
+
+  // Return a one-time unlock function for this specific lock request
+  let unlocked = false
+  return () => {
+    if (!unlocked) {
+      unlocked = true
+      unlockScroll()
+    }
+  }
 }

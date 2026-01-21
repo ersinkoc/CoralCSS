@@ -118,6 +118,7 @@ export class VirtualList extends BaseComponent {
   private renderedItems: Map<number, HTMLElement> = new Map()
   private measurementCache: Map<number, number> = new Map()
   private scrollRAF: number | null = null
+  private resizeObserver: ResizeObserver | null = null
 
   protected getDefaultConfig(): VirtualListConfig {
     return {
@@ -221,10 +222,10 @@ export class VirtualList extends BaseComponent {
 
     // Resize observer for container size changes
     if (typeof ResizeObserver !== 'undefined') {
-      const resizeObserver = new ResizeObserver(() => {
+      this.resizeObserver = new ResizeObserver(() => {
         this.calculateVisibleRange()
       })
-      resizeObserver.observe(this.container)
+      this.resizeObserver.observe(this.container)
     }
   }
 
@@ -492,6 +493,27 @@ export class VirtualList extends BaseComponent {
       start: this.state.startIndex,
       end: this.state.endIndex,
     }
+  }
+
+  override destroy(): void {
+    // Cancel pending RAF
+    if (this.scrollRAF) {
+      cancelAnimationFrame(this.scrollRAF)
+      this.scrollRAF = null
+    }
+
+    // Disconnect ResizeObserver
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+      this.resizeObserver = null
+    }
+
+    // Clear rendered items
+    this.renderedItems.forEach((element) => element.remove())
+    this.renderedItems.clear()
+    this.measurementCache.clear()
+
+    super.destroy()
   }
 }
 

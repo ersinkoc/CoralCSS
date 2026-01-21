@@ -192,6 +192,196 @@ export function modernVariantsPlugin(): Plugin {
       // TAILWIND 4.1 MODERN VARIANTS
       // ========================================
 
+      // NOT-* VARIANT (Tailwind 4.1)
+      // Inverse styling: not-hover:opacity-100 applies when NOT hovered
+      variants.push({
+        name: 'not-hover',
+        handler: (selector) => `${selector}:not(:hover)`,
+      })
+      variants.push({
+        name: 'not-focus',
+        handler: (selector) => `${selector}:not(:focus)`,
+      })
+      variants.push({
+        name: 'not-focus-visible',
+        handler: (selector) => `${selector}:not(:focus-visible)`,
+      })
+      variants.push({
+        name: 'not-active',
+        handler: (selector) => `${selector}:not(:active)`,
+      })
+      variants.push({
+        name: 'not-disabled',
+        handler: (selector) => `${selector}:not(:disabled)`,
+      })
+      variants.push({
+        name: 'not-checked',
+        handler: (selector) => `${selector}:not(:checked)`,
+      })
+      variants.push({
+        name: 'not-first',
+        handler: (selector) => `${selector}:not(:first-child)`,
+      })
+      variants.push({
+        name: 'not-last',
+        handler: (selector) => `${selector}:not(:last-child)`,
+      })
+      variants.push({
+        name: 'not-only',
+        handler: (selector) => `${selector}:not(:only-child)`,
+      })
+      variants.push({
+        name: 'not-empty',
+        handler: (selector) => `${selector}:not(:empty)`,
+      })
+      variants.push({
+        name: 'not-open',
+        handler: (selector) => `${selector}:not([open])`,
+      })
+      // Arbitrary not selector: not-[.class]:text-red-500
+      // This will be handled by regex pattern matching
+
+      // DESCENDANT VARIANT (Tailwind 4.1)
+      // Style all descendants: descendant:text-sm applies to all children
+      variants.push({
+        name: '*',
+        handler: (selector) => `${selector} > *`,
+      })
+      variants.push({
+        name: 'descendant',
+        handler: (selector) => `${selector} *`,
+      })
+      variants.push({
+        name: 'children',
+        handler: (selector) => `${selector} > *`,
+      })
+      variants.push({
+        name: 'direct',
+        handler: (selector) => `${selector} > *`,
+      })
+      // Type-specific descendant variants
+      variants.push({
+        name: 'descendant-p',
+        handler: (selector) => `${selector} p`,
+      })
+      variants.push({
+        name: 'descendant-a',
+        handler: (selector) => `${selector} a`,
+      })
+      variants.push({
+        name: 'descendant-li',
+        handler: (selector) => `${selector} li`,
+      })
+      variants.push({
+        name: 'descendant-img',
+        handler: (selector) => `${selector} img`,
+      })
+      variants.push({
+        name: 'descendant-svg',
+        handler: (selector) => `${selector} svg`,
+      })
+      variants.push({
+        name: 'descendant-h1',
+        handler: (selector) => `${selector} h1`,
+      })
+      variants.push({
+        name: 'descendant-h2',
+        handler: (selector) => `${selector} h2`,
+      })
+      variants.push({
+        name: 'descendant-h3',
+        handler: (selector) => `${selector} h3`,
+      })
+
+      // @STARTING-STYLE VARIANT (CSS Transitions Level 2)
+      // For entry animations on elements appearing in the DOM
+      variants.push({
+        name: 'starting',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@starting-style { ${css} }`,
+      })
+      variants.push({
+        name: 'enter',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@starting-style { ${css} }`,
+      })
+
+      // INERT VARIANT
+      // Style elements with inert attribute
+      variants.push({
+        name: 'inert',
+        handler: (selector) => `${selector}[inert]`,
+      })
+      variants.push({
+        name: 'group-inert',
+        handler: (selector) => `.group[inert] ${selector}`,
+      })
+      variants.push({
+        name: 'peer-inert',
+        handler: (selector) => `.peer[inert] ~ ${selector}`,
+      })
+
+      // POPOVER VARIANTS
+      // Style popover elements in different states
+      variants.push({
+        name: 'popover-open',
+        handler: (selector) => `${selector}:popover-open`,
+      })
+
+      // DIALOG VARIANTS
+      variants.push({
+        name: 'dialog-open',
+        handler: (selector) => `dialog[open]${selector}`,
+      })
+      variants.push({
+        name: 'modal',
+        handler: (selector) => `${selector}::backdrop`,
+      })
+
+      // FULLSCREEN VARIANT
+      variants.push({
+        name: 'fullscreen',
+        handler: (selector) => `${selector}:fullscreen`,
+      })
+
+      // PICTURE-IN-PICTURE VARIANT
+      variants.push({
+        name: 'pip',
+        handler: (selector) => `${selector}:picture-in-picture`,
+      })
+
+      // SCROLL STATE VARIANTS (Experimental CSS)
+      variants.push({
+        name: 'stuck',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(stuck: top) { ${css} }`,
+      })
+      variants.push({
+        name: 'stuck-top',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(stuck: top) { ${css} }`,
+      })
+      variants.push({
+        name: 'stuck-bottom',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(stuck: bottom) { ${css} }`,
+      })
+      variants.push({
+        name: 'snapped',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(snapped: x) { ${css} }`,
+      })
+      variants.push({
+        name: 'snapped-x',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(snapped: x) { ${css} }`,
+      })
+      variants.push({
+        name: 'snapped-y',
+        handler: (selector) => selector,
+        wrapper: (css: string) => `@container scroll-state(snapped: y) { ${css} }`,
+      })
+
       // User validation variants - only apply after user interaction
       variants.push({
         name: 'user-valid',

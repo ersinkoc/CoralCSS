@@ -163,6 +163,7 @@ export class Carousel extends BaseComponent {
   private dots: HTMLElement[] = []
 
   private autoplayTimer: ReturnType<typeof setInterval> | null = null
+  private animationTimeout: ReturnType<typeof setTimeout> | null = null
   private dragStartX = 0
   private dragCurrentX = 0
   private isDragging = false
@@ -545,7 +546,12 @@ export class Carousel extends BaseComponent {
 
     // Clear animating state after animation completes
     if (animate) {
-      setTimeout(() => {
+      // Clear any existing animation timeout
+      if (this.animationTimeout) {
+        clearTimeout(this.animationTimeout)
+      }
+      this.animationTimeout = setTimeout(() => {
+        this.animationTimeout = null
         this.setState({ isAnimating: false })
       }, this.config.animationDuration)
     }
@@ -646,6 +652,10 @@ export class Carousel extends BaseComponent {
 
   override destroy(): void {
     this.stopAutoplay()
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout)
+      this.animationTimeout = null
+    }
     super.destroy()
   }
 }

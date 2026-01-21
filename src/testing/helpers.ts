@@ -57,8 +57,20 @@ export function extractGeneratedCSS(
   coral: Coral,
   classes: string | string[]
 ): string {
-  const classArray = Array.isArray(classes) ? classes : classes.split(/\s+/)
-  return coral.generate(classArray)
+  const classArray = Array.isArray(classes)
+    ? classes
+    : classes.split(/\s+/).filter(Boolean)
+
+  if (classArray.length === 0) {
+    return ''
+  }
+
+  try {
+    return coral.generate(classArray)
+  } catch {
+    // Return empty string if generation fails
+    return ''
+  }
 }
 
 /**
@@ -78,16 +90,24 @@ export function getComputedClasses(input: Element | string): string[] {
 }
 
 /**
- * Simple hash function for CSS content
+ * FNV-1a hash function for CSS content
+ * Better distribution than simple djb2 for collision resistance
+ * @internal
  */
 function hashCSS(css: string): string {
-  let hash = 0
+  // FNV-1a 32-bit parameters
+  const FNV_PRIME = 0x01000193
+  const FNV_OFFSET = 0x811c9dc5
+
+  let hash = FNV_OFFSET
+
   for (let i = 0; i < css.length; i++) {
-    const char = css.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32bit integer
+    hash ^= css.charCodeAt(i)
+    hash = Math.imul(hash, FNV_PRIME)
   }
-  return Math.abs(hash).toString(16)
+
+  // Convert to unsigned 32-bit integer and return hex
+  return (hash >>> 0).toString(16).padStart(8, '0')
 }
 
 /**
@@ -120,35 +140,55 @@ export function generateSnapshot(
 
 /**
  * Parse CSS into a map of selectors to properties
+ *
+ * NOTE: This is a simple parser for testing purposes.
+ * Limitations:
+ * - Does not handle nested rules (@media, @keyframes, etc.)
+ * - Does not handle CSS comments
+ * - Does not handle strings containing { or }
+ * - For complex CSS comparison, consider using a proper CSS parser
+ *
+ * @internal
  */
 function parseCSS(css: string): Map<string, Map<string, string>> {
   const result = new Map<string, Map<string, string>>()
 
-  // Simple CSS parser - handles basic rules
-  const ruleRegex = /([^{]+)\{([^}]+)\}/g
+  // Remove CSS comments first
+  const cleanedCSS = css.replace(/\/\*[\s\S]*?\*\//g, '')
+
+  // Simple CSS parser - handles basic rules only
+  // Using a non-greedy match for the properties block
+  const ruleRegex = /([^{}]+)\{([^{}]*)\}/g
   let match
 
-  while ((match = ruleRegex.exec(css)) !== null) {
+  while ((match = ruleRegex.exec(cleanedCSS)) !== null) {
     const selector = match[1]?.trim()
     const propertiesStr = match[2]?.trim()
 
-    if (!selector || !propertiesStr) {
+    // Skip empty or at-rule selectors (basic handling)
+    if (!selector || !propertiesStr || selector.startsWith('@')) {
       continue
     }
 
     const properties = new Map<string, string>()
-    const propRegex = /([\w-]+)\s*:\s*([^;]+);?/g
-    let propMatch
+    // Split by semicolons and process each property
+    const propParts = propertiesStr.split(';').filter((p) => p.trim())
 
-    while ((propMatch = propRegex.exec(propertiesStr)) !== null) {
-      const propName = propMatch[1]?.trim()
-      const propValue = propMatch[2]?.trim()
+    for (const propPart of propParts) {
+      const colonIndex = propPart.indexOf(':')
+      if (colonIndex === -1) continue
+
+      const propName = propPart.slice(0, colonIndex).trim()
+      const propValue = propPart.slice(colonIndex + 1).trim()
+
       if (propName && propValue) {
         properties.set(propName, propValue)
       }
     }
 
-    result.set(selector, properties)
+    if (properties.size > 0) {
+      result.set(selector, properties)
+    }
   }
 
   return result

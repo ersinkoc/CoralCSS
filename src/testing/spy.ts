@@ -24,6 +24,49 @@ export interface ClassChangeEvent {
 }
 
 /**
+ * Detect class changes between two class lists
+ * @internal
+ */
+function detectClassChanges(
+  element: Element,
+  previousClasses: string[],
+  currentClasses: string[],
+  events: ClassChangeEvent[]
+): void {
+  const timestamp = Date.now()
+  const previousSet = new Set(previousClasses)
+  const currentSet = new Set(currentClasses)
+
+  // Find added classes (in current but not in previous)
+  for (const cls of currentClasses) {
+    if (!previousSet.has(cls)) {
+      events.push({
+        type: 'add',
+        className: cls,
+        element,
+        timestamp,
+        previousClasses: [...previousClasses],
+        currentClasses: [...currentClasses],
+      })
+    }
+  }
+
+  // Find removed classes (in previous but not in current)
+  for (const cls of previousClasses) {
+    if (!currentSet.has(cls)) {
+      events.push({
+        type: 'remove',
+        className: cls,
+        element,
+        timestamp,
+        previousClasses: [...previousClasses],
+        currentClasses: [...currentClasses],
+      })
+    }
+  }
+}
+
+/**
  * Class spy interface
  */
 export interface ClassSpy {
@@ -91,35 +134,7 @@ export function createClassSpy(element: Element): ClassSpy {
       for (const mutation of mutations) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
           const currentClasses = Array.from(element.classList)
-
-          // Find added classes
-          for (const cls of currentClasses) {
-            if (!previousClasses.includes(cls)) {
-              events.push({
-                type: 'add',
-                className: cls,
-                element,
-                timestamp: Date.now(),
-                previousClasses: [...previousClasses],
-                currentClasses: [...currentClasses],
-              })
-            }
-          }
-
-          // Find removed classes
-          for (const cls of previousClasses) {
-            if (!currentClasses.includes(cls)) {
-              events.push({
-                type: 'remove',
-                className: cls,
-                element,
-                timestamp: Date.now(),
-                previousClasses: [...previousClasses],
-                currentClasses: [...currentClasses],
-              })
-            }
-          }
-
+          detectClassChanges(element, previousClasses, currentClasses, events)
           previousClasses = currentClasses
         }
       }
@@ -164,6 +179,8 @@ export function createClassSpy(element: Element): ClassSpy {
         observer.disconnect()
         observer = null
       }
+      // Note: Don't clear events here - tests may still need to access them after destroy
+      // Users can call clear() explicitly if they want to clear events before destroy
     },
   }
 }
@@ -186,8 +203,11 @@ export function createClassSpy(element: Element): ClassSpy {
  * ```
  */
 export function trackClassChanges(
-  root: Element | Document = typeof document !== 'undefined' ? document : null!
+  root?: Element | Document | null
 ): ClassChangeTracker {
+  // Use document as default only if available
+  const resolvedRoot = root ?? (typeof document !== 'undefined' ? document : null)
+
   const changes: ClassChangeEvent[] = []
   let observer: MutationObserver | null = null
   let isActive = false
@@ -202,34 +222,7 @@ export function trackClassChanges(
         const currentClasses = Array.from(element.classList)
         const previousClasses = previousClassesMap.get(element) || []
 
-        // Find added classes
-        for (const cls of currentClasses) {
-          if (!previousClasses.includes(cls)) {
-            changes.push({
-              type: 'add',
-              className: cls,
-              element,
-              timestamp: Date.now(),
-              previousClasses: [...previousClasses],
-              currentClasses: [...currentClasses],
-            })
-          }
-        }
-
-        // Find removed classes
-        for (const cls of previousClasses) {
-          if (!currentClasses.includes(cls)) {
-            changes.push({
-              type: 'remove',
-              className: cls,
-              element,
-              timestamp: Date.now(),
-              previousClasses: [...previousClasses],
-              currentClasses: [...currentClasses],
-            })
-          }
-        }
-
+        detectClassChanges(element, previousClasses, currentClasses, changes)
         previousClassesMap.set(element, currentClasses)
       }
     }
@@ -237,12 +230,12 @@ export function trackClassChanges(
 
   return {
     start(): void {
-      if (isActive || typeof MutationObserver === 'undefined' || !root) {
+      if (isActive || typeof MutationObserver === 'undefined' || !resolvedRoot) {
         return
       }
 
       observer = new MutationObserver(handleMutation)
-      observer.observe(root, {
+      observer.observe(resolvedRoot, {
         attributes: true,
         attributeFilter: ['class'],
         subtree: true,
@@ -374,21 +367,36 @@ export async function waitForClass(
     return true
   }
 
-  return new Promise((resolve) => {
-    const startTime = Date.now()
+  if (typeof MutationObserver === 'undefined') {
+    return false
+  }
 
-    if (typeof MutationObserver === 'undefined') {
-      resolve(false)
-      return
+  return new Promise((resolve) => {
+    let observer: MutationObserver | null = null
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let settled = false
+
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect()
+        observer = null
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
     }
 
-    const observer = new MutationObserver(() => {
+    const settle = (result: boolean) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      resolve(result)
+    }
+
+    observer = new MutationObserver(() => {
       if (element.classList.contains(className)) {
-        observer.disconnect()
-        resolve(true)
-      } else if (Date.now() - startTime > timeout) {
-        observer.disconnect()
-        resolve(false)
+        settle(true)
       }
     })
 
@@ -397,10 +405,8 @@ export async function waitForClass(
       attributeFilter: ['class'],
     })
 
-    // Also set a timeout in case the class is never added
-    setTimeout(() => {
-      observer.disconnect()
-      resolve(element.classList.contains(className))
+    timeoutId = setTimeout(() => {
+      settle(element.classList.contains(className))
     }, timeout)
   })
 }
@@ -417,21 +423,36 @@ export async function waitForClassRemoval(
     return true
   }
 
-  return new Promise((resolve) => {
-    const startTime = Date.now()
+  if (typeof MutationObserver === 'undefined') {
+    return false
+  }
 
-    if (typeof MutationObserver === 'undefined') {
-      resolve(false)
-      return
+  return new Promise((resolve) => {
+    let observer: MutationObserver | null = null
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let settled = false
+
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect()
+        observer = null
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
     }
 
-    const observer = new MutationObserver(() => {
+    const settle = (result: boolean) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      resolve(result)
+    }
+
+    observer = new MutationObserver(() => {
       if (!element.classList.contains(className)) {
-        observer.disconnect()
-        resolve(true)
-      } else if (Date.now() - startTime > timeout) {
-        observer.disconnect()
-        resolve(false)
+        settle(true)
       }
     })
 
@@ -440,9 +461,8 @@ export async function waitForClassRemoval(
       attributeFilter: ['class'],
     })
 
-    setTimeout(() => {
-      observer.disconnect()
-      resolve(!element.classList.contains(className))
+    timeoutId = setTimeout(() => {
+      settle(!element.classList.contains(className))
     }, timeout)
   })
 }

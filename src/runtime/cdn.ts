@@ -198,12 +198,14 @@ export function createCoralCDN(config: CDNConfig = {}): CoralCDN {
   if (autoStart) {
     // Wait for DOM ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
+      const onDOMReady = () => {
+        document.removeEventListener('DOMContentLoaded', onDOMReady)
         instance.start()
         if (autoInitComponents) {
           instance.initComponents()
         }
-      })
+      }
+      document.addEventListener('DOMContentLoaded', onDOMReady)
     } else {
       instance.start()
       if (autoInitComponents) {
@@ -228,6 +230,16 @@ export function getCoralCDN(): CoralCDN {
     globalInstance = createCoralCDN(config)
   }
   return globalInstance
+}
+
+/**
+ * Reset the global instance (for cleanup/testing)
+ */
+export function resetGlobalInstance(): void {
+  if (globalInstance) {
+    globalInstance.destroy()
+    globalInstance = null
+  }
 }
 
 /**
@@ -259,9 +271,10 @@ export interface CoralAPI {
 // Expose to window for CDN usage
 if (typeof window !== 'undefined') {
   // Legacy CoralCSS API
-  (window as unknown as { CoralCSS: { createCoralCDN: typeof createCoralCDN; getCoralCDN: typeof getCoralCDN } }).CoralCSS = {
+  (window as unknown as { CoralCSS: { createCoralCDN: typeof createCoralCDN; getCoralCDN: typeof getCoralCDN; resetGlobalInstance: typeof resetGlobalInstance } }).CoralCSS = {
     createCoralCDN,
     getCoralCDN,
+    resetGlobalInstance,
   }
 
   // Simple Coral API
@@ -305,9 +318,11 @@ if (typeof window !== 'undefined') {
 
   // Auto-initialize on script load (not deferred)
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+    const onAutoInit = () => {
+      document.removeEventListener('DOMContentLoaded', onAutoInit)
       CoralAPI.init()
-    })
+    }
+    document.addEventListener('DOMContentLoaded', onAutoInit)
   } else {
     // DOM already loaded, initialize immediately
     CoralAPI.init()

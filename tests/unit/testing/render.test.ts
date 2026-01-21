@@ -116,6 +116,36 @@ describe('Testing Render Utilities', () => {
       expect(typeof css).toBe('string')
     })
 
+    it('should inject CSS for base classes with autoInject enabled', () => {
+      wrapper = createTestWrapper({
+        baseClasses: ['m-4', 'text-lg'],
+        autoInject: true,
+      })
+
+      // CSS should be injected into style element for base classes
+      // Note: CSS may or may not be generated depending on enabled plugins
+      const css = wrapper.getInjectedCSS()
+      expect(typeof css).toBe('string')
+      // styleElement.textContent should match injectedCSS
+      if (css.length > 0) {
+        expect(wrapper.styleElement.textContent).toContain(css)
+      }
+    })
+
+    it('should inject CSS via processClasses when autoInject is true', () => {
+      wrapper = createTestWrapper({ autoInject: true })
+
+      // Initially empty
+      expect(wrapper.getInjectedCSS()).toBe('')
+
+      // Process classes - CSS generation depends on which plugins are enabled
+      wrapper.processClasses(['flex', 'items-center'])
+
+      // Just verify the method was called (CSS may or may not be generated)
+      const css = wrapper.getInjectedCSS()
+      expect(typeof css).toBe('string')
+    })
+
     it('should respect autoInject option', () => {
       wrapper = createTestWrapper({ autoInject: false })
 
@@ -123,6 +153,60 @@ describe('Testing Render Utilities', () => {
 
       // CSS should not be injected
       expect(wrapper.getInjectedCSS()).toBe('')
+    })
+
+    it('should not add leading newline on first injectCSS call', () => {
+      wrapper = createTestWrapper()
+
+      wrapper.injectCSS('.first { color: red; }')
+
+      // First inject should not have leading newline
+      expect(wrapper.getInjectedCSS()).toBe('.first { color: red; }')
+      expect(wrapper.getInjectedCSS().startsWith('\n')).toBe(false)
+    })
+
+    it('should add newline between multiple injectCSS calls', () => {
+      wrapper = createTestWrapper()
+
+      wrapper.injectCSS('.first { color: red; }')
+      wrapper.injectCSS('.second { color: blue; }')
+
+      const css = wrapper.getInjectedCSS()
+      expect(css).toContain('.first')
+      expect(css).toContain('.second')
+      expect(css).toContain('\n')
+    })
+
+    it('should clear injectedCSS on cleanup', () => {
+      wrapper = createTestWrapper()
+
+      wrapper.injectCSS('.test { color: red; }')
+      expect(wrapper.getInjectedCSS()).not.toBe('')
+
+      wrapper.cleanup()
+
+      // After cleanup, getInjectedCSS should return empty string
+      expect(wrapper.getInjectedCSS()).toBe('')
+    })
+
+    it('should use provided styleElement', () => {
+      const providedStyle = document.createElement('style')
+      providedStyle.id = 'my-style'
+      document.head.appendChild(providedStyle)
+
+      wrapper = createTestWrapper({ styleElement: providedStyle })
+
+      expect(wrapper.styleElement).toBe(providedStyle)
+      expect(wrapper.styleElement.id).toBe('my-style')
+
+      // Should have data-coral attribute set
+      expect(wrapper.styleElement.getAttribute('data-coral')).toBe('test')
+
+      wrapper.cleanup()
+      // Provided style should not be removed
+      expect(document.head.contains(providedStyle)).toBe(true)
+
+      providedStyle.remove()
     })
   })
 
@@ -207,6 +291,23 @@ describe('Testing Render Utilities', () => {
       await expect(
         waitForCSS(wrapper, (css) => css.includes('.nonexistent'), 50)
       ).rejects.toThrow('Timeout')
+
+      wrapper.cleanup()
+    })
+
+    it('should resolve immediately when predicate is already true', async () => {
+      const wrapper = createTestWrapper()
+
+      // Inject CSS first
+      wrapper.injectCSS('.existing { color: green; }')
+
+      const startTime = Date.now()
+      // This should resolve immediately since predicate is already true
+      await waitForCSS(wrapper, (css) => css.includes('.existing'), 1000)
+      const elapsed = Date.now() - startTime
+
+      // Should resolve very quickly (less than 100ms) since it checks immediately
+      expect(elapsed).toBeLessThan(100)
 
       wrapper.cleanup()
     })

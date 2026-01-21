@@ -14,6 +14,8 @@ import type { CoralOptions, Coral } from '../types'
 export interface TestWrapperOptions extends CoralOptions {
   /** Container element for rendering */
   container?: HTMLElement
+  /** Style element for CSS injection (optional, created if not provided) */
+  styleElement?: HTMLStyleElement
   /** Auto-inject CSS */
   autoInject?: boolean
   /** Base classes to always include */
@@ -66,20 +68,43 @@ export interface TestWrapper {
  * ```
  */
 export function createTestWrapper(options: TestWrapperOptions = {}): TestWrapper {
-  const { container: providedContainer, autoInject = true, baseClasses = [], ...coralOptions } = options
+  const {
+    container: providedContainer,
+    styleElement: providedStyleElement,
+    autoInject = true,
+    baseClasses = [],
+    ...coralOptions
+  } = options
 
-  // Create container
-  const container = providedContainer || document.createElement('div')
+  // Check if we're in a browser environment
+  const isBrowser = typeof document !== 'undefined'
+
+  // Track what we created vs what was provided
+  const createdContainer = !providedContainer
+  const createdStyleElement = !providedStyleElement
+
+  // Create or use provided container
+  const container = providedContainer || (isBrowser ? document.createElement('div') : null)
+  if (!container) {
+    throw new Error('createTestWrapper requires a browser environment or a provided container')
+  }
   container.setAttribute('data-testid', 'coral-test-wrapper')
 
-  // Create style element
-  const styleElement = document.createElement('style')
+  // Create or use provided style element
+  const styleElement = providedStyleElement || (isBrowser ? document.createElement('style') : null)
+  if (!styleElement) {
+    throw new Error('createTestWrapper requires a browser environment or a provided styleElement')
+  }
   styleElement.setAttribute('data-coral', 'test')
 
-  // Append to document if we created the container
-  if (!providedContainer && typeof document !== 'undefined') {
-    document.body.appendChild(container)
-    document.head.appendChild(styleElement)
+  // Append to document only if we created them
+  if (isBrowser) {
+    if (createdContainer) {
+      document.body.appendChild(container)
+    }
+    if (createdStyleElement) {
+      document.head.appendChild(styleElement)
+    }
   }
 
   // Create Coral instance
@@ -101,14 +126,19 @@ export function createTestWrapper(options: TestWrapperOptions = {}): TestWrapper
     styleElement,
 
     cleanup() {
-      if (!providedContainer) {
+      // Only remove elements we created
+      if (createdContainer) {
         container.remove()
+      }
+      if (createdStyleElement) {
         styleElement.remove()
       }
+      // Clear injected CSS reference
+      injectedCSS = ''
     },
 
     injectCSS(css: string) {
-      injectedCSS += '\n' + css
+      injectedCSS += (injectedCSS ? '\n' : '') + css
       styleElement.textContent = injectedCSS
     },
 
@@ -199,37 +229,95 @@ export async function waitForCSS(
   predicate: (css: string) => boolean,
   timeout = 1000
 ): Promise<void> {
-  const startTime = Date.now()
+  // Check immediately first
+  if (predicate(wrapper.getInjectedCSS())) {
+    return
+  }
 
   return new Promise((resolve, reject) => {
-    const check = () => {
-      if (predicate(wrapper.getInjectedCSS())) {
-        resolve()
-      } else if (Date.now() - startTime > timeout) {
-        reject(new Error('Timeout waiting for CSS'))
-      } else {
-        setTimeout(check, 10)
+    let observer: MutationObserver | null = null
+    let intervalId: ReturnType<typeof setInterval> | null = null
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let settled = false
+
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect()
+        observer = null
+      }
+      if (intervalId) {
+        clearInterval(intervalId)
+        intervalId = null
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
       }
     }
-    check()
+
+    const settle = (success: boolean) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      if (success) {
+        resolve()
+      } else {
+        reject(new Error('Timeout waiting for CSS'))
+      }
+    }
+
+    const check = () => {
+      if (!settled && predicate(wrapper.getInjectedCSS())) {
+        settle(true)
+      }
+    }
+
+    // Use MutationObserver if available for efficient change detection
+    if (typeof MutationObserver !== 'undefined') {
+      observer = new MutationObserver(check)
+      observer.observe(wrapper.styleElement, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      })
+    }
+
+    // Fallback polling for environments without MutationObserver or edge cases
+    intervalId = setInterval(check, 50)
+
+    // Timeout
+    timeoutId = setTimeout(() => settle(false), timeout)
   })
 }
 
 /**
- * Create isolated test environment
+ * Create isolated test environment using an iframe
+ * @throws {Error} If not in browser environment or iframe document is inaccessible
  */
 export function createIsolatedEnvironment(options: TestWrapperOptions = {}) {
+  if (typeof document === 'undefined') {
+    throw new Error('createIsolatedEnvironment requires a browser environment')
+  }
+
   const iframe = document.createElement('iframe')
   iframe.style.display = 'none'
   document.body.appendChild(iframe)
 
-  const iframeDoc = iframe.contentDocument!
+  const iframeDoc = iframe.contentDocument
+  if (!iframeDoc) {
+    iframe.remove()
+    throw new Error('Unable to access iframe contentDocument (may be blocked by security policy)')
+  }
+
   const container = iframeDoc.createElement('div')
+  const styleElement = iframeDoc.createElement('style')
   iframeDoc.body.appendChild(container)
+  iframeDoc.head.appendChild(styleElement)
 
   const wrapper = createTestWrapper({
     ...options,
     container,
+    styleElement,
   })
 
   return {

@@ -38,6 +38,20 @@ export interface HSLA extends HSL {
 }
 
 /**
+ * Validate that a string contains only valid hex characters
+ */
+function isValidHex(hex: string): boolean {
+  return /^[0-9a-fA-F]+$/.test(hex)
+}
+
+/**
+ * Clamp a value between min and max
+ */
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
+}
+
+/**
  * Parse a hex color to RGB
  *
  * @example
@@ -45,11 +59,17 @@ export interface HSLA extends HSL {
  * hexToRgb('#ff6b6b') // { r: 255, g: 107, b: 107 }
  * hexToRgb('#f66') // { r: 255, g: 102, b: 102 }
  * hexToRgb('#ff6b6b80') // { r: 255, g: 107, b: 107, a: 0.5 }
+ * hexToRgb('invalid') // null
  * ```
  */
 export function hexToRgb(hex: string): RGB | RGBA | null {
   // Remove # if present
   hex = hex.replace(/^#/, '')
+
+  // Validate hex characters
+  if (!isValidHex(hex)) {
+    return null
+  }
 
   // Handle short hex (#RGB or #RGBA)
   if (hex.length === 3 || hex.length === 4) {
@@ -62,6 +82,9 @@ export function hexToRgb(hex: string): RGB | RGBA | null {
   // Parse 6 or 8 character hex
   if (hex.length === 6) {
     const num = parseInt(hex, 16)
+    if (isNaN(num)) {
+      return null
+    }
     return {
       r: (num >> 16) & 255,
       g: (num >> 8) & 255,
@@ -71,6 +94,9 @@ export function hexToRgb(hex: string): RGB | RGBA | null {
 
   if (hex.length === 8) {
     const num = parseInt(hex, 16)
+    if (isNaN(num)) {
+      return null
+    }
     return {
       r: (num >> 24) & 255,
       g: (num >> 16) & 255,
@@ -118,11 +144,13 @@ export function rgbToHex(rOrColor: number | RGB | RGBA, g?: number, b?: number):
 
 /**
  * Parse rgb/rgba CSS string to RGB(A)
+ * Values are clamped to valid ranges (0-255 for RGB, 0-1 for alpha)
  *
  * @example
  * ```typescript
  * parseRgbString('rgb(255, 107, 107)') // { r: 255, g: 107, b: 107 }
  * parseRgbString('rgba(255, 107, 107, 0.5)') // { r: 255, g: 107, b: 107, a: 0.5 }
+ * parseRgbString('rgb(999, 0, 0)') // { r: 255, g: 0, b: 0 } (clamped)
  * ```
  */
 export function parseRgbString(str: string): RGB | RGBA | null {
@@ -133,13 +161,13 @@ export function parseRgbString(str: string): RGB | RGBA | null {
 
   const [, r, g, b, a] = match
   const result: RGB = {
-    r: parseInt(r!, 10),
-    g: parseInt(g!, 10),
-    b: parseInt(b!, 10),
+    r: clamp(parseInt(r!, 10), 0, 255),
+    g: clamp(parseInt(g!, 10), 0, 255),
+    b: clamp(parseInt(b!, 10), 0, 255),
   }
 
   if (a !== undefined) {
-    return { ...result, a: parseFloat(a) }
+    return { ...result, a: clamp(parseFloat(a), 0, 1) }
   }
 
   return result

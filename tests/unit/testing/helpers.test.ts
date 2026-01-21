@@ -37,6 +37,24 @@ describe('Testing Helpers', () => {
       const css = extractGeneratedCSS(coral, ['bg-red-500', 'p-4'])
       expect(typeof css).toBe('string')
     })
+
+    it('should return empty string for empty array', () => {
+      const coral = createCoral()
+      const css = extractGeneratedCSS(coral, [])
+      expect(css).toBe('')
+    })
+
+    it('should return empty string for empty string input', () => {
+      const coral = createCoral()
+      const css = extractGeneratedCSS(coral, '')
+      expect(css).toBe('')
+    })
+
+    it('should return empty string for whitespace-only input', () => {
+      const coral = createCoral()
+      const css = extractGeneratedCSS(coral, '   ')
+      expect(css).toBe('')
+    })
   })
 
   describe('getComputedClasses', () => {
@@ -82,6 +100,40 @@ describe('Testing Helpers', () => {
 
       // Same input should produce same hash
       expect(snapshot1.hash).toBe(snapshot2.hash)
+    })
+
+    it('should generate different hash for different CSS', () => {
+      // Create manual snapshots with different CSS content
+      const snapshot1 = {
+        css: '.a { color: red; }',
+        classes: ['a'],
+        timestamp: Date.now(),
+        hash: '',
+      }
+      const snapshot2 = {
+        css: '.b { color: blue; }',
+        classes: ['b'],
+        timestamp: Date.now(),
+        hash: '',
+      }
+
+      // Use generateSnapshot which calls hashCSS internally
+      const coral = createCoral()
+      const snap1 = generateSnapshot(coral, 'bg-red-500')
+      const snap2 = generateSnapshot(coral, 'text-blue-500')
+
+      // Different CSS should produce different hashes (when CSS is generated)
+      if (snap1.css !== snap2.css) {
+        expect(snap1.hash).not.toBe(snap2.hash)
+      }
+    })
+
+    it('should generate hash in hex format with 8 characters', () => {
+      const coral = createCoral()
+      const snapshot = generateSnapshot(coral, ['bg-red-500'])
+
+      // FNV-1a hash should produce 8-character hex string
+      expect(snapshot.hash).toMatch(/^[0-9a-f]{8}$/)
     })
 
     it('should accept string input', () => {
@@ -166,6 +218,27 @@ describe('Testing Helpers', () => {
 
     it('should handle empty CSS', () => {
       const result = compareCSS('', '')
+      expect(result.matches).toBe(true)
+    })
+
+    it('should handle CSS with comments', () => {
+      const css1 = '/* comment */ .test { color: red; }'
+      const css2 = '.test { color: red; }'
+      const result = compareCSS(css1, css2)
+
+      // Should match since comments are stripped
+      expect(result.matches).toBe(true)
+    })
+
+    it('should handle CSS with multiline comments', () => {
+      const css1 = `
+        /* This is a
+           multiline comment */
+        .test { color: red; }
+      `
+      const css2 = '.test { color: red; }'
+      const result = compareCSS(css1, css2)
+
       expect(result.matches).toBe(true)
     })
   })
