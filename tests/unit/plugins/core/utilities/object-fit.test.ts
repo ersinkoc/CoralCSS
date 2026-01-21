@@ -110,6 +110,91 @@ describe('Object Fit Utilities Plugin', () => {
     })
   })
 
+  describe('Two-Value Object Position', () => {
+    it('should generate object-top-left', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-top-left'])
+      expect(css).toContain('object-position: top left')
+    })
+
+    it('should generate object-top-right', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-top-right'])
+      expect(css).toContain('object-position: top right')
+    })
+
+    it('should generate object-bottom-left', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-bottom-left'])
+      expect(css).toContain('object-position: bottom left')
+    })
+
+    it('should generate object-bottom-right', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-bottom-right'])
+      expect(css).toContain('object-position: bottom right')
+    })
+  })
+
+  describe('Percentage Object Positions', () => {
+    it('should generate object-position-0-0', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-0-0'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('0% 0%')
+    })
+
+    it('should generate object-position-50-50', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-50-50'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('50% 50%')
+    })
+
+    it('should generate object-position-100-100', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-100-100'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('100% 100%')
+    })
+
+    it('should generate object-position-25-75', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-25-75'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('25% 75%')
+    })
+
+    it('should generate object-position-75-25', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-75-25'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('75% 25%')
+    })
+  })
+
+  describe('Arbitrary Object Position', () => {
+    it('should generate object-position-[30%_70%]', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-[30%_70%]'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('30% 70%')
+    })
+
+    it('should replace underscores with spaces', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-[left_bottom]'])
+      expect(css).toContain('object-position')
+      expect(css).toContain('left bottom')
+    })
+
+    it('should return null for empty object-position-[]', () => {
+      const coral = createCoral({ plugins: [objectFitPlugin()] })
+      const css = coral.generate(['object-position-[]'])
+      expect(css).toBe('')
+    })
+  })
+
   describe('Common Use Cases', () => {
     it('should generate responsive image card', () => {
       const coral = createCoral({ plugins: [objectFitPlugin()] })

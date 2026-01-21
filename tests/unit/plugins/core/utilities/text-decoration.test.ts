@@ -308,4 +308,42 @@ describe('Text Decoration Utilities Plugin', () => {
       expect(css).toContain('text-decoration-color: var(--color-coral-500)')
     })
   })
+
+  describe('Arbitrary Values', () => {
+    it('should generate arbitrary decoration-[3px]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['decoration-[3px]'])
+      expect(css).toContain('text-decoration-thickness: 3px')
+    })
+
+    it('should generate arbitrary decoration-[0.5em]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['decoration-[0.5em]'])
+      expect(css).toContain('text-decoration-thickness: 0.5em')
+    })
+
+    it('should return null for empty decoration-[]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['decoration-[]'])
+      expect(css).toBe('')
+    })
+
+    it('should generate arbitrary underline-offset-[6px]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['underline-offset-[6px]'])
+      expect(css).toContain('text-underline-offset: 6px')
+    })
+
+    it('should generate arbitrary underline-offset-[0.3em]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['underline-offset-[0.3em]'])
+      expect(css).toContain('text-underline-offset: 0.3em')
+    })
+
+    it('should return null for empty underline-offset-[]', () => {
+      const coral = createCoral({ plugins: [textDecorationPlugin()] })
+      const css = coral.generate(['underline-offset-[]'])
+      expect(css).toBe('')
+    })
+  })
 })

@@ -69,6 +69,18 @@ describe('Accent Color Utilities Plugin', () => {
       const css = coral.generate(['accent-transparent'])
       expect(css).toContain('accent-color: transparent')
     })
+
+    it('should generate accent-white', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-white'])
+      expect(css).toContain('accent-color: #ffffff')
+    })
+
+    it('should generate accent-black', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-black'])
+      expect(css).toContain('accent-color: #000000')
+    })
   })
 
   describe('Different Color Shades', () => {
@@ -167,6 +179,73 @@ describe('Accent Color Utilities Plugin', () => {
       })
       const css = coral.generate(['accent-coral-500'])
       expect(css).toContain('accent-color: var(--color-coral-500)')
+    })
+  })
+
+  describe('Arbitrary Accent Colors', () => {
+    it('should generate arbitrary accent-[#ff0000]', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[#ff0000]'])
+      expect(css).toContain('accent-color: #ff0000')
+    })
+
+    it('should generate arbitrary accent-[rgb(255,0,0)]', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[rgb(255,0,0)]'])
+      expect(css).toContain('accent-color: rgb(255,0,0)')
+    })
+
+    it('should generate arbitrary accent-[hsl(0,100%,50%)]', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[hsl(0,100%,50%)]'])
+      expect(css).toContain('accent-color: hsl(0,100%,50%)')
+    })
+
+    it('should replace underscores with spaces in arbitrary values', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[rgb(255,_0,_0)]'])
+      expect(css).toContain('accent-color: rgb(255, 0, 0)')
+    })
+
+    it('should replace multiple underscores with spaces', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[1rem_2rem_3px]'])
+      expect(css).toContain('accent-color: 1rem 2rem 3px')
+    })
+
+    it('should handle empty arbitrary accent-[]', () => {
+      const coral = createCoral({ plugins: [accentColorPlugin()] })
+      const css = coral.generate(['accent-[]'])
+      expect(css).toBe('')
+    })
+  })
+
+  describe('All Color Palettes', () => {
+    const colors = [
+      'coral', 'slate', 'gray', 'zinc', 'neutral', 'stone',
+      'red', 'orange', 'amber', 'yellow', 'lime', 'green',
+      'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo',
+      'violet', 'purple', 'fuchsia', 'pink', 'rose',
+    ]
+
+    colors.forEach((color) => {
+      it(`should generate accent-${color}-500`, () => {
+        const coral = createCoral({ plugins: [accentColorPlugin()] })
+        const css = coral.generate([`accent-${color}-500`])
+        expect(css).toContain(`accent-color: var(--color-${color}-500)`)
+      })
+    })
+  })
+
+  describe('All Shades', () => {
+    const shades = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
+
+    shades.forEach((shade) => {
+      it(`should generate accent-coral-${shade}`, () => {
+        const coral = createCoral({ plugins: [accentColorPlugin()] })
+        const css = coral.generate([`accent-coral-${shade}`])
+        expect(css).toContain(`accent-color: var(--color-coral-${shade})`)
+      })
     })
   })
 })

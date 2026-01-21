@@ -37,6 +37,36 @@ describe('Aspect Ratio Utilities Plugin', () => {
       const css = coral.generate(['aspect-video'])
       expect(css).toContain('aspect-ratio: 16 / 9')
     })
+
+    it('should generate aspect-photo', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-photo'])
+      expect(css).toContain('aspect-ratio: 4 / 3')
+    })
+
+    it('should generate aspect-portrait', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-portrait'])
+      expect(css).toContain('aspect-ratio: 3 / 4')
+    })
+
+    it('should generate aspect-landscape', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-landscape'])
+      expect(css).toContain('aspect-ratio: 3 / 2')
+    })
+
+    it('should generate aspect-ultra-wide', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-ultra-wide'])
+      expect(css).toContain('aspect-ratio: 21 / 9')
+    })
+
+    it('should generate aspect-golden', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-golden'])
+      expect(css).toContain('aspect-ratio: 1.618 / 1')
+    })
   })
 
   describe('Numeric Aspect Ratios', () => {
@@ -58,6 +88,90 @@ describe('Aspect Ratio Utilities Plugin', () => {
       const css = coral.generate(['aspect-21-9'])
       expect(css).toContain('aspect-ratio: 21 / 9')
     })
+
+    it('should generate aspect-32-9', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-32-9'])
+      expect(css).toContain('aspect-ratio: 32 / 9')
+    })
+  })
+
+  describe('Social Media Aspect Ratios', () => {
+    it('should generate aspect-instagram', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-instagram'])
+      expect(css).toContain('aspect-ratio: 1 / 1')
+    })
+
+    it('should generate aspect-instagram-portrait', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-instagram-portrait'])
+      expect(css).toContain('aspect-ratio: 4 / 5')
+    })
+
+    it('should generate aspect-story', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-story'])
+      expect(css).toContain('aspect-ratio: 9 / 16')
+    })
+
+    it('should generate aspect-twitter', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-twitter'])
+      expect(css).toContain('aspect-ratio: 16 / 9')
+    })
+
+    it('should generate aspect-facebook-cover', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-facebook-cover'])
+      expect(css).toContain('aspect-ratio: 2.63 / 1')
+    })
+
+    it('should generate aspect-linkedin', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-linkedin'])
+      expect(css).toContain('aspect-ratio: 1.91 / 1')
+    })
+
+    it('should generate aspect-pinterest', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-pinterest'])
+      expect(css).toContain('aspect-ratio: 2 / 3')
+    })
+  })
+
+  describe('Print Aspect Ratios', () => {
+    it('should generate aspect-a4', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-a4'])
+      expect(css).toContain('aspect-ratio: 1 / 1.414')
+    })
+
+    it('should generate aspect-a3', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-a3'])
+      expect(css).toContain('aspect-ratio: 1 / 1.414')
+    })
+
+    it('should generate aspect-letter', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-letter'])
+      expect(css).toContain('aspect-ratio: 1 / 1.294')
+    })
+
+    it('should generate aspect-legal', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-legal'])
+      expect(css).toContain('aspect-ratio: 1 / 1.647')
+    })
+  })
+
+  describe('Special Aspect Ratios', () => {
+    it('should generate aspect-dynamic', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-dynamic'])
+      expect(css).toContain('aspect-ratio: auto')
+    })
   })
 
   describe('Arbitrary Aspect Ratios', () => {
@@ -77,6 +191,44 @@ describe('Aspect Ratio Utilities Plugin', () => {
       const coral = createCoral({ plugins: [aspectRatioPlugin()] })
       const css = coral.generate(['aspect-[1920/1080]'])
       expect(css).toContain('aspect-ratio: 1920/1080')
+    })
+
+    it('should replace underscores with spaces in arbitrary values', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-[16_9]'])
+      expect(css).toContain('aspect-ratio: 16 9')
+    })
+
+    it('should handle arbitrary decimal ratio', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-[1.5]'])
+      expect(css).toContain('aspect-ratio: 1.5')
+    })
+  })
+
+  describe('Decimal Aspect Ratios', () => {
+    it('should generate aspect-1.5', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-1.5'])
+      expect(css).toContain('aspect-ratio: 1.5 / 1')
+    })
+
+    it('should generate aspect-2.35', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-2.35'])
+      expect(css).toContain('aspect-ratio: 2.35 / 1')
+    })
+
+    it('should not match aspect-square as decimal', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-square'])
+      expect(css).toContain('aspect-ratio: 1 / 1')
+    })
+
+    it('should not match aspect-video as decimal', () => {
+      const coral = createCoral({ plugins: [aspectRatioPlugin()] })
+      const css = coral.generate(['aspect-video'])
+      expect(css).toContain('aspect-ratio: 16 / 9')
     })
   })
 
