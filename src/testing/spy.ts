@@ -388,7 +388,7 @@ export async function waitForClass(
     }
 
     const settle = (result: boolean) => {
-      if (settled) return
+      if (settled) {return}
       settled = true
       cleanup()
       resolve(result)
@@ -444,7 +444,7 @@ export async function waitForClassRemoval(
     }
 
     const settle = (result: boolean) => {
-      if (settled) return
+      if (settled) {return}
       settled = true
       cleanup()
       resolve(result)

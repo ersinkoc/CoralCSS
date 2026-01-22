@@ -192,7 +192,7 @@ export class Countdown extends BaseComponent {
   }
 
   private start(): void {
-    if (this.state.isRunning || this.state.isCompleted) return
+    if (this.state.isRunning || this.state.isCompleted) {return}
 
     this.setState({ isRunning: true, isPaused: false })
     this.emit('start')
@@ -254,7 +254,7 @@ export class Countdown extends BaseComponent {
    * Pause the countdown
    */
   pause(): void {
-    if (!this.state.isRunning || this.state.isPaused) return
+    if (!this.state.isRunning || this.state.isPaused) {return}
 
     this.stop()
     this.setState({ isPaused: true })
@@ -266,7 +266,7 @@ export class Countdown extends BaseComponent {
    * Resume the countdown
    */
   resume(): void {
-    if (!this.state.isPaused) return
+    if (!this.state.isPaused) {return}
 
     this.start()
     this.updatePauseButton()
@@ -316,7 +316,7 @@ export class Countdown extends BaseComponent {
   }
 
   protected override render(): void {
-    if (!this.valueElement) return
+    if (!this.valueElement) {return}
 
     const formattedTime = this.formatTime()
     this.valueElement.textContent = formattedTime
@@ -361,11 +361,11 @@ export class Countdown extends BaseComponent {
 
       case 'short':
         // Format: Dd HHh MMm SSs
-        if (days > 0) parts.push(`${days}d`)
-        if (hours > 0 || days > 0) parts.push(`${hours}h`)
-        if (minutes > 0 || hours > 0 || days > 0) parts.push(`${minutes}m`)
+        if (days > 0) {parts.push(`${days}d`)}
+        if (hours > 0 || days > 0) {parts.push(`${hours}h`)}
+        if (minutes > 0 || hours > 0 || days > 0) {parts.push(`${minutes}m`)}
         parts.push(`${seconds}s`)
-        if (showMilliseconds) parts.push(`${Math.floor(milliseconds / 10)}ms`)
+        if (showMilliseconds) {parts.push(`${Math.floor(milliseconds / 10)}ms`)}
         return parts.join(' ')
 
       case 'full':
@@ -423,7 +423,7 @@ export class Countdown extends BaseComponent {
    * Get the progress percentage (0-100)
    */
   getProgress(): number {
-    if (this.state.total === 0) return 0
+    if (this.state.total === 0) {return 0}
     return Math.max(0, Math.min(100, ((this.state.total - this.state.remaining) / this.state.total) * 100))
   }
 

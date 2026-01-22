@@ -97,8 +97,31 @@ export class TimePicker extends BaseComponent {
   private secondsSelect: HTMLSelectElement | null = null
   private periodSelect: HTMLSelectElement | null = null
 
+  // Bound event handlers for proper cleanup
+  private boundHandleInputFocus: () => void
+  private boundHandleInputBlur: () => void
+  private boundHandleInputChange: (e: Event) => void
+  private boundHandleHoursChange: (e: Event) => void
+  private boundHandleMinutesChange: (e: Event) => void
+  private boundHandleSecondsChange: (e: Event) => void
+  private boundHandlePeriodChange: (e: Event) => void
+  private boundHandleDocumentClick: (e: MouseEvent) => void
+  private boundHandleKeydown: (e: KeyboardEvent) => void
+
   constructor(element: HTMLElement, config: TimePickerConfig = {}) {
     super(element, config)
+
+    // Initialize bound handlers
+    this.boundHandleInputFocus = this.handleInputFocus.bind(this)
+    this.boundHandleInputBlur = this.handleInputBlur.bind(this)
+    this.boundHandleInputChange = this.handleInputChange.bind(this)
+    this.boundHandleHoursChange = this.handleHoursChange.bind(this)
+    this.boundHandleMinutesChange = this.handleMinutesChange.bind(this)
+    this.boundHandleSecondsChange = this.handleSecondsChange.bind(this)
+    this.boundHandlePeriodChange = this.handlePeriodChange.bind(this)
+    this.boundHandleDocumentClick = this.handleDocumentClick.bind(this)
+    this.boundHandleKeydown = this.handleKeydown.bind(this)
+
     this.cacheElements()
     this.render()
   }
@@ -142,23 +165,23 @@ export class TimePicker extends BaseComponent {
 
   protected bindEvents(): void {
     // Input focus
-    this.inputElement?.addEventListener('focus', this.handleInputFocus.bind(this))
-    this.inputElement?.addEventListener('blur', this.handleInputBlur.bind(this))
+    this.inputElement?.addEventListener('focus', this.boundHandleInputFocus)
+    this.inputElement?.addEventListener('blur', this.boundHandleInputBlur)
 
     // Input changes
-    this.inputElement?.addEventListener('input', this.handleInputChange.bind(this))
+    this.inputElement?.addEventListener('input', this.boundHandleInputChange)
 
     // Dropdown
-    this.hoursSelect?.addEventListener('change', this.handleHoursChange.bind(this))
-    this.minutesSelect?.addEventListener('change', this.handleMinutesChange.bind(this))
-    this.secondsSelect?.addEventListener('change', this.handleSecondsChange.bind(this))
-    this.periodSelect?.addEventListener('change', this.handlePeriodChange.bind(this))
+    this.hoursSelect?.addEventListener('change', this.boundHandleHoursChange)
+    this.minutesSelect?.addEventListener('change', this.boundHandleMinutesChange)
+    this.secondsSelect?.addEventListener('change', this.boundHandleSecondsChange)
+    this.periodSelect?.addEventListener('change', this.boundHandlePeriodChange)
 
     // Click outside to close
-    document.addEventListener('click', this.handleDocumentClick.bind(this))
+    document.addEventListener('click', this.boundHandleDocumentClick)
 
     // Keyboard navigation
-    this.element.addEventListener('keydown', this.handleKeydown.bind(this))
+    this.element.addEventListener('keydown', this.boundHandleKeydown)
   }
 
   private handleInputFocus(): void {
@@ -338,7 +361,7 @@ export class TimePicker extends BaseComponent {
   }
 
   private renderSelects(): void {
-    if (!this.dropdownElement) return
+    if (!this.dropdownElement) {return}
 
     // Render hours select
     if (this.hoursSelect) {
@@ -460,11 +483,16 @@ export class TimePicker extends BaseComponent {
    * Destroy the component
    */
   override destroy(): void {
-    // Remove event listeners
-    this.inputElement?.removeEventListener('focus', this.handleInputFocus.bind(this))
-    this.inputElement?.removeEventListener('blur', this.handleInputBlur.bind(this))
-    this.inputElement?.removeEventListener('input', this.handleInputChange.bind(this))
-    document.removeEventListener('click', this.handleDocumentClick.bind(this))
+    // Remove event listeners using bound handlers
+    this.inputElement?.removeEventListener('focus', this.boundHandleInputFocus)
+    this.inputElement?.removeEventListener('blur', this.boundHandleInputBlur)
+    this.inputElement?.removeEventListener('input', this.boundHandleInputChange)
+    this.hoursSelect?.removeEventListener('change', this.boundHandleHoursChange)
+    this.minutesSelect?.removeEventListener('change', this.boundHandleMinutesChange)
+    this.secondsSelect?.removeEventListener('change', this.boundHandleSecondsChange)
+    this.periodSelect?.removeEventListener('change', this.boundHandlePeriodChange)
+    document.removeEventListener('click', this.boundHandleDocumentClick)
+    this.element.removeEventListener('keydown', this.boundHandleKeydown)
 
     // Clean up
     this.inputElement = null

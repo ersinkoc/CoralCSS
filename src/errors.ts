@@ -41,6 +41,18 @@ export interface ErrorContext {
 }
 
 /**
+ * Documentation links for common issues
+ */
+const DOCS_BASE = 'https://coralcss.dev/docs'
+const ERROR_DOCS: Partial<Record<ErrorCode, string>> = {
+  [ErrorCode.INVALID_CONFIG]: `${DOCS_BASE}/configuration`,
+  [ErrorCode.PLUGIN_DEPENDENCY]: `${DOCS_BASE}/plugins#dependencies`,
+  [ErrorCode.THEME_ERROR]: `${DOCS_BASE}/theme`,
+  [ErrorCode.PARSE_ERROR]: `${DOCS_BASE}/utilities`,
+  [ErrorCode.COMPONENT_ERROR]: `${DOCS_BASE}/components`,
+}
+
+/**
  * Base error class for all CoralCSS errors
  *
  * @example
@@ -57,12 +69,23 @@ export class CoralError extends Error {
   public readonly code: ErrorCode
   /** Additional context about the error */
   public readonly context: ErrorContext
+  /** Suggestions for fixing the error */
+  public readonly suggestions: string[]
+  /** Link to relevant documentation */
+  public readonly docsUrl?: string
 
-  constructor(message: string, code: ErrorCode, context: ErrorContext = {}) {
+  constructor(
+    message: string,
+    code: ErrorCode,
+    context: ErrorContext = {},
+    suggestions: string[] = []
+  ) {
     super(message)
     this.name = 'CoralError'
     this.code = code
     this.context = context
+    this.suggestions = suggestions
+    this.docsUrl = ERROR_DOCS[code]
 
     // Maintains proper stack trace for where error was thrown (V8 engines)
     if (Error.captureStackTrace) {
@@ -79,8 +102,30 @@ export class CoralError extends Error {
       message: this.message,
       code: this.code,
       context: this.context,
+      suggestions: this.suggestions,
+      docsUrl: this.docsUrl,
       stack: this.stack,
     }
+  }
+
+  /**
+   * Get a formatted error message with suggestions
+   */
+  getFormattedMessage(): string {
+    let formatted = `[${this.code}] ${this.message}`
+
+    if (this.suggestions.length > 0) {
+      formatted += '\n\nSuggestions:'
+      for (const suggestion of this.suggestions) {
+        formatted += `\n  • ${suggestion}`
+      }
+    }
+
+    if (this.docsUrl) {
+      formatted += `\n\nDocs: ${this.docsUrl}`
+    }
+
+    return formatted
   }
 }
 
@@ -88,8 +133,12 @@ export class CoralError extends Error {
  * Error thrown when configuration is invalid
  */
 export class ConfigError extends CoralError {
-  constructor(message: string, context: ErrorContext = {}) {
-    super(message, ErrorCode.INVALID_CONFIG, context)
+  constructor(message: string, context: ErrorContext = {}, suggestions?: string[]) {
+    super(message, ErrorCode.INVALID_CONFIG, context, suggestions ?? [
+      'Check your coral.config.ts/js file for typos',
+      'Ensure all required fields are present',
+      'Verify that values match the expected types',
+    ])
     this.name = 'ConfigError'
   }
 }
@@ -98,11 +147,15 @@ export class ConfigError extends CoralError {
  * Error thrown when a plugin is not found
  */
 export class PluginNotFoundError extends CoralError {
-  constructor(pluginName: string, context: ErrorContext = {}) {
+  constructor(pluginName: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Plugin "${pluginName}" not found`, ErrorCode.PLUGIN_NOT_FOUND, {
       pluginName,
       ...context,
-    })
+    }, suggestions ?? [
+      `Install the plugin: npm install ${pluginName}`,
+      'Check that the plugin name is spelled correctly',
+      'Ensure the plugin is listed in your configuration',
+    ])
     this.name = 'PluginNotFoundError'
   }
 }
@@ -111,11 +164,16 @@ export class PluginNotFoundError extends CoralError {
  * Error thrown when plugin dependencies are not satisfied
  */
 export class PluginDependencyError extends CoralError {
-  constructor(pluginName: string, missingDependency: string, context: ErrorContext = {}) {
+  constructor(pluginName: string, missingDependency: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(
       `Plugin "${pluginName}" requires "${missingDependency}" to be installed first`,
       ErrorCode.PLUGIN_DEPENDENCY,
-      { pluginName, missingDependency, ...context }
+      { pluginName, missingDependency, ...context },
+      suggestions ?? [
+        `Install the dependency: npm install ${missingDependency}`,
+        `Add "${missingDependency}" to your plugins array before "${pluginName}"`,
+        'Check the plugin documentation for required dependencies',
+      ]
     )
     this.name = 'PluginDependencyError'
   }
@@ -125,12 +183,16 @@ export class PluginDependencyError extends CoralError {
  * Error thrown when a rule definition is invalid
  */
 export class InvalidRuleError extends CoralError {
-  constructor(ruleName: string, reason: string, context: ErrorContext = {}) {
+  constructor(ruleName: string, reason: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Invalid rule "${ruleName}": ${reason}`, ErrorCode.INVALID_RULE, {
       ruleName,
       reason,
       ...context,
-    })
+    }, suggestions ?? [
+      'Check the rule syntax matches the expected pattern',
+      'Ensure arbitrary values are properly bracketed: [value]',
+      'Verify the utility name exists in your configuration',
+    ])
     this.name = 'InvalidRuleError'
   }
 }
@@ -139,12 +201,16 @@ export class InvalidRuleError extends CoralError {
  * Error thrown when a variant definition is invalid
  */
 export class InvalidVariantError extends CoralError {
-  constructor(variantName: string, reason: string, context: ErrorContext = {}) {
+  constructor(variantName: string, reason: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Invalid variant "${variantName}": ${reason}`, ErrorCode.INVALID_VARIANT, {
       variantName,
       reason,
       ...context,
-    })
+    }, suggestions ?? [
+      'Check the variant name for typos (e.g., hover:, focus:, dark:)',
+      'Ensure custom variants are registered in your configuration',
+      'Verify the variant syntax: variant:utility',
+    ])
     this.name = 'InvalidVariantError'
   }
 }
@@ -153,8 +219,12 @@ export class InvalidVariantError extends CoralError {
  * Error thrown when theme operations fail
  */
 export class ThemeError extends CoralError {
-  constructor(message: string, context: ErrorContext = {}) {
-    super(message, ErrorCode.THEME_ERROR, context)
+  constructor(message: string, context: ErrorContext = {}, suggestions?: string[]) {
+    super(message, ErrorCode.THEME_ERROR, context, suggestions ?? [
+      'Check the theme path exists: theme("colors.blue.500")',
+      'Ensure the theme value is defined in your configuration',
+      'Verify nested paths use dot notation',
+    ])
     this.name = 'ThemeError'
   }
 }
@@ -163,12 +233,16 @@ export class ThemeError extends CoralError {
  * Error thrown when parsing fails
  */
 export class ParseError extends CoralError {
-  constructor(input: string, reason: string, context: ErrorContext = {}) {
+  constructor(input: string, reason: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Failed to parse "${input}": ${reason}`, ErrorCode.PARSE_ERROR, {
       input,
       reason,
       ...context,
-    })
+    }, suggestions ?? [
+      'Check for unclosed brackets or parentheses',
+      'Ensure special characters are properly escaped',
+      'Verify the class name follows utility naming conventions',
+    ])
     this.name = 'ParseError'
   }
 }
@@ -177,11 +251,15 @@ export class ParseError extends CoralError {
  * Error thrown when component operations fail
  */
 export class ComponentError extends CoralError {
-  constructor(componentName: string, message: string, context: ErrorContext = {}) {
+  constructor(componentName: string, message: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Component "${componentName}": ${message}`, ErrorCode.COMPONENT_ERROR, {
       componentName,
       ...context,
-    })
+    }, suggestions ?? [
+      'Ensure the component is properly initialized',
+      'Check that required DOM elements exist',
+      'Verify event listeners are attached to valid elements',
+    ])
     this.name = 'ComponentError'
   }
 }
@@ -190,8 +268,12 @@ export class ComponentError extends CoralError {
  * Error thrown during runtime operations
  */
 export class RuntimeError extends CoralError {
-  constructor(message: string, context: ErrorContext = {}) {
-    super(message, ErrorCode.RUNTIME_ERROR, context)
+  constructor(message: string, context: ErrorContext = {}, suggestions?: string[]) {
+    super(message, ErrorCode.RUNTIME_ERROR, context, suggestions ?? [
+      'Check the browser console for additional details',
+      'Ensure CoralCSS is properly initialized',
+      'Verify all required dependencies are loaded',
+    ])
     this.name = 'RuntimeError'
   }
 }
@@ -200,8 +282,12 @@ export class RuntimeError extends CoralError {
  * Error thrown during build operations
  */
 export class BuildError extends CoralError {
-  constructor(message: string, context: ErrorContext = {}) {
-    super(message, ErrorCode.BUILD_ERROR, context)
+  constructor(message: string, context: ErrorContext = {}, suggestions?: string[]) {
+    super(message, ErrorCode.BUILD_ERROR, context, suggestions ?? [
+      'Check your build configuration for errors',
+      'Ensure all source files are accessible',
+      'Try clearing the cache and rebuilding',
+    ])
     this.name = 'BuildError'
   }
 }
@@ -210,11 +296,16 @@ export class BuildError extends CoralError {
  * Error thrown when rules conflict
  */
 export class RuleConflictError extends CoralError {
-  constructor(ruleName1: string, ruleName2: string, context: ErrorContext = {}) {
+  constructor(ruleName1: string, ruleName2: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(
       `Rule conflict between "${ruleName1}" and "${ruleName2}"`,
       ErrorCode.INVALID_RULE,
-      { ruleName1, ruleName2, ...context }
+      { ruleName1, ruleName2, ...context },
+      suggestions ?? [
+        'Remove one of the conflicting rules',
+        'Use more specific variants to distinguish rules',
+        'Check if both rules target the same CSS property',
+      ]
     )
     this.name = 'RuleConflictError'
   }
@@ -224,12 +315,16 @@ export class RuleConflictError extends CoralError {
  * Error thrown when a value is invalid
  */
 export class InvalidValueError extends CoralError {
-  constructor(valueName: string, reason: string, context: ErrorContext = {}) {
+  constructor(valueName: string, reason: string, context: ErrorContext = {}, suggestions?: string[]) {
     super(`Invalid value "${valueName}": ${reason}`, ErrorCode.INVALID_CONFIG, {
       valueName,
       reason,
       ...context,
-    })
+    }, suggestions ?? [
+      'Check the value type matches what is expected',
+      'Ensure numeric values are within valid ranges',
+      'Verify color values use a valid format (hex, rgb, hsl)',
+    ])
     this.name = 'InvalidValueError'
   }
 }
@@ -238,8 +333,12 @@ export class InvalidValueError extends CoralError {
  * Error thrown during CSS generation
  */
 export class GenerationError extends CoralError {
-  constructor(message: string, context: ErrorContext = {}) {
-    super(message, ErrorCode.RUNTIME_ERROR, context)
+  constructor(message: string, context: ErrorContext = {}, suggestions?: string[]) {
+    super(message, ErrorCode.RUNTIME_ERROR, context, suggestions ?? [
+      'Check for circular dependencies in your styles',
+      'Ensure all referenced theme values exist',
+      'Verify custom CSS syntax is valid',
+    ])
     this.name = 'GenerationError'
   }
 }

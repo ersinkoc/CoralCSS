@@ -102,7 +102,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^offset-path-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-path': value.replace(/_/g, ' ') }
           }
@@ -146,7 +146,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^offset-distance-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-distance': value }
           }
@@ -174,7 +174,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^offset-rotate-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-rotate': value }
           }
@@ -209,7 +209,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^offset-anchor-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-anchor': value }
           }
@@ -236,7 +236,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^offset-position-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-position': value.replace(/_/g, ' ') }
           }
@@ -252,7 +252,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^motion-path-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-path': value.replace(/_/g, ' ') }
           }
@@ -264,7 +264,7 @@ export function motionPathPlugin(): Plugin {
         pattern: /^motion-distance-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'offset-distance': value }
           }

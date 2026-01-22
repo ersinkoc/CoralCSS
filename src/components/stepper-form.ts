@@ -195,7 +195,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private renderHeader(): void {
-    if (!this.headerElement) return
+    if (!this.headerElement) {return}
 
     this.headerElement.innerHTML = ''
     const steps = this.config.steps || []
@@ -310,7 +310,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private renderProgress(): void {
-    if (!this.progressElement) return
+    if (!this.progressElement) {return}
 
     const steps = this.config.steps || []
     const progress = steps.length > 0 ? ((this.state.currentStep + 1) / steps.length) * 100 : 0
@@ -339,11 +339,11 @@ export class StepperForm extends BaseComponent {
   }
 
   private renderCurrentStep(): void {
-    if (!this.contentElement) return
+    if (!this.contentElement) {return}
 
     const steps = this.config.steps || []
     const currentStep = steps[this.state.currentStep]
-    if (!currentStep) return
+    if (!currentStep) {return}
 
     this.contentElement.innerHTML = ''
     this.contentElement.setAttribute('id', `step-panel-${this.state.currentStep}`)
@@ -393,7 +393,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private renderFooter(): void {
-    if (!this.footerElement) return
+    if (!this.footerElement) {return}
 
     this.footerElement.innerHTML = ''
     const steps = this.config.steps || []
@@ -494,7 +494,7 @@ export class StepperForm extends BaseComponent {
   private async validateCurrentStep(): Promise<boolean> {
     const steps = this.config.steps || []
     const currentStep = steps[this.state.currentStep]
-    if (!currentStep) return true
+    if (!currentStep) {return true}
 
     this.setState({ isValidating: true })
 
@@ -514,7 +514,7 @@ export class StepperForm extends BaseComponent {
       if (fields) {
         for (const field of fields) {
           const fieldValid = await this.validateField(field.name)
-          if (!fieldValid) isValid = false
+          if (!fieldValid) {isValid = false}
         }
       }
 
@@ -539,7 +539,7 @@ export class StepperForm extends BaseComponent {
     const field = this.contentElement?.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
       `[name="${fieldName}"]`
     )
-    if (!field) return true
+    if (!field) {return true}
 
     const rules = field.dataset.validate?.split(',') || []
     const errors: string[] = []
@@ -622,7 +622,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private loadState(): Partial<StepperFormState> | null {
-    if (typeof localStorage === 'undefined') return null
+    if (typeof localStorage === 'undefined') {return null}
 
     try {
       const saved = localStorage.getItem(this.getStorageKey())
@@ -642,7 +642,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private saveState(): void {
-    if (typeof localStorage === 'undefined') return
+    if (typeof localStorage === 'undefined') {return}
 
     try {
       const stateToSave = {
@@ -658,7 +658,7 @@ export class StepperForm extends BaseComponent {
   }
 
   private clearSavedState(): void {
-    if (typeof localStorage === 'undefined') return
+    if (typeof localStorage === 'undefined') {return}
     try {
       localStorage.removeItem(this.getStorageKey())
     } catch {
@@ -670,12 +670,12 @@ export class StepperForm extends BaseComponent {
 
   async nextStep(): Promise<boolean> {
     // Prevent concurrent navigation
-    if (this.isNavigating) return false
+    if (this.isNavigating) {return false}
     this.isNavigating = true
 
     try {
       const steps = this.config.steps || []
-      if (this.state.currentStep >= steps.length - 1) return false
+      if (this.state.currentStep >= steps.length - 1) {return false}
 
       if (this.config.validateOnNext) {
         const isValid = await this.validateCurrentStep()
@@ -695,7 +695,7 @@ export class StepperForm extends BaseComponent {
 
       if (nextStep?.beforeEnter) {
         const canEnter = await nextStep.beforeEnter()
-        if (!canEnter) return false
+        if (!canEnter) {return false}
       }
 
       const previousStep = this.state.currentStep
@@ -728,11 +728,11 @@ export class StepperForm extends BaseComponent {
 
   async previousStep(): Promise<boolean> {
     // Prevent concurrent navigation
-    if (this.isNavigating) return false
+    if (this.isNavigating) {return false}
     this.isNavigating = true
 
     try {
-      if (this.state.currentStep <= 0) return false
+      if (this.state.currentStep <= 0) {return false}
 
       const steps = this.config.steps || []
       const currentStep = steps[this.state.currentStep]
@@ -746,7 +746,7 @@ export class StepperForm extends BaseComponent {
 
       if (prevStep?.beforeEnter) {
         const canEnter = await prevStep.beforeEnter()
-        if (!canEnter) return false
+        if (!canEnter) {return false}
       }
 
       const stepHistory = [...this.state.stepHistory]
@@ -776,18 +776,18 @@ export class StepperForm extends BaseComponent {
 
   async goToStep(stepIndex: number): Promise<boolean> {
     // Prevent concurrent navigation
-    if (this.isNavigating) return false
+    if (this.isNavigating) {return false}
 
     const steps = this.config.steps || []
-    if (stepIndex < 0 || stepIndex >= steps.length) return false
-    if (stepIndex === this.state.currentStep) return false
+    if (stepIndex < 0 || stepIndex >= steps.length) {return false}
+    if (stepIndex === this.state.currentStep) {return false}
 
     const targetStep = steps[stepIndex]
-    if (targetStep?.disabled) return false
+    if (targetStep?.disabled) {return false}
 
     // In linear mode, can only go to completed steps or the next step
     if (this.config.linear) {
-      if (stepIndex > this.state.currentStep + 1) return false
+      if (stepIndex > this.state.currentStep + 1) {return false}
       if (!this.state.completedSteps.has(stepIndex) && stepIndex > this.state.currentStep) {
         if (stepIndex === this.state.currentStep + 1) {
           return this.nextStep()
@@ -815,7 +815,7 @@ export class StepperForm extends BaseComponent {
 
       if (targetStep?.beforeEnter) {
         const canEnter = await targetStep.beforeEnter()
-        if (!canEnter) return false
+        if (!canEnter) {return false}
       }
 
       const previousStep = this.state.currentStep
@@ -872,7 +872,7 @@ export class StepperForm extends BaseComponent {
   }
 
   async submit(): Promise<void> {
-    if (this.state.isSubmitting) return
+    if (this.state.isSubmitting) {return}
 
     // Validate final step
     if (this.config.validateOnNext) {

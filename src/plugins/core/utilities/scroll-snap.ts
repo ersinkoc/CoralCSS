@@ -65,7 +65,7 @@ export function scrollSnapPlugin(): Plugin {
         pattern: /^snap-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'scroll-snap-type': value.replace(/_/g, ' ') } }
         },
       })
@@ -99,7 +99,7 @@ export function scrollSnapPlugin(): Plugin {
         pattern: /^snap-align-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'scroll-snap-align': value.replace(/_/g, ' ') } }
         },
       })
@@ -147,7 +147,7 @@ export function scrollSnapPlugin(): Plugin {
         pattern: /^snap-p-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'scroll-padding': value.replace(/_/g, ' ') } }
         },
       })
@@ -198,7 +198,7 @@ export function scrollSnapPlugin(): Plugin {
         pattern: /^snap-m-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'scroll-margin': value.replace(/_/g, ' ') } }
         },
       })

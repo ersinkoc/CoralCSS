@@ -224,7 +224,7 @@ export function runMigration(
     for (const file of files) {
       try {
         // Skip config files (handled separately)
-        if (file.path.includes('tailwind.config')) continue
+        if (file.path.includes('tailwind.config')) {continue}
 
         const isCSSFile = file.path.endsWith('.css') || file.path.endsWith('.pcss')
         const isConfigFile = file.path.includes('.config.')

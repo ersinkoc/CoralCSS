@@ -40,7 +40,7 @@ export function columnsPlugin(): Plugin {
         pattern: /^columns-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           // Check if it's a number (column count) or a width
           if (/^\d+$/.test(v)) {
             return { properties: { 'column-count': v } as CSSProperties }
@@ -72,7 +72,7 @@ export function columnsPlugin(): Plugin {
         pattern: /^col-w-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'column-width': v } }
         },
       })
@@ -111,7 +111,7 @@ export function columnsPlugin(): Plugin {
         pattern: /^col-gap-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'column-gap': v } }
         },
       })
@@ -131,7 +131,7 @@ export function columnsPlugin(): Plugin {
         pattern: /^col-rule-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'column-rule-width': v } }
         },
       })
@@ -171,7 +171,7 @@ export function columnsPlugin(): Plugin {
         pattern: /^col-rule-color-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'column-rule-color': v } }
         },
       })

@@ -214,7 +214,7 @@ export class CompareSlider extends BaseComponent {
   }
 
   private setupDragEvents(): void {
-    if (!this.handle) return
+    if (!this.handle) {return}
 
     // Mouse events
     this.handle.addEventListener('mousedown', this.handleDragStart.bind(this))
@@ -274,7 +274,7 @@ export class CompareSlider extends BaseComponent {
   }
 
   private handleDrag(e: MouseEvent | TouchEvent): void {
-    if (!this.state.isDragging) return
+    if (!this.state.isDragging) {return}
 
     // Prevent scrolling while dragging on touch devices
     if ('touches' in e) {
@@ -286,7 +286,7 @@ export class CompareSlider extends BaseComponent {
   }
 
   private handleDragEnd(): void {
-    if (!this.state.isDragging) return
+    if (!this.state.isDragging) {return}
 
     this.setState({ isDragging: false })
     this.element.classList.remove('compare-slider-dragging')
@@ -312,6 +312,11 @@ export class CompareSlider extends BaseComponent {
     }
 
     size = this.config.orientation === 'horizontal' ? rect.width : rect.height
+
+    // Prevent division by zero if element has no size
+    if (size === 0) {
+      return 50 // Default to middle position
+    }
 
     return Math.max(0, Math.min(100, (clientPos / size) * 100))
   }
@@ -394,8 +399,8 @@ export class CompareSlider extends BaseComponent {
     const beforeLabel = this.beforeContainer?.querySelector('.compare-slider-label')
     const afterLabel = this.afterContainer?.querySelector('.compare-slider-label')
 
-    if (beforeLabel) beforeLabel.textContent = before
-    if (afterLabel) afterLabel.textContent = after
+    if (beforeLabel) {beforeLabel.textContent = before}
+    if (afterLabel) {afterLabel.textContent = after}
   }
 
   isLoaded(): boolean {

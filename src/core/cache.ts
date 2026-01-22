@@ -2,6 +2,7 @@
  * CSS Cache
  *
  * Caches generated CSS for performance with LRU eviction and TTL support.
+ * Includes theme version tracking for automatic cache invalidation on theme changes.
  * @module core/cache
  */
 
@@ -20,11 +21,37 @@ export interface CacheOptions {
 }
 
 /**
- * Internal cache entry with timestamp
+ * Internal cache entry with timestamp and theme version
  */
 interface CacheEntry {
   value: string
   timestamp: number
+  themeVersion: string
+}
+
+/**
+ * Fast hash function for theme versioning
+ * Uses a simple but effective DJB2-style hash
+ */
+export function hashTheme(theme: Record<string, unknown>): string {
+  let hash = 5381
+  const str = JSON.stringify(theme, (_key, value) => {
+    // Sort object keys for consistent hashing
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const sorted = Object.keys(value).sort().reduce<Record<string, unknown>>((acc, key) => {
+        acc[key] = (value as Record<string, unknown>)[key]
+        return acc
+      }, {})
+      return sorted
+    }
+    return value
+  })
+
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash + str.charCodeAt(i)) >>> 0 // >>> 0 for unsigned 32-bit
+  }
+
+  return hash.toString(36)
 }
 
 /**
@@ -47,6 +74,7 @@ export class CSSCache {
   private maxSize: number
   private ttl: number
   private enabled: boolean
+  private themeVersion: string
 
   constructor(options: CacheOptions = {}) {
     this.cache = new Map()
@@ -55,6 +83,7 @@ export class CSSCache {
     this.maxSize = options.maxSize ?? 1000
     this.ttl = options.ttl ?? Infinity
     this.enabled = options.enabled ?? true
+    this.themeVersion = 'default'
   }
 
   /**
@@ -76,6 +105,13 @@ export class CSSCache {
 
     const entry = this.cache.get(className)
     if (entry === undefined) {
+      this.misses++
+      return undefined
+    }
+
+    // Check theme version - invalidate if theme has changed
+    if (entry.themeVersion !== this.themeVersion) {
+      this.cache.delete(className)
       this.misses++
       return undefined
     }
@@ -125,7 +161,8 @@ export class CSSCache {
 
     this.cache.set(className, {
       value: css,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      themeVersion: this.themeVersion
     })
   }
 
@@ -149,6 +186,12 @@ export class CSSCache {
       return false
     }
 
+    // Check theme version - invalidate if theme has changed
+    if (entry.themeVersion !== this.themeVersion) {
+      this.cache.delete(className)
+      return false
+    }
+
     // Check TTL
     if (this.ttl !== Infinity && Date.now() - entry.timestamp > this.ttl) {
       this.cache.delete(className)
@@ -156,6 +199,30 @@ export class CSSCache {
     }
 
     return true
+  }
+
+  /**
+   * Update the theme version, invalidating all existing cache entries
+   * Call this when the theme configuration changes
+   *
+   * @example
+   * ```typescript
+   * cache.setThemeVersion(hashTheme(newTheme))
+   * ```
+   */
+  setThemeVersion(version: string): void {
+    if (version !== this.themeVersion) {
+      this.themeVersion = version
+      // Note: We don't clear the cache here - entries will be invalidated on access
+      // This is more efficient than clearing all entries immediately
+    }
+  }
+
+  /**
+   * Get the current theme version
+   */
+  getThemeVersion(): string {
+    return this.themeVersion
   }
 
   /**
@@ -177,6 +244,22 @@ export class CSSCache {
     this.cache.clear()
     this.hits = 0
     this.misses = 0
+    this.themeVersion = 'default'
+  }
+
+  /**
+   * Clear all cached entries and set new theme version
+   *
+   * @example
+   * ```typescript
+   * cache.clearWithVersion('new-theme-hash')
+   * ```
+   */
+  clearWithVersion(version: string): void {
+    this.cache.clear()
+    this.hits = 0
+    this.misses = 0
+    this.themeVersion = version
   }
 
   /**
@@ -188,19 +271,20 @@ export class CSSCache {
    * console.log(`Hit rate: ${stats.hitRate}%`)
    * ```
    */
-  stats(): CacheStats & { hitRate: number; maxSize: number; ttl: number } {
+  stats(): CacheStats & { hitRate: number; maxSize: number; ttl: number; themeVersion: string } {
     return {
       hits: this.hits,
       misses: this.misses,
       size: this.cache.size,
       hitRate: this.getHitRate(),
       maxSize: this.maxSize,
-      ttl: this.ttl === Infinity ? -1 : this.ttl
+      ttl: this.ttl === Infinity ? -1 : this.ttl,
+      themeVersion: this.themeVersion
     }
   }
 
   /**
-   * Get all cached entries (excluding expired)
+   * Get all cached entries (excluding expired and wrong theme version)
    */
   entries(): IterableIterator<[string, string]> {
     if (!this.enabled) {
@@ -211,6 +295,10 @@ export class CSSCache {
     const validEntries: Array<[string, string]> = []
 
     for (const [key, entry] of this.cache.entries()) {
+      // Skip entries with wrong theme version
+      if (entry.themeVersion !== this.themeVersion) {
+        continue
+      }
       // Skip expired entries
       if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
         continue
@@ -233,6 +321,10 @@ export class CSSCache {
     const validKeys: string[] = []
 
     for (const [key, entry] of this.cache.entries()) {
+      // Check theme version
+      if (entry.themeVersion !== this.themeVersion) {
+        continue
+      }
       if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
         continue
       }
@@ -254,6 +346,10 @@ export class CSSCache {
     const validValues: string[] = []
 
     for (const [key, entry] of this.cache.entries()) {
+      // Check theme version
+      if (entry.themeVersion !== this.themeVersion) {
+        continue
+      }
       if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
         continue
       }
@@ -306,18 +402,21 @@ export class CSSCache {
   }
 
   /**
-   * Clean up expired entries
+   * Clean up expired and invalid theme version entries
    */
   cleanup(): number {
-    if (this.ttl === Infinity) {
-      return 0
-    }
-
     const now = Date.now()
     let removed = 0
 
     for (const [key, entry] of this.cache.entries()) {
-      if (now - entry.timestamp > this.ttl) {
+      // Remove entries with wrong theme version
+      if (entry.themeVersion !== this.themeVersion) {
+        this.cache.delete(key)
+        removed++
+        continue
+      }
+      // Remove expired entries
+      if (this.ttl !== Infinity && now - entry.timestamp > this.ttl) {
         this.cache.delete(key)
         removed++
       }

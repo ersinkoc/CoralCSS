@@ -202,7 +202,7 @@ export function aspectRatioPlugin(): Plugin {
         pattern: /^aspect-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'aspect-ratio': value.replace(/_/g, ' ') } }
         },
       })
@@ -213,7 +213,7 @@ export function aspectRatioPlugin(): Plugin {
         handler: (match) => {
           const width = match[1]
           const height = match[2]
-          if (!width || !height) return null
+          if (!width || !height) {return null}
           return { properties: { 'aspect-ratio': `${width} / ${height}` } }
         },
       })
@@ -223,7 +223,7 @@ export function aspectRatioPlugin(): Plugin {
         pattern: /^aspect-([\d.]+)$/,
         handler: (match) => {
           const ratio = match[1]
-          if (!ratio || ratio === 'square' || ratio === 'video') return null
+          if (!ratio || ratio === 'square' || ratio === 'video') {return null}
           return { properties: { 'aspect-ratio': `${ratio} / 1` } }
         },
       })

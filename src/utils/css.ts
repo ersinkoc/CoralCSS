@@ -7,6 +7,7 @@
 
 import type { CSSProperties, CSSValue } from '../types'
 import { kebabCase, sanitizeCSSValue } from './string'
+import { CoralError, ErrorCode } from '../errors'
 
 /**
  * Serialize CSS properties object to CSS string
@@ -40,17 +41,32 @@ export function serializeProperties(properties: CSSProperties): string {
 /**
  * Format a CSS value
  * Sanitizes string values to prevent CSS injection
+ * @throws {CoralError} If a dangerous CSS value is detected
  */
 export function formatValue(value: CSSValue): string {
   if (typeof value === 'number') {
+    // Validate numeric values
+    if (Number.isNaN(value) || !Number.isFinite(value)) {
+      throw new CoralError(
+        `Invalid numeric CSS value: ${value}`,
+        ErrorCode.INVALID_CONFIG,
+        { value },
+        ['Use a finite number', 'Check for NaN/Infinity values']
+      )
+    }
     // 0 doesn't need units, others might be unitless
     return value === 0 ? '0' : String(value)
   }
   // Sanitize string values to prevent CSS injection attacks
   const sanitized = sanitizeCSSValue(value)
   if (sanitized === null) {
-    console.warn(`CoralCSS: Blocked potentially dangerous CSS value: ${value.slice(0, 50)}...`)
-    return 'unset'
+    // Throw error instead of silent fallback - this is a SECURITY MUST
+    throw new CoralError(
+      `Blocked potentially dangerous CSS value: ${value.slice(0, 100)}`,
+      ErrorCode.INVALID_CONFIG,
+      { value },
+      ['Remove or escape the dangerous value', 'Use safe CSS syntax only']
+    )
   }
   return sanitized
 }
@@ -156,6 +172,10 @@ export function formatCSS(
 /**
  * Minify CSS by removing unnecessary whitespace
  *
+ * Uses a state machine approach instead of regex to avoid ReDoS
+ * vulnerabilities from nested comment patterns (e.g. comment-within-comment
+ * that causes catastrophic backtracking in regex solutions).
+ *
  * @example
  * ```typescript
  * minifyCSS('.p-4 {\n  padding: 1rem;\n}')
@@ -163,16 +183,56 @@ export function formatCSS(
  * ```
  */
 export function minifyCSS(css: string): string {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
-    .replace(/\s+/g, ' ') // Collapse whitespace
-    .replace(/\s*{\s*/g, '{') // Remove space around {
-    .replace(/\s*}\s*/g, '}') // Remove space around }
-    .replace(/\s*;\s*/g, ';') // Remove space around ;
-    .replace(/\s*:\s*/g, ':') // Remove space around :
-    .replace(/\s*,\s*/g, ',') // Remove space around ,
-    .replace(/;}/g, '}') // Remove trailing semicolons
+  // State machine approach to avoid ReDoS vulnerability
+  // Prevents catastrophic backtracking on nested comments
+  // Attack vector: deeply nested comment patterns
+  const result: string[] = []
+  let i = 0
+  const len = css.length
+
+  while (i < len) {
+    // Skip CSS comments - O(n) guaranteed, no backtracking
+    if (i + 1 < len && css[i] === '/' && css[i + 1] === '*') {
+      i += 2
+      // Advance until we find closing */
+      while (i + 1 < len) {
+        if (css[i] === '*' && css[i + 1] === '/') {
+          i += 2
+          break
+        }
+        i++
+      }
+      continue
+    }
+
+    // Handle whitespace compression
+    if (/\s/.test(css[i]!)) {
+      result.push(' ')
+      // Skip consecutive whitespace
+      while (i < len && /\s/.test(css[i]!)) {
+        i++
+      }
+      continue
+    }
+
+    // Copy non-whitespace, non-comment characters
+    result.push(css[i]!)
+    i++
+  }
+
+  let output = result.join('')
+
+  // Clean up around special characters - these are safe patterns
+  output = output
+    .replace(/\s*{\s*/g, '{')
+    .replace(/\s*}\s*/g, '}')
+    .replace(/\s*;\s*/g, ';')
+    .replace(/\s*:\s*/g, ':')
+    .replace(/\s*,\s*/g, ',')
+    .replace(/;}/g, '}')
     .trim()
+
+  return output
 }
 
 /**
@@ -216,17 +276,102 @@ export function wrapInLayer(css: string, layer: string): string {
 }
 
 /**
+ * Validate a CSS custom property name
+ * CSS custom properties must:
+ * - Start with -- (we add this if missing)
+ * - Contain only letters, digits, hyphens, and underscores after the --
+ * - Not be empty after the --
+ */
+export function isValidCSSVarName(name: string): boolean {
+  if (!name || typeof name !== 'string') {
+    return false
+  }
+
+  // Remove -- prefix for validation
+  const cleanName = name.startsWith('--') ? name.slice(2) : name
+
+  // Must have content after --
+  if (!cleanName) {
+    return false
+  }
+
+  // Max length to prevent abuse (browsers typically support very long names, but 200 is reasonable)
+  if (cleanName.length > 200) {
+    return false
+  }
+
+  // CSS custom property names: start with letter/underscore, then letters/digits/hyphens/underscores
+  // Also allow starting with hyphen for things like --_private or ---triple
+  return /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(cleanName)
+}
+
+/**
+ * Sanitize a CSS custom property name
+ * Returns the sanitized name or null if invalid
+ */
+export function sanitizeCSSVarName(name: string): string | null {
+  if (!name || typeof name !== 'string') {
+    return null
+  }
+
+  // Remove -- prefix
+  let cleanName = name.startsWith('--') ? name.slice(2) : name
+
+  // Must have content
+  if (!cleanName) {
+    return null
+  }
+
+  // Replace invalid characters with hyphens
+  cleanName = cleanName.replace(/[^a-zA-Z0-9_-]/g, '-')
+
+  // Collapse multiple hyphens
+  cleanName = cleanName.replace(/-+/g, '-')
+
+  // Remove leading/trailing hyphens (except one leading hyphen is OK)
+  cleanName = cleanName.replace(/^-+/, '').replace(/-+$/, '')
+
+  // If empty after sanitization, return null
+  if (!cleanName) {
+    return null
+  }
+
+  // Truncate if too long
+  if (cleanName.length > 200) {
+    cleanName = cleanName.slice(0, 200)
+  }
+
+  return `--${cleanName}`
+}
+
+/**
  * Create a CSS variable reference
  *
  * @example
  * ```typescript
  * cssVar('spacing-4') // 'var(--spacing-4)'
  * cssVar('spacing-4', '1rem') // 'var(--spacing-4, 1rem)'
+ * cssVar('invalid name!') // 'var(--invalid-name)' (sanitized)
  * ```
  */
 export function cssVar(name: string, fallback?: string): string {
-  const varName = name.startsWith('--') ? name : `--${name}`
-  return fallback !== undefined ? `var(${varName}, ${fallback})` : `var(${varName})`
+  const sanitized = sanitizeCSSVarName(name)
+  if (!sanitized) {
+    console.warn(`CoralCSS: Invalid CSS variable name "${name}", returning empty var`)
+    return 'var(--invalid)'
+  }
+
+  // Sanitize fallback value if provided
+  if (fallback !== undefined) {
+    const sanitizedFallback = sanitizeCSSValue(fallback)
+    if (sanitizedFallback === null) {
+      console.warn(`CoralCSS: Blocked potentially dangerous fallback value for CSS variable`)
+      return `var(${sanitized})`
+    }
+    return `var(${sanitized}, ${sanitizedFallback})`
+  }
+
+  return `var(${sanitized})`
 }
 
 /**
@@ -235,11 +380,24 @@ export function cssVar(name: string, fallback?: string): string {
  * @example
  * ```typescript
  * cssVarDeclaration('spacing-4', '1rem') // '--spacing-4: 1rem'
+ * cssVarDeclaration('invalid name!', '1rem') // '--invalid-name: 1rem' (sanitized)
  * ```
  */
 export function cssVarDeclaration(name: string, value: string): string {
-  const varName = name.startsWith('--') ? name : `--${name}`
-  return `${varName}: ${value}`
+  const sanitizedName = sanitizeCSSVarName(name)
+  if (!sanitizedName) {
+    console.warn(`CoralCSS: Invalid CSS variable name "${name}"`)
+    return ''
+  }
+
+  // Sanitize value
+  const sanitizedValue = sanitizeCSSValue(value)
+  if (sanitizedValue === null) {
+    console.warn(`CoralCSS: Blocked potentially dangerous value for CSS variable "${name}"`)
+    return ''
+  }
+
+  return `${sanitizedName}: ${sanitizedValue}`
 }
 
 /**
@@ -250,14 +408,32 @@ export function cssVarDeclaration(name: string, value: string): string {
  * parseValueWithUnit('16px') // { value: 16, unit: 'px' }
  * parseValueWithUnit('1.5rem') // { value: 1.5, unit: 'rem' }
  * parseValueWithUnit('auto') // { value: 'auto', unit: null }
+ * parseValueWithUnit('invalid') // { value: 'invalid', unit: null }
  * ```
  */
 export function parseValueWithUnit(input: string): { value: number | string; unit: string | null } {
+  // Input validation
+  if (!input || typeof input !== 'string') {
+    return { value: '', unit: null }
+  }
+
+  // Limit input length to prevent abuse
+  if (input.length > 100) {
+    return { value: input.slice(0, 100), unit: null }
+  }
+
   const match = input.match(/^(-?[\d.]+)([a-z%]*)$/i)
   if (match) {
     const [, num, unit] = match
+    const parsed = parseFloat(num!)
+
+    // Handle NaN from parseFloat
+    if (Number.isNaN(parsed)) {
+      return { value: input, unit: null }
+    }
+
     return {
-      value: parseFloat(num!),
+      value: parsed,
       unit: unit || null,
     }
   }

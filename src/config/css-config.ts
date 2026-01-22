@@ -79,7 +79,7 @@ export function cssConfigPlugin(options: CSSConfigPluginOptions = {}): Plugin {
     name: 'css-config',
     version: '1.0.0',
     install(api: PluginAPI) {
-      if (!enabled) return
+      if (!enabled) {return}
 
       let cssContent = ''
 
@@ -90,7 +90,7 @@ export function cssConfigPlugin(options: CSSConfigPluginOptions = {}): Plugin {
         cssContent = loadCSSConfig(cssConfig)
       }
 
-      if (!cssContent) return
+      if (!cssContent) {return}
 
       // Validate CSS config
       const validation = validateCSSConfig(cssContent)

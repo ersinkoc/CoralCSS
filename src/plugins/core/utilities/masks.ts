@@ -105,7 +105,7 @@ export function masksPlugin(): Plugin {
         pattern: /^clip-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'clip-path': v.replace(/_/g, ' ') } }
         },
       })
@@ -197,7 +197,7 @@ export function masksPlugin(): Plugin {
         pattern: /^mask-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           const val = v.replace(/_/g, ' ')
           return {
             properties: {
@@ -220,7 +220,7 @@ export function masksPlugin(): Plugin {
         pattern: /^mask-size-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           const val = v.replace(/_/g, ' ')
           return {
             properties: {
@@ -260,7 +260,7 @@ export function masksPlugin(): Plugin {
         pattern: /^mask-position-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           const val = v.replace(/_/g, ' ')
           return {
             properties: {
@@ -318,7 +318,7 @@ export function masksPlugin(): Plugin {
         pattern: /^shape-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'shape-outside': v.replace(/_/g, ' ') } }
         },
       })
@@ -337,7 +337,7 @@ export function masksPlugin(): Plugin {
         pattern: /^shape-margin-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'shape-margin': v } }
         },
       })

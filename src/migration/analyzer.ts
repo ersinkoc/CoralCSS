@@ -413,13 +413,13 @@ export function generateMigrationReport(
 
   // Calculate effort score (1-10)
   let effort = 1
-  if (filesWithChanges > 0) effort += 1
-  if (filesWithChanges > 10) effort += 1
-  if (filesWithChanges > 50) effort += 2
-  if (configMigration) effort += 1
-  if (buildToolMigration) effort += 1
-  if (compatibilityRate < 90) effort += 1
-  if (compatibilityRate < 70) effort += 2
+  if (filesWithChanges > 0) {effort += 1}
+  if (filesWithChanges > 10) {effort += 1}
+  if (filesWithChanges > 50) {effort += 2}
+  if (configMigration) {effort += 1}
+  if (buildToolMigration) {effort += 1}
+  if (compatibilityRate < 90) {effort += 1}
+  if (compatibilityRate < 70) {effort += 2}
 
   const suggestions: string[] = []
 

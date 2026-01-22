@@ -142,14 +142,14 @@ export class SegmentedControl extends BaseComponent {
   }
 
   private handleSegmentClick(index: number, event: Event): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     const segment = this.segments[index]
-    if (!segment) return
+    if (!segment) {return}
     const value = segment.getAttribute('data-value') || ''
     const isDisabled = segment.getAttribute('data-disabled') === 'true'
 
-    if (isDisabled) return
+    if (isDisabled) {return}
 
     if (this.config.multiple || this.config.selectionType === 'multi') {
       this.handleMultiSelect(value)
@@ -177,7 +177,7 @@ export class SegmentedControl extends BaseComponent {
   }
 
   private handleSegmentKeydown(index: number, event: KeyboardEvent): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     switch (event.key) {
       case 'ArrowLeft':
@@ -246,7 +246,7 @@ export class SegmentedControl extends BaseComponent {
   }
 
   private updateIndicator(): void {
-    if (!this.indicator) return
+    if (!this.indicator) {return}
 
     const value = Array.isArray(this.state.value) ? this.state.value[0] : this.state.value
     const activeSegment = this.segments.find(
@@ -296,7 +296,7 @@ export class SegmentedControl extends BaseComponent {
   selectByIndex(index: number): void {
     if (index >= 0 && index < this.segments.length) {
       const segment = this.segments[index]
-      if (!segment) return
+      if (!segment) {return}
       const value = segment.getAttribute('data-value') || ''
       this.setValue(value)
     }

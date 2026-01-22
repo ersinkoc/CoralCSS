@@ -112,7 +112,7 @@ export function positioningPlugin(): Plugin {
         pattern: /^inset-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { top: value, right: value, bottom: value, left: value } }
         },
       })
@@ -121,7 +121,7 @@ export function positioningPlugin(): Plugin {
         pattern: /^inset-y-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { top: value, bottom: value } }
         },
       })
@@ -130,7 +130,7 @@ export function positioningPlugin(): Plugin {
         pattern: /^inset-x-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { left: value, right: value } }
         },
       })
@@ -224,7 +224,7 @@ export function positioningPlugin(): Plugin {
         pattern: /^will-change-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'will-change': value.replace(/_/g, ' ') } }
         },
       })
@@ -316,7 +316,7 @@ export function positioningPlugin(): Plugin {
         pattern: /^cursor-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { cursor: value.replace(/_/g, ' ') } }
         },
       })

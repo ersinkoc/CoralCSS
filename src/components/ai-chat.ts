@@ -326,8 +326,8 @@ export class AIChat extends BaseComponent {
       this.boundHandlers.set('stop', handleStop)
     }
 
-    // Delegate events for message actions
-    this.element.addEventListener('click', (e) => {
+    // Delegate events for message actions (using tracked listener for cleanup)
+    const handleDelegatedClick = (e: Event) => {
       const target = e.target as HTMLElement
 
       // Copy code
@@ -388,7 +388,8 @@ export class AIChat extends BaseComponent {
           }
         }
       }
-    })
+    }
+    this.addEventListener(this.element, 'click', handleDelegatedClick)
   }
 
   /**
@@ -396,7 +397,7 @@ export class AIChat extends BaseComponent {
    */
   async sendMessage(): Promise<void> {
     const content = this.state.inputValue.trim()
-    if (!content || this.state.isLoading) return
+    if (!content || this.state.isLoading) {return}
 
     // Create user message
     const userMessage: ChatMessage = {
@@ -491,7 +492,7 @@ export class AIChat extends BaseComponent {
    */
   completeStreaming(messageId?: string): void {
     const targetId = messageId || this.state.currentStreamingId
-    if (!targetId) return
+    if (!targetId) {return}
 
     const messages = this.state.messages.map(m =>
       m.id === targetId
@@ -533,11 +534,11 @@ export class AIChat extends BaseComponent {
    * Regenerate a message
    */
   async regenerateMessage(messageId: string): Promise<void> {
-    if (this.state.isLoading) return
+    if (this.state.isLoading) {return}
 
     // Find the message and all messages after it
     const messageIndex = this.state.messages.findIndex(m => m.id === messageId)
-    if (messageIndex === -1) return
+    if (messageIndex === -1) {return}
 
     // Remove this message and all subsequent messages
     const messages = this.state.messages.slice(0, messageIndex)
@@ -562,7 +563,7 @@ export class AIChat extends BaseComponent {
    * Stop generation
    */
   stopGeneration(): void {
-    if (!this.state.isStreaming) return
+    if (!this.state.isStreaming) {return}
 
     if (this.state.currentStreamingId) {
       this.completeStreaming(this.state.currentStreamingId)
@@ -576,10 +577,10 @@ export class AIChat extends BaseComponent {
    * Start editing a message
    */
   startEditing(messageId: string): void {
-    if (!this.config.enableEditing) return
+    if (!this.config.enableEditing) {return}
 
     const message = this.state.messages.find(m => m.id === messageId)
-    if (!message || message.role !== 'user') return
+    if (!message || message.role !== 'user') {return}
 
     const messages = this.state.messages.map(m =>
       m.id === messageId
@@ -600,16 +601,16 @@ export class AIChat extends BaseComponent {
    */
   async saveEdit(): Promise<void> {
     const messageId = this.state.editingMessageId
-    if (!messageId) return
+    if (!messageId) {return}
 
     const editInput = this.element.querySelector(`[data-coral-chat-edit-input][data-message-id="${messageId}"]`) as HTMLTextAreaElement
     const newContent = editInput?.value.trim()
 
-    if (!newContent) return
+    if (!newContent) {return}
 
     // Find index and remove subsequent messages
     const messageIndex = this.state.messages.findIndex(m => m.id === messageId)
-    if (messageIndex === -1) return
+    if (messageIndex === -1) {return}
 
     const originalMessage = this.state.messages[messageIndex]!
     const messages = this.state.messages.slice(0, messageIndex).concat({
@@ -641,7 +642,7 @@ export class AIChat extends BaseComponent {
    */
   cancelEdit(): void {
     const messageId = this.state.editingMessageId
-    if (!messageId) return
+    if (!messageId) {return}
 
     const messages = this.state.messages.map(m =>
       m.id === messageId
@@ -703,7 +704,7 @@ export class AIChat extends BaseComponent {
    * Auto-resize textarea
    */
   private autoResizeInput(): void {
-    if (!this.inputElement) return
+    if (!this.inputElement) {return}
 
     this.inputElement.style.height = 'auto'
     this.inputElement.style.height = `${Math.min(this.inputElement.scrollHeight, 200)}px`
@@ -713,7 +714,7 @@ export class AIChat extends BaseComponent {
    * Scroll messages to bottom
    */
   scrollToBottom(): void {
-    if (!this.messagesContainer) return
+    if (!this.messagesContainer) {return}
 
     requestAnimationFrame(() => {
       if (this.messagesContainer) {
@@ -750,7 +751,7 @@ export class AIChat extends BaseComponent {
       }
     })
     this.boundHandlers.clear()
-    this.stateListeners.clear()
+    super.destroy()
   }
 
   protected override render(): void {

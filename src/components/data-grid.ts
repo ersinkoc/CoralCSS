@@ -244,10 +244,10 @@ export class DataGrid<T = unknown> extends BaseComponent {
 
     const table = document.createElement('table')
     table.className = 'data-grid-table'
-    if (this.config.striped) table.classList.add('striped')
-    if (this.config.bordered) table.classList.add('bordered')
-    if (this.config.hoverable) table.classList.add('hoverable')
-    if (this.config.compact) table.classList.add('compact')
+    if (this.config.striped) {table.classList.add('striped')}
+    if (this.config.bordered) {table.classList.add('bordered')}
+    if (this.config.hoverable) {table.classList.add('hoverable')}
+    if (this.config.compact) {table.classList.add('compact')}
 
     // Header
     this.tableHeader = document.createElement('thead')
@@ -293,7 +293,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   }
 
   private renderHeader(): void {
-    if (!this.tableHeader) return
+    if (!this.tableHeader) {return}
 
     const headerRow = document.createElement('tr')
     headerRow.className = 'data-grid-header-row'
@@ -322,7 +322,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
     // Column headers
     const orderedColumns = this.getOrderedColumns()
     orderedColumns.forEach((column) => {
-      if (column.hidden) return
+      if (column.hidden) {return}
 
       const th = document.createElement('th')
       th.className = 'data-grid-header-cell'
@@ -340,8 +340,8 @@ export class DataGrid<T = unknown> extends BaseComponent {
       if (width) {
         th.style.width = typeof width === 'number' ? `${width}px` : width
       }
-      if (column.minWidth) th.style.minWidth = `${column.minWidth}px`
-      if (column.maxWidth) th.style.maxWidth = `${column.maxWidth}px`
+      if (column.minWidth) {th.style.minWidth = `${column.minWidth}px`}
+      if (column.maxWidth) {th.style.maxWidth = `${column.maxWidth}px`}
 
       // Sticky column
       if (column.sticky) {
@@ -408,7 +408,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   }
 
   private renderFilterRow(): void {
-    if (!this.tableHeader) return
+    if (!this.tableHeader) {return}
 
     const filterRow = document.createElement('tr')
     filterRow.className = 'data-grid-filter-row'
@@ -422,7 +422,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
 
     const orderedColumns = this.getOrderedColumns()
     orderedColumns.forEach((column) => {
-      if (column.hidden) return
+      if (column.hidden) {return}
 
       const td = document.createElement('th')
       td.className = 'data-grid-filter-cell'
@@ -461,7 +461,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
       data = data.filter((row) => {
         return this.state.filters.every((filter) => {
           const column = this.config.columns.find((c) => c.id === filter.columnId)
-          if (!column) return true
+          if (!column) {return true}
 
           if (column.filterFn) {
             return column.filterFn(row, filter.value)
@@ -523,7 +523,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   }
 
   private renderData(): void {
-    if (!this.tableBody) return
+    if (!this.tableBody) {return}
 
     this.tableBody.innerHTML = ''
 
@@ -620,7 +620,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
     // Data cells
     const orderedColumns = this.getOrderedColumns()
     orderedColumns.forEach((column) => {
-      if (column.hidden) return
+      if (column.hidden) {return}
 
       const td = document.createElement('td')
       td.className = 'data-grid-cell'
@@ -666,7 +666,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   }
 
   private renderPagination(): void {
-    if (!this.tableFooter || !this.config.showPagination) return
+    if (!this.tableFooter || !this.config.showPagination) {return}
 
     this.tableFooter.innerHTML = ''
 
@@ -774,17 +774,17 @@ export class DataGrid<T = unknown> extends BaseComponent {
     const pages: (number | string)[] = []
 
     if (currentPage <= 4) {
-      for (let i = 1; i <= 5; i++) pages.push(i)
+      for (let i = 1; i <= 5; i++) {pages.push(i)}
       pages.push('...')
       pages.push(totalPages)
     } else if (currentPage >= totalPages - 3) {
       pages.push(1)
       pages.push('...')
-      for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i)
+      for (let i = totalPages - 4; i <= totalPages; i++) {pages.push(i)}
     } else {
       pages.push(1)
       pages.push('...')
-      for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i)
+      for (let i = currentPage - 1; i <= currentPage + 1; i++) {pages.push(i)}
       pages.push('...')
       pages.push(totalPages)
     }
@@ -819,7 +819,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   private getVisibleColumnCount(): number {
     const columns = this.config.columns || []
     let count = columns.filter((c) => !c.hidden).length
-    if (this.config.selectable) count++
+    if (this.config.selectable) {count++}
     return count
   }
 
@@ -866,7 +866,7 @@ export class DataGrid<T = unknown> extends BaseComponent {
   }
 
   private handleFilter(columnId: string, value: string): void {
-    let filters = [...this.state.filters]
+    const filters = [...this.state.filters]
     const existingIndex = filters.findIndex((f) => f.columnId === columnId)
 
     if (value.trim() === '') {

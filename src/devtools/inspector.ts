@@ -247,6 +247,9 @@ export class CoralInspector {
   private highlightOverlay: HTMLElement | null = null
   private selectedInfo: ElementInfo | null = null
 
+  // Bound handler for keyboard shortcuts
+  private boundHandleKeydown: ((e: KeyboardEvent) => void) | null = null
+
   constructor(config: InspectorConfig = {}) {
     this.config = {
       autoShow: config.autoShow ?? false,
@@ -282,7 +285,7 @@ export class CoralInspector {
   }
 
   private buildPanelContent(): void {
-    if (!this.panel) return
+    if (!this.panel) {return}
 
     // Build header
     const header = document.createElement('div')
@@ -354,7 +357,7 @@ export class CoralInspector {
   }
 
   private applyPanelStyles(): void {
-    if (!this.panel) return
+    if (!this.panel) {return}
 
     const positions: Record<string, string> = {
       'top-right': 'top: 16px; right: 16px;',
@@ -523,7 +526,7 @@ export class CoralInspector {
   }
 
   private bindPanelEvents(): void {
-    if (!this.panel) return
+    if (!this.panel) {return}
 
     const toggleBtn = this.panel.querySelector('#coral-inspector-toggle')
     const closeBtn = this.panel.querySelector('#coral-inspector-close')
@@ -539,7 +542,7 @@ export class CoralInspector {
   }
 
   private bindShortcuts(): void {
-    document.addEventListener('keydown', (e) => {
+    this.boundHandleKeydown = (e: KeyboardEvent) => {
       // Alt+I to toggle inspection
       if (e.altKey && e.key.toLowerCase() === 'i') {
         e.preventDefault()
@@ -558,7 +561,8 @@ export class CoralInspector {
           this.hide()
         }
       }
-    })
+    }
+    document.addEventListener('keydown', this.boundHandleKeydown)
   }
 
   private toggleInspection(): void {
@@ -599,8 +603,8 @@ export class CoralInspector {
 
   private handleMouseOver = (e: MouseEvent): void => {
     const target = e.target as HTMLElement
-    if (target === this.panel || this.panel?.contains(target)) return
-    if (target === this.highlightOverlay) return
+    if (target === this.panel || this.panel?.contains(target)) {return}
+    if (target === this.highlightOverlay) {return}
 
     this.hoveredElement = target
     this.highlightElement(target)
@@ -612,7 +616,7 @@ export class CoralInspector {
 
   private handleClick = (e: MouseEvent): void => {
     const target = e.target as HTMLElement
-    if (target === this.panel || this.panel?.contains(target)) return
+    if (target === this.panel || this.panel?.contains(target)) {return}
 
     e.preventDefault()
     e.stopPropagation()
@@ -622,7 +626,7 @@ export class CoralInspector {
   }
 
   private highlightElement(element: HTMLElement): void {
-    if (!this.highlightOverlay || !this.config.enableHighlight) return
+    if (!this.highlightOverlay || !this.config.enableHighlight) {return}
 
     const rect = element.getBoundingClientRect()
 
@@ -687,20 +691,24 @@ export class CoralInspector {
     const content = this.panel?.querySelector('#coral-inspector-info')
     const stats = this.panel?.querySelector('#coral-inspector-stats')
 
-    if (!content || !this.selectedInfo) return
+    // Early return with proper null check before any property access
+    if (!content || !this.selectedInfo) {return}
 
     const coralCount = this.selectedInfo.classes.filter(c => c.isCoralCSS).length
 
     // Clear existing content
     content.innerHTML = ''
 
-    // Build element info
+    // Build element info - all property accesses are now safe due to early return above
     const elementDiv = document.createElement('div')
     elementDiv.className = 'coral-inspector-element'
 
     const tagSpan = document.createElement('span')
     tagSpan.className = 'coral-inspector-element-tag'
-    tagSpan.textContent = `<${this.selectedInfo.tagName}${this.selectedInfo.id ? ` id="${escapeHtml(this.selectedInfo.id)}"` : ''}>`
+
+    // Safe access to tagName and id (guaranteed non-null by early return check)
+    const idAttr = this.selectedInfo.id ? ` id="${escapeHtml(this.selectedInfo.id)}"` : ''
+    tagSpan.textContent = `<${this.selectedInfo.tagName}${idAttr}>`
     elementDiv.appendChild(tagSpan)
 
     // Build classes list
@@ -732,10 +740,10 @@ export class CoralInspector {
 
   private showClassDetail(className: string): void {
     const detailContainer = this.panel?.querySelector('#coral-inspector-class-details')
-    if (!detailContainer || !this.selectedInfo) return
+    if (!detailContainer || !this.selectedInfo) {return}
 
     const classInfo = this.selectedInfo.classes.find(c => c.className === className)
-    if (!classInfo) return
+    if (!classInfo) {return}
 
     // Clear existing content
     detailContainer.innerHTML = ''
@@ -799,6 +807,13 @@ export class CoralInspector {
    */
   destroy(): void {
     this.stopInspection()
+
+    // Remove keyboard shortcut listener
+    if (this.boundHandleKeydown) {
+      document.removeEventListener('keydown', this.boundHandleKeydown)
+      this.boundHandleKeydown = null
+    }
+
     this.panel?.remove()
     this.highlightOverlay?.remove()
     document.getElementById('coral-inspector-styles')?.remove()

@@ -52,7 +52,7 @@ export function cx(...inputs: ClassValue[]): string {
   const classes: string[] = []
 
   for (const input of inputs) {
-    if (!input) continue
+    if (!input) {continue}
 
     if (typeof input === 'string') {
       classes.push(...input.split(/\s+/).filter(Boolean))

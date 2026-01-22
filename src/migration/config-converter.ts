@@ -45,7 +45,7 @@ export function convertTailwindConfig(tailwindConfig: TailwindConfig): CoralConf
  * Convert theme configuration
  */
 function convertTheme(tailwindTheme: TailwindConfig['theme']): Record<string, unknown> {
-  if (!tailwindTheme) return {}
+  if (!tailwindTheme) {return {}}
 
   const coralTheme: Record<string, unknown> = {}
 

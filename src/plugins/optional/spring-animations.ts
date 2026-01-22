@@ -194,7 +194,7 @@ export function springAnimationsPlugin(options: SpringAnimationsPluginOptions = 
           pattern: /^spring-duration-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return {
               properties: {
                 '--spring-duration': v,
@@ -407,7 +407,7 @@ export function springAnimationsPlugin(options: SpringAnimationsPluginOptions = 
           pattern: /^view-transition-\[(.+)\]$/,
           handler: (match) => {
             const name = match[1]
-            if (!name) return null
+            if (!name) {return null}
             return {
               properties: {
                 'view-transition-name': name,

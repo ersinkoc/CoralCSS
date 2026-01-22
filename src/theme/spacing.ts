@@ -104,6 +104,18 @@ export const heightSizing = {
 }
 
 /**
+ * Maximum key length to prevent abuse
+ */
+const MAX_KEY_LENGTH = 32
+
+/**
+ * Validate theme key input
+ */
+function isValidKey(key: unknown): key is string {
+  return typeof key === 'string' && key.length > 0 && key.length <= MAX_KEY_LENGTH
+}
+
+/**
  * Get spacing value
  *
  * @example
@@ -114,6 +126,9 @@ export const heightSizing = {
  * ```
  */
 export function getSpacing(key: string): string | undefined {
+  if (!isValidKey(key)) {
+    return undefined
+  }
   return spacing[key]
 }
 
@@ -128,7 +143,11 @@ export function getSpacing(key: string): string | undefined {
  * ```
  */
 export function getSizing(key: string): string | undefined {
-  return (sizing as Record<string, string>)[key]
+  if (!isValidKey(key)) {
+    return undefined
+  }
+  // Use optional chaining for safe property access
+  return sizing[key as keyof typeof sizing]
 }
 
 /**
@@ -144,6 +163,9 @@ export const negativeSpacing: SpacingScale = Object.fromEntries(
  * Get negative spacing value
  */
 export function getNegativeSpacing(key: string): string | undefined {
+  if (!isValidKey(key)) {
+    return undefined
+  }
   // Remove leading minus if present
   const cleanKey = key.startsWith('-') ? key.slice(1) : key
   const value = spacing[cleanKey]

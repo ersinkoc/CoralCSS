@@ -254,6 +254,24 @@ export class ImageCrop extends BaseComponent {
   private dragStart: { x: number; y: number } | null = null
   private cropStart: CropArea | null = null
 
+  // Bound event handlers for proper cleanup
+  private boundHandleMove: (e: MouseEvent | TouchEvent) => void
+  private boundHandleEnd: () => void
+  private boundHandleDragStart: (e: MouseEvent | TouchEvent) => void
+  private boundHandleResizeStart: (e: MouseEvent | TouchEvent) => void
+  private boundHandleWheel: (e: WheelEvent) => void
+
+  constructor(element: HTMLElement, config?: ImageCropConfig) {
+    super(element, config)
+
+    // Initialize bound handlers
+    this.boundHandleMove = this.handleMove.bind(this)
+    this.boundHandleEnd = this.handleEnd.bind(this)
+    this.boundHandleDragStart = this.handleDragStart.bind(this)
+    this.boundHandleResizeStart = this.handleResizeStart.bind(this)
+    this.boundHandleWheel = this.handleWheel.bind(this)
+  }
+
   protected override getDefaultConfig(): ImageCropConfig {
     return {
       aspectRatio: null,
@@ -520,27 +538,27 @@ export class ImageCrop extends BaseComponent {
 
     // Drag events
     if (this.config.draggable) {
-      this.cropAreaEl.addEventListener('mousedown', this.handleDragStart.bind(this))
-      this.cropAreaEl.addEventListener('touchstart', this.handleDragStart.bind(this), { passive: false })
+      this.cropAreaEl.addEventListener('mousedown', this.boundHandleDragStart)
+      this.cropAreaEl.addEventListener('touchstart', this.boundHandleDragStart, { passive: false })
     }
 
     // Resize handle events
     if (this.config.resizable) {
       this.cropAreaEl.querySelectorAll('[data-coral-image-crop-handle]').forEach((handle) => {
-        (handle as HTMLElement).addEventListener('mousedown', this.handleResizeStart.bind(this) as EventListener)
-        ;(handle as HTMLElement).addEventListener('touchstart', this.handleResizeStart.bind(this) as EventListener, { passive: false })
+        (handle as HTMLElement).addEventListener('mousedown', this.boundHandleResizeStart as EventListener)
+        ;(handle as HTMLElement).addEventListener('touchstart', this.boundHandleResizeStart as EventListener, { passive: false })
       })
     }
 
     // Global move and up events
-    document.addEventListener('mousemove', this.handleMove.bind(this))
-    document.addEventListener('mouseup', this.handleEnd.bind(this))
-    document.addEventListener('touchmove', this.handleMove.bind(this), { passive: false })
-    document.addEventListener('touchend', this.handleEnd.bind(this))
+    document.addEventListener('mousemove', this.boundHandleMove)
+    document.addEventListener('mouseup', this.boundHandleEnd)
+    document.addEventListener('touchmove', this.boundHandleMove, { passive: false })
+    document.addEventListener('touchend', this.boundHandleEnd)
 
     // Wheel zoom
     if (this.config.zoomable) {
-      this.containerEl?.addEventListener('wheel', this.handleWheel.bind(this), { passive: false })
+      this.containerEl?.addEventListener('wheel', this.boundHandleWheel, { passive: false })
     }
   }
 
@@ -1132,11 +1150,26 @@ export class ImageCrop extends BaseComponent {
   }
 
   override destroy(): void {
-    // Clean up event listeners
-    document.removeEventListener('mousemove', this.handleMove.bind(this))
-    document.removeEventListener('mouseup', this.handleEnd.bind(this))
-    document.removeEventListener('touchmove', this.handleMove.bind(this))
-    document.removeEventListener('touchend', this.handleEnd.bind(this))
+    // Clean up document event listeners using bound handlers
+    document.removeEventListener('mousemove', this.boundHandleMove)
+    document.removeEventListener('mouseup', this.boundHandleEnd)
+    document.removeEventListener('touchmove', this.boundHandleMove)
+    document.removeEventListener('touchend', this.boundHandleEnd)
+
+    // Clean up crop area event listeners
+    if (this.cropAreaEl) {
+      this.cropAreaEl.removeEventListener('mousedown', this.boundHandleDragStart)
+      this.cropAreaEl.removeEventListener('touchstart', this.boundHandleDragStart)
+
+      // Clean up resize handle listeners
+      this.cropAreaEl.querySelectorAll('[data-coral-image-crop-handle]').forEach((handle) => {
+        (handle as HTMLElement).removeEventListener('mousedown', this.boundHandleResizeStart as EventListener)
+        ;(handle as HTMLElement).removeEventListener('touchstart', this.boundHandleResizeStart as EventListener)
+      })
+    }
+
+    // Clean up wheel listener
+    this.containerEl?.removeEventListener('wheel', this.boundHandleWheel)
 
     // Clean up blob URL if created
     if (this.state.imageSrc?.startsWith('blob:')) {

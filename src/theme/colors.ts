@@ -440,6 +440,24 @@ export const colors: ThemeColors = {
 }
 
 /**
+ * Valid shade keys for color scales
+ */
+const VALID_SHADES = new Set(['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'])
+
+/**
+ * Type guard for ColorScale (object with string values)
+ * Checks if a value is a valid color scale object
+ */
+function isColorScale(value: unknown): value is Record<string, string> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.values(value).every(v => typeof v === 'string')
+  )
+}
+
+/**
  * Get a color value from the palette
  *
  * @example
@@ -449,14 +467,37 @@ export const colors: ThemeColors = {
  * ```
  */
 export function getColor(color: string, shade?: string): string | undefined {
+  // Input validation
+  if (!color || typeof color !== 'string') {
+    return undefined
+  }
+
+  // Sanitize color name - only allow valid identifier characters
+  if (!/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(color)) {
+    return undefined
+  }
+
+  // Validate shade if provided
+  if (shade !== undefined) {
+    if (typeof shade !== 'string' || !VALID_SHADES.has(shade)) {
+      return undefined
+    }
+  }
+
   const colorValue = colors[color]
 
+  // Direct string value (semantic colors)
   if (typeof colorValue === 'string') {
     return colorValue
   }
 
-  if (colorValue && shade) {
-    return (colorValue as unknown as Record<string, string>)[shade]
+  // Color scale with shade - use type guard for type safety
+  if (isColorScale(colorValue) && shade) {
+    const shadeValue = colorValue[shade]
+    if (typeof shadeValue === 'string') {
+      return shadeValue
+    }
+    return undefined
   }
 
   return undefined

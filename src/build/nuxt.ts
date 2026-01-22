@@ -176,7 +176,7 @@ export function defineCoralModule(): NuxtModule {
       } = options
 
       // Initialize Coral
-      let coral: Coral = createCoral(coralOptions)
+      const coral: Coral = createCoral(coralOptions)
       const plugins = coralPreset({ darkMode })
       plugins.forEach((plugin) => coral.use(plugin))
 

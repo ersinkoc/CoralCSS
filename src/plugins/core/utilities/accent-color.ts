@@ -83,7 +83,7 @@ export function accentColorPlugin(): Plugin {
         pattern: /^accent-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'accent-color': value.replace(/_/g, ' ') } }
         },
       })

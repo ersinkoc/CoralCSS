@@ -161,7 +161,7 @@ export function printPlugin(): Plugin {
         pattern: /^widows-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { widows: v } }
         },
       })
@@ -176,7 +176,7 @@ export function printPlugin(): Plugin {
         pattern: /^orphans-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { orphans: v } }
         },
       })

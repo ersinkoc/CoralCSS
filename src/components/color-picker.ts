@@ -161,7 +161,7 @@ export class ColorPicker extends BaseComponent {
     const handleKeydown = (e: KeyboardEvent) => {
       const state = this.state as ColorPickerState
       const step = type === 'hue' ? HUE_STEP : ALPHA_STEP
-      let currentValue = type === 'hue' ? state.hue : state.alpha
+      const currentValue = type === 'hue' ? state.hue : state.alpha
       let newValue = currentValue
 
       switch (e.key) {

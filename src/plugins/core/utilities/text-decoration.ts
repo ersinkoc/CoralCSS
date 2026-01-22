@@ -120,7 +120,7 @@ export function textDecorationPlugin(): Plugin {
         pattern: /^decoration-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'text-decoration-thickness': value } }
         },
       })
@@ -142,7 +142,7 @@ export function textDecorationPlugin(): Plugin {
         pattern: /^underline-offset-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'text-underline-offset': value } }
         },
       })

@@ -116,7 +116,7 @@ export const textShadowsPlugin = (): Plugin => ({
       handler: (match) => {
         const size = match[1]
         const opacityStr = match[2]
-        if (!size || !opacityStr) return null
+        if (!size || !opacityStr) {return null}
 
         const opacityValue = (parseInt(opacityStr, 10) / 100).toFixed(2)
 
@@ -170,7 +170,7 @@ export const textShadowsPlugin = (): Plugin => ({
           /* istanbul ignore next -- @preserve: handler coverage not tracked by v8 */
           handler: (match) => {
             const opacityStr = match[1]
-            if (!opacityStr) return null
+            if (!opacityStr) {return null}
 
             const opacity = (parseInt(opacityStr, 10) / 100).toFixed(2)
             return {
@@ -193,7 +193,7 @@ export const textShadowsPlugin = (): Plugin => ({
       pattern: /^text-shadow-\[(.+)\]$/,
       handler: (match) => {
         const value = match[1]
-        if (!value) return null
+        if (!value) {return null}
 
         return {
           properties: { 'text-shadow': value.replace(/_/g, ' ') }

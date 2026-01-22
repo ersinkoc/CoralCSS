@@ -176,7 +176,7 @@ export class SplitView extends BaseComponent {
   }
 
   private applyLayout(): void {
-    if (!this.pane1 || !this.pane2) return
+    if (!this.pane1 || !this.pane2) {return}
 
     const splitPercentage = this.state.splitPercentage
     const direction = this.config.direction
@@ -199,7 +199,7 @@ export class SplitView extends BaseComponent {
   }
 
   private setupGutterEvents(): void {
-    if (!this.gutter) return
+    if (!this.gutter) {return}
 
     this.gutter.addEventListener('mousedown', this.handleDragStart.bind(this))
     this.gutter.addEventListener('touchstart', this.handleDragStart.bind(this))
@@ -210,10 +210,10 @@ export class SplitView extends BaseComponent {
   }
 
   private setupKeyboardEvents(): void {
-    if (!this.gutter) return
+    if (!this.gutter) {return}
 
     this.gutter.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (this.config.disabled) return
+      if (this.config.disabled) {return}
 
       const step = 5
       let newSplit = this.state.splitPercentage
@@ -246,7 +246,7 @@ export class SplitView extends BaseComponent {
   }
 
   private handleDragStart(e: MouseEvent | TouchEvent): void {
-    if (this.config.disabled) return
+    if (this.config.disabled) {return}
 
     e.preventDefault()
     this.startDrag()
@@ -255,7 +255,7 @@ export class SplitView extends BaseComponent {
   }
 
   private handleDrag(e: MouseEvent | TouchEvent): void {
-    if (!this.state.isDragging) return
+    if (!this.state.isDragging) {return}
 
     // Guard against destroyed element (element may be removed from DOM during drag)
     if (!this.element.isConnected) {
@@ -274,7 +274,7 @@ export class SplitView extends BaseComponent {
   }
 
   private handleDragEnd(): void {
-    if (!this.state.isDragging) return
+    if (!this.state.isDragging) {return}
     this.endDrag()
   }
 
@@ -335,7 +335,7 @@ export class SplitView extends BaseComponent {
   }
 
   snapToNearest(): void {
-    if (!this.config.snapPoints || this.config.snapPoints.length === 0) return
+    if (!this.config.snapPoints || this.config.snapPoints.length === 0) {return}
 
     const threshold = this.config.snapThreshold || 10
     let nearestPoint = this.state.splitPercentage

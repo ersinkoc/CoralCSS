@@ -467,14 +467,14 @@ function processTokens(
     } else {
       // It's a group
       for (const [key, value] of Object.entries(node)) {
-        if (key.startsWith('$')) continue
+        if (key.startsWith('$')) {continue}
         processNode(value as TokenGroup | StyleDictionaryToken, [...path, key])
       }
     }
   }
 
   for (const [key, value] of Object.entries(tokens)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
     processNode(value as TokenGroup | StyleDictionaryToken, [key])
   }
 
@@ -535,7 +535,7 @@ function formatCSSVariables(dictionary: TokenDictionary, platform: PlatformConfi
   for (const token of dictionary.allTokens) {
     const category = token.path[0] || ''
     if (category !== currentCategory) {
-      if (currentCategory) lines.push('')
+      if (currentCategory) {lines.push('')}
       lines.push(`  /* ${category} */`)
       currentCategory = category
     }
@@ -563,7 +563,7 @@ function formatSCSSVariables(dictionary: TokenDictionary, platform: PlatformConf
   for (const token of dictionary.allTokens) {
     const category = token.path[0] || ''
     if (category !== currentCategory) {
-      if (currentCategory) lines.push('')
+      if (currentCategory) {lines.push('')}
       lines.push(`// ${category}`)
       currentCategory = category
     }
@@ -661,7 +661,7 @@ function formatJSONNested(dictionary: TokenDictionary): string {
     let current = obj
     for (let i = 0; i < token.path.length - 1; i++) {
       const key = token.path[i] as string
-      if (!current[key]) current[key] = {}
+      if (!current[key]) {current[key] = {}}
       current = current[key] as Record<string, unknown>
     }
     current[token.path[token.path.length - 1] as string] = token.value
@@ -770,7 +770,7 @@ function groupByCategory(tokens: ProcessedToken[]): Record<string, ProcessedToke
 
   for (const token of tokens) {
     const category = token.path[0] || 'other'
-    if (!grouped[category]) grouped[category] = []
+    if (!grouped[category]) {grouped[category] = []}
     grouped[category].push(token)
   }
 

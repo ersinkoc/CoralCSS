@@ -590,7 +590,7 @@ export class Kanban extends BaseComponent {
     const sourceColumn = columns.find(c => c.id === sourceColumnId)
     const cardIndex = sourceColumn?.cards.findIndex(c => c.id === cardId) ?? -1
 
-    if (!sourceColumn || cardIndex === -1) return
+    if (!sourceColumn || cardIndex === -1) {return}
 
     // Check WIP limit
     if (sourceColumnId !== targetColumnId) {
@@ -629,7 +629,7 @@ export class Kanban extends BaseComponent {
     const columns = [...this.state.columns]
     const columnIndex = columns.findIndex(c => c.id === columnId)
 
-    if (columnIndex === -1) return
+    if (columnIndex === -1) {return}
 
     const [column] = columns.splice(columnIndex, 1) as [KanbanColumn]
     columns.splice(targetIndex, 0, column)
@@ -664,7 +664,7 @@ export class Kanban extends BaseComponent {
 
   private saveNewCard(): void {
     const columnId = this.state.addingCardToColumn
-    if (!columnId) return
+    if (!columnId) {return}
 
     const input = this.element.querySelector(`[data-coral-kanban-new-card-input][data-column-id="${columnId}"]`) as HTMLTextAreaElement
     const title = input?.value.trim()
@@ -797,7 +797,7 @@ export class Kanban extends BaseComponent {
   getCard(cardId: string): KanbanCard | undefined {
     for (const column of this.state.columns) {
       const card = column.cards.find(c => c.id === cardId)
-      if (card) return card
+      if (card) {return card}
     }
     return undefined
   }
@@ -822,6 +822,7 @@ export class Kanban extends BaseComponent {
   override destroy(): void {
     this.boundHandlers.clear()
     this.stateListeners.clear()
+    super.destroy()
   }
 
   protected override render(): void {

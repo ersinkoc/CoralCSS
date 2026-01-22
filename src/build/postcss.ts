@@ -490,7 +490,7 @@ function walkDirectory(
 
       // Check if excluded
       const isExcluded = excludePatterns.some((regex) => regex.test(relativePath))
-      if (isExcluded) continue
+      if (isExcluded) {continue}
 
       if (entry.isDirectory()) {
         // Recurse into subdirectories

@@ -112,6 +112,11 @@ function removeClasses(el: HTMLElement, value: unknown) {
   el.classList.remove(...classes)
 }
 
+// WeakMap to store event handlers for cleanup
+const hoverHandlers = new WeakMap<HTMLElement, { enter: () => void; leave: () => void }>()
+const focusHandlers = new WeakMap<HTMLElement, { focus: () => void; blur: () => void }>()
+const activeHandlers = new WeakMap<HTMLElement, { down: () => void; up: () => void; leave: () => void }>()
+
 /**
  * v-coral-hover directive
  *
@@ -139,13 +144,27 @@ export const vCoralHover: Directive<HTMLElement, string> = {
     const css = coral.generate(classes)
     injectCSS(css)
 
+    // Create handlers
+    const handlers = {
+      enter: () => el.classList.add(...classes),
+      leave: () => el.classList.remove(...classes),
+    }
+
+    // Store handlers for cleanup
+    hoverHandlers.set(el, handlers)
+
     // Add event listeners
-    el.addEventListener('mouseenter', () => {
-      el.classList.add(...classes)
-    })
-    el.addEventListener('mouseleave', () => {
-      el.classList.remove(...classes)
-    })
+    el.addEventListener('mouseenter', handlers.enter)
+    el.addEventListener('mouseleave', handlers.leave)
+  },
+
+  unmounted(el: HTMLElement) {
+    const handlers = hoverHandlers.get(el)
+    if (handlers) {
+      el.removeEventListener('mouseenter', handlers.enter)
+      el.removeEventListener('mouseleave', handlers.leave)
+      hoverHandlers.delete(el)
+    }
   },
 }
 
@@ -174,13 +193,27 @@ export const vCoralFocus: Directive<HTMLElement, string> = {
     const css = coral.generate(classes)
     injectCSS(css)
 
+    // Create handlers
+    const handlers = {
+      focus: () => el.classList.add(...classes),
+      blur: () => el.classList.remove(...classes),
+    }
+
+    // Store handlers for cleanup
+    focusHandlers.set(el, handlers)
+
     // Add event listeners
-    el.addEventListener('focus', () => {
-      el.classList.add(...classes)
-    })
-    el.addEventListener('blur', () => {
-      el.classList.remove(...classes)
-    })
+    el.addEventListener('focus', handlers.focus)
+    el.addEventListener('blur', handlers.blur)
+  },
+
+  unmounted(el: HTMLElement) {
+    const handlers = focusHandlers.get(el)
+    if (handlers) {
+      el.removeEventListener('focus', handlers.focus)
+      el.removeEventListener('blur', handlers.blur)
+      focusHandlers.delete(el)
+    }
   },
 }
 
@@ -211,16 +244,30 @@ export const vCoralActive: Directive<HTMLElement, string> = {
     const css = coral.generate(classes)
     injectCSS(css)
 
+    // Create handlers
+    const handlers = {
+      down: () => el.classList.add(...classes),
+      up: () => el.classList.remove(...classes),
+      leave: () => el.classList.remove(...classes),
+    }
+
+    // Store handlers for cleanup
+    activeHandlers.set(el, handlers)
+
     // Add event listeners
-    el.addEventListener('mousedown', () => {
-      el.classList.add(...classes)
-    })
-    el.addEventListener('mouseup', () => {
-      el.classList.remove(...classes)
-    })
-    el.addEventListener('mouseleave', () => {
-      el.classList.remove(...classes)
-    })
+    el.addEventListener('mousedown', handlers.down)
+    el.addEventListener('mouseup', handlers.up)
+    el.addEventListener('mouseleave', handlers.leave)
+  },
+
+  unmounted(el: HTMLElement) {
+    const handlers = activeHandlers.get(el)
+    if (handlers) {
+      el.removeEventListener('mousedown', handlers.down)
+      el.removeEventListener('mouseup', handlers.up)
+      el.removeEventListener('mouseleave', handlers.leave)
+      activeHandlers.delete(el)
+    }
   },
 }
 

@@ -9,6 +9,19 @@ import type { ComponentConfig, ComponentState } from '../types'
 import { BaseComponent, createComponentFactory } from './base'
 
 /**
+ * Check if the native HTMLDialogElement API is supported
+ * Safari 14 and earlier don't support showModal()
+ */
+function supportsNativeDialog(): boolean {
+  if (typeof HTMLDialogElement === 'undefined') {
+    return false
+  }
+  // Check if showModal method exists (Safari 14 has <dialog> but no showModal)
+  const dialog = document.createElement('dialog')
+  return typeof dialog.showModal === 'function'
+}
+
+/**
  * Dialog configuration
  */
 export interface DialogConfig extends ComponentConfig {
@@ -84,17 +97,30 @@ export interface DialogState extends ComponentState {
  * </dialog>
  * ```
  */
+// Cache the feature detection result
+let _supportsNativeDialog: boolean | null = null
+
+function getNativeDialogSupport(): boolean {
+  if (_supportsNativeDialog === null) {
+    _supportsNativeDialog = supportsNativeDialog()
+  }
+  return _supportsNativeDialog
+}
+
 export class Dialog extends BaseComponent {
   protected declare config: DialogConfig
   protected declare state: DialogState
 
   private isNativeDialog: boolean
+  private canUseNativeDialog: boolean
   private backdrop: HTMLElement | null = null
   private content: HTMLElement | null = null
 
   constructor(element: HTMLElement, config: Partial<DialogConfig> = {}) {
     super(element, config)
     this.isNativeDialog = element.tagName === 'DIALOG'
+    // Only use native dialog if both: element is a dialog AND browser supports showModal
+    this.canUseNativeDialog = this.isNativeDialog && getNativeDialogSupport()
   }
 
   protected getDefaultConfig(): DialogConfig {
@@ -181,8 +207,8 @@ export class Dialog extends BaseComponent {
       })
     }
 
-    // Native dialog close event
-    if (this.isNativeDialog) {
+    // Native dialog close event (only if native dialog API is supported)
+    if (this.canUseNativeDialog) {
       this.addEventListener(this.element, 'close', () => {
         this.setState({ isOpen: false })
       })
@@ -194,8 +220,13 @@ export class Dialog extends BaseComponent {
       this.element.setAttribute('data-open', '')
       this.backdrop?.setAttribute('data-open', '')
 
-      if (this.isNativeDialog && this.config.useNative) {
-        (this.element as HTMLDialogElement).showModal()
+      // Only use native dialog API if browser supports it and config allows it
+      if (this.canUseNativeDialog && this.config.useNative) {
+        const dialog = this.element as HTMLDialogElement
+        // Ensure dialog isn't already open to avoid InvalidStateError
+        if (!dialog.open) {
+          dialog.showModal()
+        }
       } else {
         this.element.style.display = ''
         this.element.removeAttribute('hidden')
@@ -204,8 +235,13 @@ export class Dialog extends BaseComponent {
       this.element.removeAttribute('data-open')
       this.backdrop?.removeAttribute('data-open')
 
-      if (this.isNativeDialog && this.config.useNative) {
-        (this.element as HTMLDialogElement).close()
+      // Only use native dialog API if browser supports it and config allows it
+      if (this.canUseNativeDialog && this.config.useNative) {
+        const dialog = this.element as HTMLDialogElement
+        // Only close if actually open
+        if (dialog.open) {
+          dialog.close()
+        }
       } else {
         this.element.style.display = 'none'
         this.element.setAttribute('hidden', '')

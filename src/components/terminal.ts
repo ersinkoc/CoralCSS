@@ -355,7 +355,7 @@ export class Terminal extends BaseComponent {
    * Process a command (UI-only, triggers callback for actual handling)
    */
   async processCommand(command: string): Promise<void> {
-    if (this.state.isProcessing) return
+    if (this.state.isProcessing) {return}
 
     this.writeLine(`${this.config.prompt}${command}`, 'input')
 
@@ -467,7 +467,7 @@ export class Terminal extends BaseComponent {
   historyUp(): void {
     const { commandHistory, historyIndex } = this.state
 
-    if (commandHistory.length === 0) return
+    if (commandHistory.length === 0) {return}
 
     let newIndex: number
     if (historyIndex === -1) {
@@ -492,7 +492,7 @@ export class Terminal extends BaseComponent {
   historyDown(): void {
     const { commandHistory, historyIndex } = this.state
 
-    if (historyIndex === -1) return
+    if (historyIndex === -1) {return}
 
     if (historyIndex < commandHistory.length - 1) {
       const newIndex = historyIndex + 1
@@ -515,7 +515,7 @@ export class Terminal extends BaseComponent {
    * Handle tab completion
    */
   tabComplete(): void {
-    if (!this.config.tabComplete) return
+    if (!this.config.tabComplete) {return}
 
     const { currentInput } = this.state
     const completions = this.config.tabComplete(currentInput)
@@ -540,7 +540,7 @@ export class Terminal extends BaseComponent {
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
-    if (this.config.readOnly) return
+    if (this.config.readOnly) {return}
 
     if (e.ctrlKey) {
       switch (e.key.toLowerCase()) {

@@ -41,7 +41,7 @@ const defaultOptions: PopoverAPIPluginOptions = {
  * Check if the native Popover API is supported in the current environment
  */
 export function isPopoverSupported(): boolean {
-  if (typeof HTMLElement === 'undefined') return false
+  if (typeof HTMLElement === 'undefined') {return false}
   return 'popover' in HTMLElement.prototype
 }
 
@@ -49,7 +49,7 @@ export function isPopoverSupported(): boolean {
  * Check if CSS Anchor Positioning is supported
  */
 export function isAnchorPositioningSupported(): boolean {
-  if (typeof CSS === 'undefined' || !CSS.supports) return false
+  if (typeof CSS === 'undefined' || !CSS.supports) {return false}
   return CSS.supports('anchor-name', '--test')
 }
 
@@ -143,7 +143,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^popover-w-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { width: v } }
           },
         })
@@ -158,7 +158,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^anchor-name-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { 'anchor-name': `--${v}` } }
           },
         })
@@ -168,7 +168,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^position-anchor-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { 'position-anchor': `--${v}` } }
           },
         })
@@ -207,7 +207,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^inset-area-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { 'inset-area': v.replace(/_/g, ' ') } }
           },
         })
@@ -275,7 +275,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^anchor-offset-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { margin: v } }
           },
         })
@@ -417,7 +417,7 @@ export function popoverAPIPlugin(options: PopoverAPIPluginOptions = {}): Plugin 
           pattern: /^popover-backdrop-\[(.+)\]$/,
           handler: (match) => {
             const v = match[1]
-            if (!v) return null
+            if (!v) {return null}
             return { properties: { background: v.replace(/_/g, ' ') } }
           },
         })

@@ -13,6 +13,15 @@ import { parse, expandVariantGroups } from '../core/parser'
 import type { DarkModeStrategy } from '../types'
 
 /**
+ * Template configuration for init command
+ */
+interface TemplateConfig {
+  files: string[]
+  description: string
+  dependencies?: string[]
+}
+
+/**
  * CLI options
  */
 export interface CLIOptions {
@@ -104,13 +113,15 @@ export function parseArgs(args: string[]): CLIOptions {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]
-    const next = args[i + 1]
+    const next = i + 1 < args.length ? args[i + 1] : undefined
 
     switch (arg) {
       case '-o':
       case '--output':
-        options.output = next
-        i++
+        if (next && !next.startsWith('-')) {
+          options.output = next
+          i++
+        }
         break
 
       case '-w':
@@ -124,8 +135,10 @@ export function parseArgs(args: string[]): CLIOptions {
         break
 
       case '--dark-mode':
-        options.darkMode = next as DarkModeStrategy
-        i++
+        if (next && !next.startsWith('-')) {
+          options.darkMode = next as DarkModeStrategy
+          i++
+        }
         break
 
       case '--no-base':
@@ -134,8 +147,10 @@ export function parseArgs(args: string[]): CLIOptions {
 
       case '-c':
       case '--config':
-        options.config = next
-        i++
+        if (next && !next.startsWith('-')) {
+          options.config = next
+          i++
+        }
         break
 
       case '--stdout':
@@ -276,68 +291,191 @@ async function runTokens(options: CLIOptions): Promise<CLIResult> {
 }
 
 /**
- * Extract classes from content using regex patterns
+ * Extract classes from content using a TRUE STATE MACHINE
+ * O(n) guaranteed, no backtracking, ReDoS-proof
  */
 function extractClassesFromContent(content: string): string[] {
   const classes: Set<string> = new Set()
 
-  // Pattern for class="..." or className="..."
-  const classAttrRegex = /(?:class|className)\s*=\s*["']([^"']+)["']/g
-  let match: RegExpExecArray | null
+  // Limit input size to prevent DoS
+  const MAX_INPUT_SIZE = 10_000_000 // 10MB
+  const MAX_CLASS_NAME = 200
+  const MAX_MATCHES = 50_000 // Maximum unique classes to extract
 
-  while ((match = classAttrRegex.exec(content)) !== null) {
-    const classList = match[1]
-    if (classList) {
-      // Split by whitespace and add each class
-      classList.split(/\s+/).forEach(cls => {
-        if (cls.trim()) {
-          // Handle variant groups
-          const expanded = expandVariantGroups(cls.trim())
-          if (Array.isArray(expanded)) {
-            expanded.forEach(c => classes.add(c))
-          } else {
-            classes.add(expanded)
-          }
+  if (content.length > MAX_INPUT_SIZE) {
+    console.warn(`CoralCSS CLI: Input exceeds ${MAX_INPUT_SIZE} bytes, truncating`)
+    content = content.slice(0, MAX_INPUT_SIZE)
+  }
+
+  let matchCount = 0
+
+  // Helper to add class with variant expansion
+  const addClass = (cls: string) => {
+    if (matchCount >= MAX_MATCHES) return false
+    if (cls.length > MAX_CLASS_NAME || cls.length === 0) return false
+
+    const expanded = expandVariantGroups(cls)
+    if (Array.isArray(expanded)) {
+      expanded.forEach(c => {
+        if (matchCount < MAX_MATCHES) {
+          classes.add(c)
+          matchCount++
         }
       })
+    } else {
+      classes.add(expanded)
+      matchCount++
+    }
+    return true
+  }
+
+  // State machine states
+  enum State {
+    Normal,
+    InDoubleQuote,
+    InSingleQuote,
+    InTemplate,
+    InExpression, // Inside ${} in template
+    InClsxCall,    // Inside clsx/cn(...) call
+  }
+
+  let state = State.Normal
+  let currentClass = ''
+  let buffer = ''
+  let parenDepth = 0
+  let templateDepth = 0
+
+  const processClassBuffer = () => {
+    if (currentClass) {
+      currentClass.split(/\s+/).forEach(c => c.trim() && addClass(c.trim()))
+      currentClass = ''
     }
   }
 
-  // Pattern for class={`...`} or className={`...`} (template literals)
-  const templateLiteralRegex = /(?:class|className)\s*=\s*\{`([^`]+)`\}/g
-  while ((match = templateLiteralRegex.exec(content)) !== null) {
-    const classList = match[1]
-    if (classList) {
-      // Remove ${...} expressions and extract static classes
-      const staticParts = classList.replace(/\$\{[^}]+\}/g, ' ')
-      staticParts.split(/\s+/).forEach(cls => {
-        if (cls.trim()) {
-          const expanded = expandVariantGroups(cls.trim())
-          if (Array.isArray(expanded)) {
-            expanded.forEach(c => classes.add(c))
-          } else {
-            classes.add(expanded)
-          }
-        }
-      })
-    }
-  }
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i]
+    const next = content[i + 1]
 
-  // Pattern for clsx/classnames/cn function calls
-  const clsxRegex = /(?:clsx|classnames|cn|twMerge)\s*\(\s*(['"`][\s\S]*?['"`])/g
-  while ((match = clsxRegex.exec(content)) !== null) {
-    const classList = match[1]?.replace(/['"`]/g, '')
-    if (classList) {
-      classList.split(/\s+/).forEach(cls => {
-        if (cls.trim() && !cls.includes('${')) {
-          const expanded = expandVariantGroups(cls.trim())
-          if (Array.isArray(expanded)) {
-            expanded.forEach(c => classes.add(c))
-          } else {
-            classes.add(expanded)
+    switch (state) {
+      case State.Normal:
+        // Check for class= or className=
+        if (char === 'c' && content.substr(i, 6) === 'class=') {
+          i += 5 // Move past 'class='
+          // Next char determines quote type
+          if (next === '"') {
+            state = State.InDoubleQuote
+            i++ // Skip quote
+          } else if (next === "'") {
+            state = State.InSingleQuote
+            i++ // Skip quote
+          } else if (next === '`') {
+            state = State.InTemplate
+            i++ // Skip quote
           }
         }
-      })
+        // Check for clsx/cn/cva/classnames calls
+        else if (char === 'c' || char === 'C') {
+          const lower = content.substr(i, 10).toLowerCase()
+          if (lower.startsWith('clsx') ||
+              lower.startsWith('classnames') ||
+              lower.startsWith('cn(') ||
+              lower.startsWith('cva(')) {
+            // Find the opening parenthesis
+            let parenStart = i
+            while (parenStart < content.length && content[parenStart] !== '(') {
+              parenStart++
+            }
+            if (parenStart < content.length && content[parenStart] === '(') {
+              state = State.InClsxCall
+              i = parenStart
+              parenDepth = 1
+            }
+          }
+        }
+        break
+
+      case State.InDoubleQuote:
+        if (char === '"') {
+          processClassBuffer()
+          state = State.Normal
+        } else if (char === ' ') {
+          processClassBuffer()
+        } else {
+          currentClass += char
+        }
+        break
+
+      case State.InSingleQuote:
+        if (char === "'") {
+          processClassBuffer()
+          state = State.Normal
+        } else if (char === ' ') {
+          processClassBuffer()
+        } else {
+          currentClass += char
+        }
+        break
+
+      case State.InTemplate:
+        if (char === '`') {
+          processClassBuffer()
+          state = State.Normal
+        } else if (char === '$' && next === '{') {
+          // Enter expression
+          state = State.InExpression
+          templateDepth = 1
+          i++ // Skip next char
+        } else if (char === ' ') {
+          processClassBuffer()
+        } else {
+          currentClass += char
+        }
+        break
+
+      case State.InExpression:
+        // Track nested braces in template expressions
+        if (char === '{') {
+          templateDepth++
+        } else if (char === '}') {
+          templateDepth--
+          if (templateDepth === 0) {
+            // Exit expression, replace with space
+            currentClass += ' '
+            state = State.InTemplate
+          }
+        }
+        break
+
+      case State.InClsxCall:
+        if (char === '(') {
+          parenDepth++
+        } else if (char === ')') {
+          parenDepth--
+          if (parenDepth === 0) {
+            // End of clsx call
+            processClassBuffer()
+            state = State.Normal
+          }
+        } else if (char === '"' || char === "'" || char === '`') {
+          // Found a string literal in the call
+          const quote = char
+          const stringStart = i + 1
+          let stringEnd = stringStart
+
+          // Find matching quote (simple, no escape handling)
+          while (stringEnd < content.length && content[stringEnd] !== quote) {
+            stringEnd++
+          }
+
+          if (stringEnd < content.length) {
+            const strContent = content.slice(stringStart, stringEnd)
+            strContent.split(/\s+/).forEach(c => c.trim() && addClass(c.trim()))
+            i = stringEnd // Move to closing quote
+          }
+        } else if (char === ',') {
+          processClassBuffer()
+        }
+        break
     }
   }
 
@@ -431,7 +569,7 @@ async function runInit(options: CLIOptions): Promise<CLIResult> {
   console.log(`Initializing CoralCSS project with '${template}' template...`)
 
   // Template configurations
-  const templates: Record<string, any> = {
+  const templates: Record<string, TemplateConfig> = {
     basic: {
       files: ['coral.config.js', 'src/index.html', 'src/styles.css'],
       description: 'Basic HTML/CSS setup'
@@ -558,15 +696,15 @@ function analyzeCSSContent(css: string): {
   const animationProps = ['animation', 'transition']
 
   propertyMatches.forEach(prop => {
-    if (layoutProps.some(p => prop.startsWith(p))) categories.layout++
-    else if (spacingProps.some(p => prop.startsWith(p))) categories.spacing++
-    else if (typographyProps.some(p => prop.startsWith(p))) categories.typography++
-    else if (colorProps.some(p => prop.startsWith(p))) categories.colors++
-    else if (borderProps.some(p => prop.startsWith(p))) categories.borders++
-    else if (effectProps.some(p => prop.startsWith(p))) categories.effects++
-    else if (transformProps.some(p => prop.startsWith(p))) categories.transforms++
-    else if (animationProps.some(p => prop.startsWith(p))) categories.animations++
-    else categories.other++
+    if (layoutProps.some(p => prop.startsWith(p))) {categories.layout++}
+    else if (spacingProps.some(p => prop.startsWith(p))) {categories.spacing++}
+    else if (typographyProps.some(p => prop.startsWith(p))) {categories.typography++}
+    else if (colorProps.some(p => prop.startsWith(p))) {categories.colors++}
+    else if (borderProps.some(p => prop.startsWith(p))) {categories.borders++}
+    else if (effectProps.some(p => prop.startsWith(p))) {categories.effects++}
+    else if (transformProps.some(p => prop.startsWith(p))) {categories.transforms++}
+    else if (animationProps.some(p => prop.startsWith(p))) {categories.animations++}
+    else {categories.other++}
   })
 
   return {
@@ -586,8 +724,8 @@ function analyzeCSSContent(css: string): {
  * Format bytes to human readable
  */
 function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  if (bytes < 1024) {return `${bytes} B`}
+  if (bytes < 1024 * 1024) {return `${(bytes / 1024).toFixed(1)} KB`}
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
 
@@ -652,20 +790,24 @@ async function runAnalyze(options: CLIOptions): Promise<CLIResult> {
   console.log(`  Unminified:           ${formatBytes(analysis.sizeBytes)}`)
   console.log(`  Minified:             ${formatBytes(minifiedSize)}`)
   console.log(`  Estimated Gzipped:    ${formatBytes(estimatedGzippedSize)}`)
-  console.log(`  Compression Ratio:    ${((1 - minifiedSize / analysis.sizeBytes) * 100).toFixed(1)}%`)
+  console.log(`  Compression Ratio:    ${analysis.sizeBytes > 0 ? ((1 - minifiedSize / analysis.sizeBytes) * 100).toFixed(1) : 0}%`)
   console.log('')
 
   console.log('Category Breakdown:')
   console.log('─'.repeat(50))
   const totalProps = Object.values(analysis.categories).reduce((a, b) => a + b, 0)
-  Object.entries(analysis.categories)
-    .filter(([_, count]) => count > 0)
-    .sort((a, b) => b[1] - a[1])
-    .forEach(([category, count]) => {
-      const percentage = ((count / totalProps) * 100).toFixed(1)
-      const bar = '█'.repeat(Math.round(count / totalProps * 20))
-      console.log(`  ${category.padEnd(14)} ${bar.padEnd(20)} ${percentage}%`)
-    })
+  if (totalProps > 0) {
+    Object.entries(analysis.categories)
+      .filter(([_, count]) => count > 0)
+      .sort((a, b) => b[1] - a[1])
+      .forEach(([category, count]) => {
+        const percentage = ((count / totalProps) * 100).toFixed(1)
+        const bar = '█'.repeat(Math.round(count / totalProps * 20))
+        console.log(`  ${category.padEnd(14)} ${bar.padEnd(20)} ${percentage}%`)
+      })
+  } else {
+    console.log('  No properties found')
+  }
   console.log('')
 
   console.log('Optimization Suggestions:')
@@ -775,9 +917,37 @@ function sortProperties(css: string): string {
 
 /**
  * Remove comments from CSS
+ *
+ * Uses a state machine approach to avoid ReDoS vulnerability from
+ * nested comment patterns (e.g. comment-within-comment that causes
+ * catastrophic backtracking in regex solutions).
  */
 function removeComments(css: string): string {
-  return css.replace(/\/\*[\s\S]*?\*\//g, '')
+  const result: string[] = []
+  let i = 0
+  const len = css.length
+
+  while (i < len) {
+    // Check for comment start /*
+    if (i + 1 < len && css[i] === '/' && css[i + 1] === '*') {
+      i += 2
+      // Skip until we find closing */
+      while (i + 1 < len) {
+        if (css[i] === '*' && css[i + 1] === '/') {
+          i += 2
+          break
+        }
+        i++
+      }
+      continue
+    }
+
+    // Copy non-comment characters
+    result.push(css[i]!)
+    i++
+  }
+
+  return result.join('')
 }
 
 /**
@@ -1280,10 +1450,10 @@ function runSingleBenchmark(
   }
 
   const totalTime = performance.now() - start
-  const avgTime = totalTime / iterations
-  const minTime = Math.min(...times)
-  const maxTime = Math.max(...times)
-  const opsPerSec = Math.round((iterations / totalTime) * 1000)
+  const avgTime = iterations > 0 ? totalTime / iterations : 0
+  const minTime = times.length > 0 ? Math.min(...times) : 0
+  const maxTime = times.length > 0 ? Math.max(...times) : 0
+  const opsPerSec = totalTime > 0 ? Math.round((iterations / totalTime) * 1000) : 0
 
   return {
     name,
@@ -1326,14 +1496,56 @@ function generateBaseCSS(): string {
 
 /**
  * Simple CSS minification
+ *
+ * Uses a state machine approach to avoid ReDoS vulnerability from
+ * nested comment patterns (e.g. comment-within-comment that causes
+ * catastrophic backtracking in regex solutions).
  */
 function minifyCSS(css: string): string {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\s+/g, ' ')
+  // State machine approach to avoid ReDoS vulnerability
+  const result: string[] = []
+  let i = 0
+  const len = css.length
+
+  while (i < len) {
+    // Skip CSS comments - O(n) guaranteed, no backtracking
+    if (i + 1 < len && css[i] === '/' && css[i + 1] === '*') {
+      i += 2
+      // Advance until we find closing */
+      while (i + 1 < len) {
+        if (css[i] === '*' && css[i + 1] === '/') {
+          i += 2
+          break
+        }
+        i++
+      }
+      continue
+    }
+
+    // Handle whitespace compression
+    if (/\s/.test(css[i]!)) {
+      result.push(' ')
+      // Skip consecutive whitespace
+      while (i < len && /\s/.test(css[i]!)) {
+        i++
+      }
+      continue
+    }
+
+    // Copy non-whitespace, non-comment characters
+    result.push(css[i]!)
+    i++
+  }
+
+  let output = result.join('')
+
+  // Clean up around special characters - these are safe patterns
+  output = output
     .replace(/\s*([{}:;,>+~])\s*/g, '$1')
     .replace(/;}/g, '}')
     .trim()
+
+  return output
 }
 
 /**

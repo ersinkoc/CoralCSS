@@ -206,7 +206,7 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const shade = match[2]
-          if (!color || !shade || !validColors.has(color) || !validShades.has(shade)) return null
+          if (!color || !shade || !validColors.has(color) || !validShades.has(shade)) {return null}
           return {
             properties: {
               '--coral-text-shadow-color': `var(--colors-${color}-${shade})`,
@@ -221,7 +221,7 @@ export function tailwind4CompatPlugin(): Plugin {
         pattern: /^text-shadow-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: {
               '--coral-text-shadow-color': value.replace(/_/g, ' '),
@@ -238,7 +238,7 @@ export function tailwind4CompatPlugin(): Plugin {
           const color = match[1]
           const shade = match[2]
           const opacity = match[3]
-          if (!color || !shade || !opacity) return null
+          if (!color || !shade || !opacity) {return null}
           return {
             properties: {
               '--coral-text-shadow-color': `color-mix(in srgb, var(--colors-${color}-${shade}) ${opacity}%, transparent)`,
@@ -260,7 +260,7 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const shade = match[2]
-          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) return null
+          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) {return null}
           return {
             properties: {
               'filter': `drop-shadow(0 4px 6px var(--colors-${color}-${shade}))`,
@@ -276,7 +276,7 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const shade = match[2]
-          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) return null
+          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) {return null}
           return {
             properties: {
               'filter': `drop-shadow(0 0 10px var(--colors-${color}-${shade})) drop-shadow(0 0 20px var(--colors-${color}-${shade}))`,
@@ -466,9 +466,9 @@ export function tailwind4CompatPlugin(): Plugin {
         pattern: /^elevation-(\d+)$/,
         handler: (match) => {
           const levelStr = match[1]
-          if (!levelStr) return null
+          if (!levelStr) {return null}
           const level = parseInt(levelStr, 10)
-          if (!validElevations.has(level)) return null
+          if (!validElevations.has(level)) {return null}
           return {
             properties: {
               'box-shadow': `0 ${level}px ${level * 2}px -${Math.floor(level / 2)}px rgb(0 0 0 / ${0.1 + level * 0.01}), 0 ${Math.floor(level / 2)}px ${level}px -${Math.floor(level / 2)}px rgb(0 0 0 / ${0.06 + level * 0.005})`,
@@ -521,7 +521,7 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const shade = match[2]
-          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) return null
+          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) {return null}
           return {
             properties: {
               'accent-color': `var(--colors-${color}-${shade})`,
@@ -558,7 +558,7 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const shade = match[2]
-          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) return null
+          if (!color || !shade || !validColors.has(color) || !dropShadowShades.has(shade)) {return null}
           return {
             properties: {
               'caret-color': `var(--colors-${color}-${shade})`,
@@ -605,10 +605,10 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const dir = match[1]
           const size = match[2]
-          if (!dir || !size) return null
+          if (!dir || !size) {return null}
           const prop = scrollMarginProps[dir]
           const value = scrollSpacingValues[size]
-          if (!prop || !value) return null
+          if (!prop || !value) {return null}
           return { properties: { [prop]: value } }
         },
       })
@@ -620,10 +620,10 @@ export function tailwind4CompatPlugin(): Plugin {
         handler: (match) => {
           const dir = match[1]
           const size = match[2]
-          if (!dir || !size) return null
+          if (!dir || !size) {return null}
           const prop = scrollPaddingProps[dir]
           const value = scrollSpacingValues[size]
-          if (!prop || !value) return null
+          if (!prop || !value) {return null}
           return { properties: { [prop]: value } }
         },
       })

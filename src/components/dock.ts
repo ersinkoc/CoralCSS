@@ -144,7 +144,7 @@ export class Dock extends BaseComponent {
    * Update cached item positions (call before magnification calculations)
    */
   private updatePositionCache(): void {
-    if (this.positionsCacheValid) return
+    if (this.positionsCacheValid) {return}
 
     const isHorizontal = this.config.dockPosition === 'bottom' || this.config.dockPosition === 'top'
 
@@ -177,7 +177,7 @@ export class Dock extends BaseComponent {
   }
 
   private renderItems(): void {
-    if (!this.dockContainer) return
+    if (!this.dockContainer) {return}
 
     this.dockContainer.innerHTML = ''
     this.itemElements = []
@@ -349,7 +349,7 @@ export class Dock extends BaseComponent {
 
   private handleMouseMove(e: MouseEvent): void {
     const rect = this.dockContainer?.getBoundingClientRect()
-    if (!rect) return
+    if (!rect) {return}
 
     // Update position cache if invalidated (avoids layout thrashing)
     this.updatePositionCache()

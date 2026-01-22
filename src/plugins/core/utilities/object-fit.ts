@@ -121,7 +121,7 @@ export function objectFitPlugin(): Plugin {
         pattern: /^object-position-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'object-position': value.replace(/_/g, ' ') } }
         },
       })

@@ -46,9 +46,23 @@ function isValidHex(hex: string): boolean {
 
 /**
  * Clamp a value between min and max
+ * Returns the default value if the input is NaN
  */
-function clamp(value: number, min: number, max: number): number {
+function clamp(value: number, min: number, max: number, defaultValue?: number): number {
+  if (Number.isNaN(value)) {
+    return defaultValue ?? min
+  }
   return Math.max(min, Math.min(max, value))
+}
+
+/**
+ * Safely round a number, returning 0 if NaN
+ */
+function safeRound(value: number): number {
+  if (Number.isNaN(value) || !Number.isFinite(value)) {
+    return 0
+  }
+  return Math.round(value)
 }
 
 /**
@@ -63,6 +77,11 @@ function clamp(value: number, min: number, max: number): number {
  * ```
  */
 export function hexToRgb(hex: string): RGB | RGBA | null {
+  // Handle null/undefined input
+  if (!hex || typeof hex !== 'string') {
+    return null
+  }
+
   // Remove # if present
   hex = hex.replace(/^#/, '')
 
@@ -123,17 +142,61 @@ export function rgbToHex(rOrColor: number | RGB | RGBA, g?: number, b?: number):
 
   // Support both separate arguments and object
   if (typeof rOrColor === 'number') {
+    // Validate all numeric inputs
+    if (Number.isNaN(rOrColor) || !Number.isFinite(rOrColor)) {
+      throw new Error(
+        `Invalid RGB value: r=${rOrColor} must be a finite number. ` +
+        'Use valid RGB values (0-255).'
+      )
+    }
+    if (g !== undefined && (Number.isNaN(g) || !Number.isFinite(g))) {
+      throw new Error(
+        `Invalid RGB value: g=${g} must be a finite number. ` +
+        'Use valid RGB values (0-255).'
+      )
+    }
+    if (b !== undefined && (Number.isNaN(b) || !Number.isFinite(b))) {
+      throw new Error(
+        `Invalid RGB value: b=${b} must be a finite number. ` +
+        'Use valid RGB values (0-255).'
+      )
+    }
     color = { r: rOrColor, g: g ?? 0, b: b ?? 0 }
   } else {
+    // Validate object properties
+    if (!rOrColor || typeof rOrColor !== 'object') {
+      throw new Error('Invalid color object: must be an RGB or RGBA object')
+    }
+    if (typeof rOrColor.r !== 'number' || Number.isNaN(rOrColor.r) || !Number.isFinite(rOrColor.r)) {
+      throw new Error(
+        `Invalid RGB value: r=${rOrColor.r} must be a finite number`
+      )
+    }
+    if (typeof rOrColor.g !== 'number' || Number.isNaN(rOrColor.g) || !Number.isFinite(rOrColor.g)) {
+      throw new Error(
+        `Invalid RGB value: g=${rOrColor.g} must be a finite number`
+      )
+    }
+    if (typeof rOrColor.b !== 'number' || Number.isNaN(rOrColor.b) || !Number.isFinite(rOrColor.b)) {
+      throw new Error(
+        `Invalid RGB value: b=${rOrColor.b} must be a finite number`
+      )
+    }
     color = rOrColor
   }
 
-  const rHex = Math.round(color.r).toString(16).padStart(2, '0')
-  const gHex = Math.round(color.g).toString(16).padStart(2, '0')
-  const bHex = Math.round(color.b).toString(16).padStart(2, '0')
+  // Clamp and safely round all values to prevent NaN in output
+  const rClamped = clamp(color.r, 0, 255)
+  const gClamped = clamp(color.g, 0, 255)
+  const bClamped = clamp(color.b, 0, 255)
+
+  const rHex = safeRound(rClamped).toString(16).padStart(2, '0')
+  const gHex = safeRound(gClamped).toString(16).padStart(2, '0')
+  const bHex = safeRound(bClamped).toString(16).padStart(2, '0')
 
   if ('a' in color && color.a !== undefined && color.a !== 1) {
-    const a = Math.round(color.a * 255)
+    const aClamped = clamp(color.a, 0, 1)
+    const a = safeRound(aClamped * 255)
       .toString(16)
       .padStart(2, '0')
     return `#${rHex}${gHex}${bHex}${a}`
@@ -159,15 +222,22 @@ export function parseRgbString(str: string): RGB | RGBA | null {
     return null
   }
 
-  const [, r, g, b, a] = match
+  const [, rStr, gStr, bStr, aStr] = match
+
+  // Parse values with NaN protection (default to 0 for invalid values)
+  const rParsed = parseInt(rStr!, 10)
+  const gParsed = parseInt(gStr!, 10)
+  const bParsed = parseInt(bStr!, 10)
+
   const result: RGB = {
-    r: clamp(parseInt(r!, 10), 0, 255),
-    g: clamp(parseInt(g!, 10), 0, 255),
-    b: clamp(parseInt(b!, 10), 0, 255),
+    r: clamp(rParsed, 0, 255, 0),
+    g: clamp(gParsed, 0, 255, 0),
+    b: clamp(bParsed, 0, 255, 0),
   }
 
-  if (a !== undefined) {
-    return { ...result, a: clamp(parseFloat(a!), 0, 1) }
+  if (aStr !== undefined) {
+    const aParsed = parseFloat(aStr)
+    return { ...result, a: clamp(aParsed, 0, 1, 1) }
   }
 
   return result
@@ -183,9 +253,10 @@ export function parseRgbString(str: string): RGB | RGBA | null {
  * ```
  */
 export function rgbToHsl(color: RGB): HSL {
-  const r = color.r / 255
-  const g = color.g / 255
-  const b = color.b / 255
+  // Clamp input values to valid range with NaN protection
+  const r = clamp(color.r, 0, 255, 0) / 255
+  const g = clamp(color.g, 0, 255, 0) / 255
+  const b = clamp(color.b, 0, 255, 0) / 255
 
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
@@ -212,9 +283,9 @@ export function rgbToHsl(color: RGB): HSL {
   }
 
   return {
-    h: Math.round(h * 360),
-    s: Math.round(s * 100),
-    l: Math.round(l * 100),
+    h: safeRound(h * 360),
+    s: safeRound(s * 100),
+    l: safeRound(l * 100),
   }
 }
 
@@ -228,9 +299,10 @@ export function rgbToHsl(color: RGB): HSL {
  * ```
  */
 export function hslToRgb(color: HSL): RGB {
-  const h = color.h / 360
-  const s = color.s / 100
-  const l = color.l / 100
+  // Clamp input values to valid range with NaN protection
+  const h = clamp(color.h, 0, 360, 0) / 360
+  const s = clamp(color.s, 0, 100, 0) / 100
+  const l = clamp(color.l, 0, 100, 0) / 100
 
   let r: number, g: number, b: number
 
@@ -264,9 +336,9 @@ export function hslToRgb(color: HSL): RGB {
   }
 
   return {
-    r: Math.round(r * 255),
-    g: Math.round(g * 255),
-    b: Math.round(b * 255),
+    r: safeRound(r * 255),
+    g: safeRound(g * 255),
+    b: safeRound(b * 255),
   }
 }
 
@@ -292,7 +364,10 @@ export function adjustAlpha(color: string, alpha: number): string {
     return color
   }
 
-  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
+  // Clamp alpha to valid range with NaN protection
+  const safeAlpha = clamp(alpha, 0, 1, 1)
+
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${safeAlpha})`
 }
 
 /**
@@ -398,10 +473,16 @@ export function parseColor(color: string): RGB | RGBA | null {
  * ```
  */
 export function formatColor(color: RGB | RGBA): string {
+  // Clamp all values with NaN protection
+  const r = safeRound(clamp(color.r, 0, 255, 0))
+  const g = safeRound(clamp(color.g, 0, 255, 0))
+  const b = safeRound(clamp(color.b, 0, 255, 0))
+
   if ('a' in color && color.a !== undefined && color.a !== 1) {
-    return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+    const a = clamp(color.a, 0, 1, 1)
+    return `rgba(${r}, ${g}, ${b}, ${a})`
   }
-  return `rgb(${color.r}, ${color.g}, ${color.b})`
+  return `rgb(${r}, ${g}, ${b})`
 }
 
 /**
@@ -420,13 +501,14 @@ export function mixColors(color1: string, color2: string, weight = 0.5): string 
     return color1
   }
 
-  const w = weight
+  // Clamp weight to valid range with NaN protection
+  const w = clamp(weight, 0, 1, 0.5)
   const w1 = 1 - w
 
   const result: RGB = {
-    r: Math.round(rgb1.r * w1 + rgb2.r * w),
-    g: Math.round(rgb1.g * w1 + rgb2.g * w),
-    b: Math.round(rgb1.b * w1 + rgb2.b * w),
+    r: safeRound(rgb1.r * w1 + rgb2.r * w),
+    g: safeRound(rgb1.g * w1 + rgb2.g * w),
+    b: safeRound(rgb1.b * w1 + rgb2.b * w),
   }
 
   return rgbToHex(result)

@@ -55,7 +55,7 @@ export function validateTokens(
   // Collect all token paths and their references
   function collectTokens(node: TokenGroup | StyleDictionaryToken, path: string[]) {
     for (const [key, value] of Object.entries(node)) {
-      if (key.startsWith('$')) continue
+      if (key.startsWith('$')) {continue}
 
       const currentPath = [...path, key]
       const pathString = currentPath.join('.')
@@ -101,7 +101,7 @@ export function validateTokens(
 
   // Start collection
   for (const [key, value] of Object.entries(tokens)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
     if (typeof value === 'object' && value !== null) {
       collectTokens(value as TokenGroup, [key])
     }
@@ -141,7 +141,7 @@ export function validateTokens(
 
     for (const tokenPath of allTokenPaths) {
       // Skip semantic tokens (they reference primitives)
-      if (references.has(tokenPath)) continue
+      if (references.has(tokenPath)) {continue}
 
       // Check if this primitive is referenced
       if (!usedTokens.has(tokenPath)) {
@@ -290,7 +290,7 @@ function validateTokenType(
  * Check if value is a valid color
  */
 function isValidColor(value: unknown): boolean {
-  if (typeof value !== 'string') return false
+  if (typeof value !== 'string') {return false}
 
   // Hex color
   if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
@@ -324,8 +324,8 @@ function isValidColor(value: unknown): boolean {
  * Check if value is a valid dimension
  */
 function isValidDimension(value: unknown): boolean {
-  if (typeof value === 'number') return true
-  if (typeof value !== 'string') return false
+  if (typeof value === 'number') {return true}
+  if (typeof value !== 'string') {return false}
 
   // Check for valid CSS dimension units
   return /^-?[\d.]+(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)?$/.test(value)
@@ -355,8 +355,8 @@ function isValidFontWeight(value: unknown): boolean {
  * Check if value is a valid duration
  */
 function isValidDuration(value: unknown): boolean {
-  if (typeof value === 'number') return true
-  if (typeof value !== 'string') return false
+  if (typeof value === 'number') {return true}
+  if (typeof value !== 'string') {return false}
 
   return /^[\d.]+(?:ms|s)?$/.test(value)
 }
@@ -384,7 +384,7 @@ function findCircularReferences(
       return true
     }
 
-    if (visited.has(path)) return false
+    if (visited.has(path)) {return false}
 
     visiting.add(path)
     const refs = references.get(path) || []

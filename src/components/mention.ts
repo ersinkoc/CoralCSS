@@ -165,6 +165,7 @@ export class Mention extends BaseComponent {
   private input: HTMLElement | null = null
   private suggestionsEl: HTMLElement | null = null
   private debounceTimer: ReturnType<typeof setTimeout> | null = null
+  private blurTimer: ReturnType<typeof setTimeout> | null = null
 
   protected override getDefaultConfig(): MentionConfig {
     return {
@@ -235,8 +236,12 @@ export class Mention extends BaseComponent {
     })
 
     this.input.addEventListener('blur', () => {
-      // Delay to allow click on suggestion
-      setTimeout(() => {
+      // Delay to allow click on suggestion - track for cleanup
+      if (this.blurTimer) {
+        clearTimeout(this.blurTimer)
+      }
+      this.blurTimer = setTimeout(() => {
+        this.blurTimer = null
         if (this.state.isOpen) {
           this.close()
         }
@@ -244,12 +249,13 @@ export class Mention extends BaseComponent {
       this.dispatch('blur', {})
     })
 
-    // Click away
-    document.addEventListener('click', (e) => {
+    // Click away - use tracked addEventListener for proper cleanup
+    const handleClickAway = (e: Event) => {
       if (!this.element.contains(e.target as Node)) {
         this.close()
       }
-    })
+    }
+    this.addEventListener(document, 'click', handleClickAway)
   }
 
   private setupSuggestions(): void {
@@ -701,6 +707,11 @@ export class Mention extends BaseComponent {
   override destroy(): void {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer)
+      this.debounceTimer = null
+    }
+    if (this.blurTimer) {
+      clearTimeout(this.blurTimer)
+      this.blurTimer = null
     }
     super.destroy()
   }

@@ -176,7 +176,7 @@ function parseCSS(css: string): Map<string, Map<string, string>> {
 
     for (const propPart of propParts) {
       const colonIndex = propPart.indexOf(':')
-      if (colonIndex === -1) continue
+      if (colonIndex === -1) {continue}
 
       const propName = propPart.slice(0, colonIndex).trim()
       const propValue = propPart.slice(colonIndex + 1).trim()

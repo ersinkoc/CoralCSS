@@ -267,12 +267,16 @@ export class Tour extends BaseComponent {
 
     // Resume from storage if enabled
     if (this.config.resumeOnReload && this.config.storageKey) {
-      const saved = window.localStorage.getItem(this.config.storageKey)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (parsed.currentStep !== undefined) {
-          startStep = parsed.currentStep
+      try {
+        const saved = window.localStorage.getItem(this.config.storageKey)
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          if (parsed && typeof parsed.currentStep === 'number') {
+            startStep = parsed.currentStep
+          }
         }
+      } catch {
+        // Invalid JSON in storage, ignore and start from beginning
       }
     }
 

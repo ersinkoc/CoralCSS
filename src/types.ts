@@ -78,7 +78,7 @@ export interface CoralOptions {
   content?: string[]
   /**
    * Safelist - classes to always include even if not found in content.
-   * Supports strings and RegExp patterns.
+   * Supports strings, RegExp patterns, and pattern objects with variants.
    * @example
    * ```ts
    * safelist: [
@@ -88,10 +88,7 @@ export interface CoralOptions {
    * ]
    * ```
    */
-  safelist?: (string | RegExp | {
-    pattern: RegExp
-    variants?: string[]
-  })[]
+  safelist?: SafelistItem[]
   /**
    * Blocklist - classes to never generate even if found in content.
    * Supports strings and RegExp patterns.
@@ -116,6 +113,20 @@ export interface CoralOptions {
 }
 
 /**
+ * Safelist pattern with variants and breakpoints
+ */
+export interface SafelistPattern {
+  pattern: RegExp | string
+  variants?: string[]
+  breakpoints?: string[]
+}
+
+/**
+ * Safelist item types
+ */
+export type SafelistItem = string | RegExp | SafelistPattern
+
+/**
  * Resolved configuration after merging defaults and user options
  */
 export interface ResolvedConfig {
@@ -130,7 +141,7 @@ export interface ResolvedConfig {
     readonly attributify: boolean
   }
   readonly content: string[]
-  readonly safelist: (string | RegExp | { pattern: RegExp; variants?: string[] })[]
+  readonly safelist: SafelistItem[]
   readonly blocklist: (string | RegExp)[]
   readonly cache: Required<CacheOptions>
 }

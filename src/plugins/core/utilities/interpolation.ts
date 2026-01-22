@@ -50,7 +50,7 @@ export function interpolationPlugin(): Plugin {
           handler: (match) => {
             const color = match[1]
             const base = match[2]
-            if (!color || !base) return null
+            if (!color || !base) {return null}
             return {
               properties: {
                 'background-color': `color-mix(in ${space}, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -66,7 +66,7 @@ export function interpolationPlugin(): Plugin {
           handler: (match) => {
             const color = match[1]
             const base = match[2]
-            if (!color || !base) return null
+            if (!color || !base) {return null}
             return {
               properties: {
                 color: `color-mix(in ${space}, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -82,7 +82,7 @@ export function interpolationPlugin(): Plugin {
           handler: (match) => {
             const color = match[1]
             const base = match[2]
-            if (!color || !base) return null
+            if (!color || !base) {return null}
             return {
               properties: {
                 'border-color': `color-mix(in ${space}, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -98,7 +98,7 @@ export function interpolationPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const base = match[2]
-          if (!color || !base) return null
+          if (!color || !base) {return null}
           return {
             properties: {
               'background-color': `color-mix(in srgb, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -112,7 +112,7 @@ export function interpolationPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const base = match[2]
-          if (!color || !base) return null
+          if (!color || !base) {return null}
           return {
             properties: {
               color: `color-mix(in srgb, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -126,7 +126,7 @@ export function interpolationPlugin(): Plugin {
         handler: (match) => {
           const color = match[1]
           const base = match[2]
-          if (!color || !base) return null
+          if (!color || !base) {return null}
           return {
             properties: {
               'border-color': `color-mix(in srgb, ${color.replace(/_/g, ' ')}, ${base.replace(/_/g, ' ')})`
@@ -170,7 +170,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-lab-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `lab(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -181,7 +181,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-oklab-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `oklab(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -192,7 +192,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-lch-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `lch(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -203,7 +203,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-oklch-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `oklch(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -214,7 +214,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-hsl-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `hsl(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -225,7 +225,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^from-hwb-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { color: `hwb(from var(--color-base) ${value.replace(/_/g, ' ')})` }
           }
@@ -241,7 +241,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^lighten-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { color: `oklab(from var(--color-base) calc(l + ${amount}%) a b)` }
           }
@@ -252,7 +252,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^darken-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { color: `oklab(from var(--color-base) calc(l - ${amount}%) a b)` }
           }
@@ -264,7 +264,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^saturate-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { color: `oklch(from var(--color-base) l calc(c * ${amount} / 100) h)` }
           }
@@ -275,7 +275,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^desaturate-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { color: `oklch(from var(--color-base) l calc(c * ${100 - parseInt(amount, 10)} / 100) h)` }
           }
@@ -290,7 +290,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^bg-lighten-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { 'background-color': `oklab(from var(--bg-color-base) calc(l + ${amount}%) a b)` }
           }
@@ -301,7 +301,7 @@ export function interpolationPlugin(): Plugin {
         pattern: /^bg-darken-\[(\d+)\]$/,
         handler: (match) => {
           const amount = match[1]
-          if (!amount) return null
+          if (!amount) {return null}
           return {
             properties: { 'background-color': `oklab(from var(--bg-color-base) calc(l - ${amount}%) a b)` }
           }

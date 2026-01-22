@@ -191,7 +191,7 @@ export class Spotlight extends BaseComponent {
   }
 
   private setupInputEvents(): void {
-    if (!this.input) return
+    if (!this.input) {return}
 
     this.input.addEventListener('input', () => {
       const query = this.input?.value || ''
@@ -275,7 +275,7 @@ export class Spotlight extends BaseComponent {
 
     return items
       .filter((item) => {
-        if (item.disabled) return false
+        if (item.disabled) {return false}
 
         const searchTargets = [item.label.toLowerCase(), item.description?.toLowerCase() || '', ...(item.keywords?.map((k) => k.toLowerCase()) || [])]
 
@@ -303,7 +303,7 @@ export class Spotlight extends BaseComponent {
   }
 
   private renderResults(): void {
-    if (!this.resultsList) return
+    if (!this.resultsList) {return}
 
     this.resultsList.innerHTML = ''
 
@@ -549,7 +549,7 @@ export class Spotlight extends BaseComponent {
 
   executeSelected(): void {
     const selectedItem = this.state.results[this.state.selectedIndex]
-    if (!selectedItem || selectedItem.disabled) return
+    if (!selectedItem || selectedItem.disabled) {return}
 
     // Add to recent items
     const recentItems = [selectedItem.id, ...this.state.recentItems.filter((id) => id !== selectedItem.id)].slice(0, this.config.recentLimit)

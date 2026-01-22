@@ -93,6 +93,8 @@ export class RuntimeOptimizer {
   private taskQueue: ScheduledTask[] = []
   private isScheduled = false
   private taskIdCounter = 0
+  private idleTimer: ReturnType<typeof setTimeout> | null = null
+  private isDestroyed = false
 
   // Batch operations
   private operationQueue: BatchOperation[] = []
@@ -100,6 +102,7 @@ export class RuntimeOptimizer {
 
   // Virtualized styles
   private styleNodes: HTMLStyleElement[] = []
+  private styleNodeContents: string[][] = [] // Accumulate CSS strings per node to avoid repeated concatenation
   private currentNodeIndex = 0
   private currentClassCount = 0
 
@@ -172,11 +175,33 @@ export class RuntimeOptimizer {
    * Request idle callback
    */
   private requestIdle(): void {
-    const processTasks = (deadline?: IdleDeadline) => {
-      const timeRemaining = deadline?.timeRemaining() ?? Infinity
+    // Don't schedule if destroyed
+    if (this.isDestroyed) {
+      return
+    }
 
-      // Process as many tasks as possible within time budget
-      while (this.taskQueue.length > 0 && timeRemaining > 0) {
+    const processTasks = (deadline?: IdleDeadline) => {
+      // Don't process if destroyed
+      if (this.isDestroyed) {
+        this.isScheduled = false
+        return
+      }
+
+      this.idleTimer = null
+
+      // FIX: Check timeRemaining INSIDE the loop, not before
+      // Also add iteration limit for safety
+      const MAX_ITERATIONS = 1000 // Prevent infinite loops even with bad deadline
+      let iterations = 0
+
+      while (this.taskQueue.length > 0 && iterations < MAX_ITERATIONS) {
+        // Check time budget on EACH iteration
+        const timeRemaining = deadline?.timeRemaining() ?? Infinity
+        if (timeRemaining <= 0) {
+          // Out of time, reschedule remaining tasks
+          break
+        }
+
         const task = this.taskQueue.shift()
         if (task) {
           try {
@@ -185,11 +210,13 @@ export class RuntimeOptimizer {
             console.error('Task execution error:', error)
           }
         }
+
+        iterations++
       }
 
       this.isScheduled = false
 
-      // If more tasks, schedule again
+      // If more tasks remain, schedule again
       if (this.taskQueue.length > 0) {
         this.requestIdle()
       }
@@ -198,8 +225,8 @@ export class RuntimeOptimizer {
     if (this.schedulerOptions.useIdleCallback && typeof requestIdleCallback !== 'undefined') {
       requestIdleCallback(processTasks, { timeout: this.schedulerOptions.timeout })
     } else {
-      // Fallback to setTimeout
-      setTimeout(() => processTasks(), this.schedulerOptions.timeout)
+      // Fallback to setTimeout - track for cleanup
+      this.idleTimer = setTimeout(() => processTasks(), this.schedulerOptions.timeout)
     }
   }
 
@@ -347,10 +374,12 @@ export class RuntimeOptimizer {
 
   /**
    * Inject CSS into virtualized style nodes
+   * Uses array accumulation to avoid repeated string concatenation
    */
   virtualizedInject(css: string): void {
     // Create new style node if needed
     if (this.currentClassCount >= this.virtualizedOptions.classesPerNode) {
+      this.flushCurrentNode() // Flush accumulated content before moving to next node
       this.currentNodeIndex++
       this.currentClassCount = 0
     }
@@ -363,15 +392,34 @@ export class RuntimeOptimizer {
       styleNode.setAttribute('data-coral-node', String(this.currentNodeIndex))
       document.head.appendChild(styleNode)
       this.styleNodes.push(styleNode)
+      // Initialize content array for this node
+      this.styleNodeContents[this.currentNodeIndex] = []
     }
 
-    // Append CSS
-    styleNode.textContent += css
+    // Accumulate CSS in array instead of repeated concatenation
+    this.styleNodeContents[this.currentNodeIndex]!.push(css)
     this.currentClassCount++
 
     // Merge small nodes if enabled
     if (this.virtualizedOptions.mergeNodes) {
       this.mergeSmallNodes()
+    }
+  }
+
+  /**
+   * Flush accumulated content to the current style node
+   */
+  private flushCurrentNode(): void {
+    if (this.currentNodeIndex < this.styleNodes.length) {
+      const content = this.styleNodeContents[this.currentNodeIndex]
+      if (content && content.length > 0) {
+        const styleNode = this.styleNodes[this.currentNodeIndex]
+        if (styleNode) {
+          // Single join operation instead of repeated concatenation
+          styleNode.textContent = content.join('')
+        }
+        this.styleNodeContents[this.currentNodeIndex] = []
+      }
     }
   }
 
@@ -385,11 +433,31 @@ export class RuntimeOptimizer {
       const node = this.styleNodes[i]
       const nextNode = this.styleNodes[i + 1]
 
-      if (node && nextNode && node.textContent && node.textContent.length < threshold * 100) {
-        // Merge with next node
-        nextNode.textContent = (node.textContent || '') + (nextNode.textContent || '')
+      // Check accumulated content size
+      const currentContent = this.styleNodeContents[i]
+      const currentSize = currentContent ? currentContent.join('').length : 0
+
+      if (node && nextNode && currentSize < threshold * 100) {
+        // Flush current node content first
+        if (currentContent && currentContent.length > 0) {
+          node.textContent = currentContent.join('')
+        }
+
+        // Merge with next node's content array
+        const nextContent = this.styleNodeContents[i + 1] || []
+        const nodeContent = node.textContent || ''
+        if (nodeContent) {
+          nextContent.unshift(nodeContent)
+        }
+
+        // Update next node
+        nextNode.textContent = nextContent.join('')
+        this.styleNodeContents[i + 1] = nextContent
+
+        // Remove current node
         node.remove()
         this.styleNodes.splice(i, 1)
+        this.styleNodeContents.splice(i, 1)
         i-- // Adjust index
       }
     }
@@ -403,6 +471,7 @@ export class RuntimeOptimizer {
       node.remove()
     }
     this.styleNodes = []
+    this.styleNodeContents = []
     this.currentNodeIndex = 0
     this.currentClassCount = 0
   }
@@ -486,8 +555,12 @@ export class RuntimeOptimizer {
    * Cleanup all resources
    */
   cleanup(): void {
+    // Mark as destroyed to prevent pending callbacks from executing
+    this.isDestroyed = true
+
     // Clear tasks
     this.taskQueue = []
+    this.isScheduled = false
 
     // Flush and clear batch
     this.flushBatch()
@@ -499,6 +572,11 @@ export class RuntimeOptimizer {
     // Clear timers
     if (this.batchTimer) {
       clearTimeout(this.batchTimer)
+      this.batchTimer = null
+    }
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer)
+      this.idleTimer = null
     }
   }
 

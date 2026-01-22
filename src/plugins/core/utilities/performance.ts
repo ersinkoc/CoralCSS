@@ -45,7 +45,7 @@ export function performancePlugin(): Plugin {
         pattern: /^will-change-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'will-change': v.replace(/_/g, ' ') } }
         },
       })
@@ -82,7 +82,7 @@ export function performancePlugin(): Plugin {
         pattern: /^contain-intrinsic-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'contain-intrinsic-size': v.replace(/_/g, ' ') } }
         },
       })
@@ -95,7 +95,7 @@ export function performancePlugin(): Plugin {
         pattern: /^contain-intrinsic-w-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'contain-intrinsic-width': v } }
         },
       })
@@ -108,7 +108,7 @@ export function performancePlugin(): Plugin {
         pattern: /^contain-intrinsic-h-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { 'contain-intrinsic-height': v } }
         },
       })
@@ -135,7 +135,7 @@ export function performancePlugin(): Plugin {
         pattern: /^contain-\[(.+)\]$/,
         handler: (match) => {
           const v = match[1]
-          if (!v) return null
+          if (!v) {return null}
           return { properties: { contain: v.replace(/_/g, ' ') } }
         },
       })

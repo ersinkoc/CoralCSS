@@ -55,7 +55,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^perspective-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { perspective: value.replace(/_/g, ' ') } }
         },
       })
@@ -99,7 +99,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^perspective-origin-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'perspective-origin': value.replace(/_/g, ' ') } }
         },
       })
@@ -160,7 +160,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^translate-z-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `translateZ(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -170,7 +170,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^translate-3d-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `translate3d(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -216,7 +216,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^rotate-x-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `rotateX(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -224,7 +224,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^rotate-y-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `rotateY(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -232,7 +232,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^rotate-z-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `rotateZ(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -255,7 +255,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^scale-3d-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `scale3d(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -269,7 +269,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^rotate-3d-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `rotate3d(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -279,7 +279,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^matrix-3d-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { transform: `matrix3d(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -312,7 +312,7 @@ export function transforms3DPlugin(): Plugin {
         pattern: /^transform-origin-z-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'transform-origin': `center center ${value.replace(/_/g, ' ')}` } }
         },
       })

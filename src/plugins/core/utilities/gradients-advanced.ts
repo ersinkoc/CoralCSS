@@ -391,7 +391,7 @@ export function advancedGradientsPlugin(): Plugin {
         pattern: /^bg-conic-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { background: `conic-gradient(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -401,7 +401,7 @@ export function advancedGradientsPlugin(): Plugin {
         pattern: /^bg-radial-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { background: `radial-gradient(${value.replace(/_/g, ' ')})` } }
         },
       })
@@ -411,7 +411,7 @@ export function advancedGradientsPlugin(): Plugin {
         pattern: /^bg-overlay-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: {
               'background': `linear-gradient(${value.replace(/_/g, ' ')})`,

@@ -195,7 +195,7 @@ export function githubPreset(options: GitHubPresetOptions = {}): Plugin[] {
     name: 'github-theme',
     version: '1.0.0',
     install(api) {
-      let colors = { ...githubLightColors }
+      const colors = { ...githubLightColors }
 
       // Color blind safe palette
       if (colorBlind) {

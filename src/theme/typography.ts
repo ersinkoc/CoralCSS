@@ -140,6 +140,18 @@ export const textUnderlineOffset = {
 }
 
 /**
+ * Maximum key length to prevent abuse
+ */
+const MAX_KEY_LENGTH = 32
+
+/**
+ * Validate theme key input
+ */
+function isValidKey(key: unknown): key is string {
+  return typeof key === 'string' && key.length > 0 && key.length <= MAX_KEY_LENGTH
+}
+
+/**
  * Get font family as CSS string
  *
  * @example
@@ -149,6 +161,9 @@ export const textUnderlineOffset = {
  * ```
  */
 export function getFontFamily(family: keyof FontFamilies): string {
+  if (!isValidKey(family)) {
+    return ''
+  }
   return fonts[family]?.join(', ') ?? String(family)
 }
 
@@ -162,6 +177,9 @@ export function getFontFamily(family: keyof FontFamilies): string {
  * ```
  */
 export function getFontSize(size: string): { fontSize: string; lineHeight: string } | undefined {
+  if (!isValidKey(size)) {
+    return undefined
+  }
   const value = fontSizes[size]
   if (typeof value === 'string') {
     return { fontSize: value, lineHeight: '1.5' }
@@ -178,6 +196,9 @@ export function getFontSize(size: string): { fontSize: string; lineHeight: strin
  * ```
  */
 export function getFontWeight(weight: string): string | undefined {
+  if (!isValidKey(weight)) {
+    return undefined
+  }
   const value = fontWeights[weight]
   return typeof value === 'number' ? String(value) : value
 }
@@ -191,6 +212,9 @@ export function getFontWeight(weight: string): string | undefined {
  * ```
  */
 export function getLineHeight(height: string): string | undefined {
+  if (!isValidKey(height)) {
+    return undefined
+  }
   return lineHeights[height]
 }
 
@@ -203,5 +227,8 @@ export function getLineHeight(height: string): string | undefined {
  * ```
  */
 export function getLetterSpacing(spacing: string): string | undefined {
+  if (!isValidKey(spacing)) {
+    return undefined
+  }
   return letterSpacing[spacing]
 }

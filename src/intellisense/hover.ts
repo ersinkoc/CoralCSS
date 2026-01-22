@@ -634,8 +634,8 @@ function formatCSS(css: string): string {
   return css
     .replace(/\{/g, ' {\n  ')
     .replace(/;/g, ';\n  ')
-    .replace(/\n  \}/g, '\n}')
-    .replace(/\n  $/gm, '')
+    .replace(/\n {2}\}/g, '\n}')
+    .replace(/\n {2}$/gm, '')
     .trim()
 }
 

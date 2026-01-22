@@ -86,7 +86,7 @@ export function scrollbarPlugin(): Plugin {
         pattern: /^scrollbar-color-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           const [thumb, track] = value.split(',').map(v => v.trim())
           return { properties: { 'scrollbar-color': `${thumb} ${track || 'auto'}` } }
         },
@@ -201,7 +201,7 @@ export function scrollbarPlugin(): Plugin {
         pattern: /^scrollbar-thumb-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           const parts = value.split(':')
           const propName = parts[0] ?? 'background'
           const propValue = parts[1] ?? value

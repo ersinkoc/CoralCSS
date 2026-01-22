@@ -119,6 +119,34 @@ export {
   setDataAttribute,
 } from './dom'
 
+// Type guards and branded types
+export {
+  isValidPlainObject,
+  assertPlainObject,
+  safeAssert,
+  createTypeGuard,
+  isValidTheme,
+  isValidConfig,
+  safeCast,
+  isNonNullObject,
+  isString,
+  isNumber,
+  isFiniteNumber,
+  isArray,
+  isFunction,
+  filterArray,
+  assertArrayOfType,
+  brandAsValidated,
+  hasProperty,
+  hasProperties,
+} from './type-guards'
+export type {
+  ValidatedPlainObject,
+  ValidatedTheme,
+  ValidatedConfig,
+  TypeGuardResult,
+} from './type-guards'
+
 // CVA (Class Variance Authority)
 export {
   cva,

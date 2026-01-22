@@ -254,17 +254,17 @@ export class Extractor {
 
     while ((match = pattern.exec(content)) !== null) {
       const value = match[1]
-      if (!value) continue
+      if (!value) {continue}
 
       // Only process if it looks like it might contain class names
       // Quick check before splitting to avoid unnecessary work
-      if (!/^[a-z]/i.test(value)) continue
+      if (!/^[a-z]/i.test(value)) {continue}
 
       // Split and validate each potential class
       const parts = this.splitClasses(value)
       for (const part of parts) {
         // Skip if too long (prevents processing malicious input)
-        if (part.length > MAX_CLASS_LENGTH) continue
+        if (part.length > MAX_CLASS_LENGTH) {continue}
 
         if (this.looksLikeUtility(part)) {
           classes.push(part)
@@ -350,6 +350,7 @@ export class Extractor {
   /**
    * Check if a string looks like a utility class
    * Uses anchored patterns with limited character classes to prevent ReDoS
+   * Supports Unicode identifiers for internationalized class names
    */
   private looksLikeUtility(str: string): boolean {
     // Quick length check first
@@ -358,20 +359,51 @@ export class Extractor {
     }
 
     // Simple character-based checks (faster than regex for initial filter)
+    // Allow: a-z, hyphen, or Unicode letters (code point > 127)
     const firstChar = str[0]
-    if (!firstChar || (firstChar !== '-' && (firstChar < 'a' || firstChar > 'z'))) {
+    const firstCode = firstChar?.charCodeAt(0) ?? 0
+    const isValidFirstChar =
+      firstChar === '-' ||
+      (firstCode >= 97 && firstCode <= 122) || // a-z
+      firstCode > 127 // Unicode letters
+
+    if (!isValidFirstChar) {
       return false
     }
 
     // Common utility patterns - all anchored and using non-greedy matching
     // These patterns avoid nested quantifiers
+    // Note: In character classes, `-` must be at start or end to be literal,
+    // and `[` `]` are escaped as `\[` `\]` for clarity
     const patterns = [
-      /^-?[a-z]+$/,                           // Simple utilities (flex, block, etc.)
-      /^-?[a-z]+-[a-z0-9[\]().:%/-]+$/,       // Standard utilities (limited charset)
-      /^[a-z]+:-?[a-z]+-[a-z0-9[\]().:%/-]+$/, // With single variant prefix
+      /^-?[a-z]+$/,                                // Simple utilities (flex, block, etc.)
+      /^-?[a-z]+-[a-z0-9\[\]().:%/_-]+$/,         // Standard utilities (limited charset)
+      /^[a-z]+:-?[a-z]+-[a-z0-9\[\]().:%/_-]+$/,  // With single variant prefix
     ]
 
-    return patterns.some((p) => p.test(str))
+    // Check ASCII patterns first (most common)
+    if (patterns.some((p) => p.test(str))) {
+      return true
+    }
+
+    // For Unicode class names, use a more permissive but still safe check
+    // Match: optional hyphen, then letters/digits/common chars
+    // This covers internationalized utility names like text-日本語
+    // Check if any character has code point > 127 (non-ASCII)
+    const hasNonASCII = firstCode > 127 || [...str].some((c) => (c.codePointAt(0) ?? 0) > 127)
+    if (hasNonASCII) {
+      // Safe Unicode pattern: no nested quantifiers, anchored
+      // Allows Unicode letters (\p{L}), digits, and common utility chars
+      try {
+        const unicodePattern = /^-?[\p{L}\p{N}][\p{L}\p{N}\-_:.[\]()%/]*$/u
+        return unicodePattern.test(str)
+      } catch {
+        // Unicode regex not supported (old environments), fall back to ASCII-only
+        return false
+      }
+    }
+
+    return false
   }
 
   /**

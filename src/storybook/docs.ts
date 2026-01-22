@@ -318,7 +318,7 @@ function formatCSSForDisplay(css: string): string {
     .replace(/\s*{\s*/g, ' {\n  ')
     .replace(/;\s*/g, ';\n  ')
     .replace(/\s*}\s*/g, '\n}\n\n')
-    .replace(/\n  \n}/g, '\n}')
+    .replace(/\n {2}\n}/g, '\n}')
     .trim()
 }
 

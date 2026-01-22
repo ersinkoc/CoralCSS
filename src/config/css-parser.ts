@@ -63,7 +63,7 @@ export function parseCSSConfig(cssContent: string): ParsedCSSConfig {
   const sourceMatches = cssContent.matchAll(/@coral\s+source\s+([^;]+);/g)
   for (const match of sourceMatches) {
     const source = match[1]?.trim()
-    if (!source) continue
+    if (!source) {continue}
 
     if (source.startsWith('not ')) {
       config.sourceNot = config.sourceNot || []
@@ -84,7 +84,7 @@ export function parseCSSConfig(cssContent: string): ParsedCSSConfig {
   const pluginMatches = cssContent.matchAll(/@coral\s+plugin\s+([^;]+);/g)
   for (const match of pluginMatches) {
     const plugin = match[1]?.trim()
-    if (!plugin) continue
+    if (!plugin) {continue}
 
     config.plugins = config.plugins || []
     config.disabledPlugins = config.disabledPlugins || []
@@ -111,7 +111,7 @@ export function parseCSSConfig(cssContent: string): ParsedCSSConfig {
   const presetMatches = cssContent.matchAll(/@coral\s+preset\s+([^;]+);?/g)
   for (const match of presetMatches) {
     const presetLine = match[1]?.trim()
-    if (!presetLine) continue
+    if (!presetLine) {continue}
 
     // Check if preset has extension
     const extendMatch = presetLine.match(/^(\w+)\s*\{([^}]+)\}/)

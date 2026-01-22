@@ -120,7 +120,7 @@ export function tablesPlugin(): Plugin {
         pattern: /^border-spacing-x-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'border-spacing': `${value.replace(/_/g, ' ')} 0` } }
         },
       })
@@ -129,7 +129,7 @@ export function tablesPlugin(): Plugin {
         pattern: /^border-spacing-y-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'border-spacing': `0 ${value.replace(/_/g, ' ')}` } }
         },
       })
@@ -139,7 +139,7 @@ export function tablesPlugin(): Plugin {
         pattern: /^border-spacing-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'border-spacing': value.replace(/_/g, ' ') } }
         },
       })

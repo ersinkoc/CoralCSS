@@ -606,7 +606,7 @@ export interface CoralQwikContext {
  * ```
  */
 export function getInitialDarkModeClass(request?: Request): string {
-  if (!request) return ''
+  if (!request) {return ''}
 
   const cookies = request.headers.get('Cookie') || ''
   const match = cookies.match(/coral-dark-mode=(\w+)/)

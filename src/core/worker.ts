@@ -112,7 +112,7 @@ function serializeRule(rule: Rule, index: number): SerializableRule {
 function deserializeMatch(match: SerializableRuleMatch, rules: Rule[]): RuleMatch | null {
   // Find rule by name or fallback to indexed lookup
   const rule = rules.find(r => r.name === match.ruleId) ?? rules.find((r, i) => `rule-${i}` === match.ruleId)
-  if (!rule) return null
+  if (!rule) {return null}
 
   // Convert string[] back to RegExpMatchArray-like structure
   const matchArray = match.match as unknown as RegExpMatchArray
@@ -191,7 +191,7 @@ export class CoralWorker {
       reject: () => {}
     })
 
-    if (!result.matches) return []
+    if (!result.matches) {return []}
 
     return result.matches
       .map(m => deserializeMatch(m, rules))
@@ -355,7 +355,7 @@ export class CoralWorker {
     const seen = new Set<string>()
 
     for (const className of task.classes) {
-      if (seen.has(className)) continue
+      if (seen.has(className)) {continue}
       seen.add(className)
 
       // Parse class name for variants and modifiers
@@ -398,7 +398,7 @@ export class CoralWorker {
   } {
     let input = className
     const important = input.startsWith('!')
-    if (important) input = input.slice(1)
+    if (important) {input = input.slice(1)}
 
     // Extract variants (e.g., hover:dark:bg-red-500)
     const parts = input.split(':')

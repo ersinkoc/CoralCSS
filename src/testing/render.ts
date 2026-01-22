@@ -256,7 +256,7 @@ export async function waitForCSS(
     }
 
     const settle = (success: boolean) => {
-      if (settled) return
+      if (settled) {return}
       settled = true
       cleanup()
       if (success) {

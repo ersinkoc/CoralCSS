@@ -45,6 +45,13 @@ export interface ObserverConfig {
    * @default 10
    */
   debounce?: number
+
+  /**
+   * Maximum number of seen classes to cache before evicting old entries
+   * This prevents memory leaks in long-running SPAs with dynamic classes
+   * @default 10000
+   */
+  maxSeenClasses?: number
 }
 
 /**
@@ -54,7 +61,8 @@ export class DOMObserver {
   private observer: MutationObserver | null = null
   private coral: Coral
   private config: Required<ObserverConfig>
-  private seenClasses = new Set<string>()
+  // LRU cache using Map - re-inserting on access moves to end (most recently used)
+  private seenClasses = new Map<string, true>()
   private pendingClasses = new Set<string>()
   private debounceTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -67,7 +75,35 @@ export class DOMObserver {
       childList: config.childList ?? true,
       onClassesDetected: config.onClassesDetected ?? (() => {}),
       debounce: config.debounce ?? 10,
+      maxSeenClasses: config.maxSeenClasses ?? 10000,
     }
+  }
+
+  /**
+   * Add a class to the seen set with LRU eviction if needed
+   * Uses Map for O(1) operations - re-inserting on access updates recency
+   */
+  private addSeenClass(cls: string): boolean {
+    // If already seen, re-insert to mark as recently used
+    if (this.seenClasses.has(cls)) {
+      // Move to end as most recently used
+      this.seenClasses.delete(cls)
+      this.seenClasses.set(cls, true)
+      return false // Already seen
+    }
+
+    // Evict oldest entry if at limit
+    // Map maintains insertion order, so first entry is least recently used
+    if (this.seenClasses.size >= this.config.maxSeenClasses) {
+      const oldestKey = this.seenClasses.keys().next().value
+      if (oldestKey) {
+        this.seenClasses.delete(oldestKey)
+      }
+    }
+
+    // Add as most recently used (at the end)
+    this.seenClasses.set(cls, true)
+    return true
   }
 
   /**
@@ -123,9 +159,8 @@ export class DOMObserver {
     elements.forEach((el) => {
       const classList = el.getAttribute('class')?.split(/\s+/) ?? []
       classList.forEach((cls) => {
-        if (cls && !this.seenClasses.has(cls)) {
+        if (cls && this.addSeenClass(cls)) {
           classes.add(cls)
-          this.seenClasses.add(cls)
         }
       })
     })
@@ -169,9 +204,8 @@ export class DOMObserver {
     const classList = el.getAttribute('class')?.split(/\s+/) ?? []
 
     for (const cls of classList) {
-      if (cls && !this.seenClasses.has(cls)) {
+      if (cls && this.addSeenClass(cls)) {
         this.pendingClasses.add(cls)
-        this.seenClasses.add(cls)
       }
     }
   }
@@ -215,7 +249,7 @@ export class DOMObserver {
    * Get all seen classes
    */
   getSeenClasses(): string[] {
-    return Array.from(this.seenClasses)
+    return Array.from(this.seenClasses.keys())
   }
 
   /**
@@ -224,6 +258,17 @@ export class DOMObserver {
   clearCache(): void {
     this.seenClasses.clear()
     this.pendingClasses.clear()
+  }
+
+  /**
+   * Get cache statistics
+   * Returns information about the seen classes cache
+   */
+  getCacheStats(): { size: number; maxSize: number } {
+    return {
+      size: this.seenClasses.size,
+      maxSize: this.config.maxSeenClasses,
+    }
   }
 }
 

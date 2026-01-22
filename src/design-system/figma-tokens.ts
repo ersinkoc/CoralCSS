@@ -135,7 +135,7 @@ function convertToFigmaCollection(
   const result: FigmaTokenCollection = {}
 
   for (const [key, value] of Object.entries(group)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
 
     if ('$value' in value) {
       // It's a token
@@ -161,7 +161,7 @@ function convertShadowsToFigma(shadows: TokenGroup): FigmaTokenCollection {
   const result: FigmaTokenCollection = {}
 
   for (const [key, value] of Object.entries(shadows)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
 
     if ('$value' in value) {
       const shadowValue = (value as StyleDictionaryToken).$value
@@ -440,11 +440,11 @@ export function fromFigmaTokens(figmaTokens: FigmaTokenFile): DesignTokenFile {
 
   // Process each collection
   for (const [collectionName, collection] of Object.entries(figmaTokens)) {
-    if (collectionName.startsWith('$')) continue
+    if (collectionName.startsWith('$')) {continue}
 
     // Map Figma token types to Style Dictionary structure
     for (const [key, value] of Object.entries(collection)) {
-      if (key.startsWith('$')) continue
+      if (key.startsWith('$')) {continue}
 
       const category = mapFigmaTypeToCategory(key)
       if (!result[category]) {
@@ -505,7 +505,7 @@ function convertFigmaGroup(group: FigmaTokenCollection): TokenGroup {
   const result: TokenGroup = {}
 
   for (const [key, value] of Object.entries(group)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
 
     if ('value' in value && 'type' in value) {
       result[key] = convertFigmaToken(value as FigmaToken)
@@ -627,7 +627,7 @@ function createColorVariables(colors: TokenGroup): FigmaVariable[] {
 
   function processColorGroup(group: TokenGroup, prefix: string) {
     for (const [key, value] of Object.entries(group)) {
-      if (key.startsWith('$')) continue
+      if (key.startsWith('$')) {continue}
 
       const name = prefix ? `${prefix}/${key}` : key
 
@@ -659,7 +659,7 @@ function createSpacingVariables(spacing: TokenGroup): FigmaVariable[] {
   const variables: FigmaVariable[] = []
 
   for (const [key, value] of Object.entries(spacing)) {
-    if (key.startsWith('$')) continue
+    if (key.startsWith('$')) {continue}
 
     if ('$value' in value) {
       const token = value as StyleDictionaryToken
@@ -685,7 +685,7 @@ function createTypographyVariables(typography: TokenGroup): FigmaVariable[] {
   // Font sizes
   if (typography.fontSize) {
     for (const [key, value] of Object.entries(typography.fontSize as TokenGroup)) {
-      if (key.startsWith('$')) continue
+      if (key.startsWith('$')) {continue}
       if ('$value' in value) {
         const token = value as StyleDictionaryToken
         const numericValue = parseFloat(String(token.$value))

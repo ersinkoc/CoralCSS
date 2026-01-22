@@ -74,7 +74,7 @@ export function lineClampPlugin(): Plugin {
         pattern: /^line-clamp-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: {
               'display': '-webkit-box',

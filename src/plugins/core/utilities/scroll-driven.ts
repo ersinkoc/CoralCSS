@@ -85,7 +85,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^animation-timeline-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'animation-timeline': value.replace(/_/g, ' ') }
           }
@@ -181,7 +181,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^animation-range-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'animation-range': value.replace(/_/g, ' ') }
           }
@@ -196,7 +196,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^animation-range-start-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'animation-range-start': value.replace(/_/g, ' ') }
           }
@@ -207,7 +207,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^animation-range-end-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'animation-range-end': value.replace(/_/g, ' ') }
           }
@@ -241,7 +241,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^view-timeline-name-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'view-timeline-name': value }
           }
@@ -261,7 +261,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^view-timeline-inset-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'view-timeline-inset': value }
           }
@@ -277,7 +277,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^scroll-timeline-name-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'scroll-timeline-name': value }
           }
@@ -323,7 +323,7 @@ export function scrollDrivenAnimationsPlugin(): Plugin {
         pattern: /^timeline-scope-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'timeline-scope': value }
           }

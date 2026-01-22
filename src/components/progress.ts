@@ -102,7 +102,8 @@ export class Progress extends BaseComponent {
     const maxVal = max ?? 100
     return {
       value: val,
-      percent: (val / maxVal) * 100,
+      // Prevent division by zero - default to 0% if max is 0
+      percent: maxVal > 0 ? (val / maxVal) * 100 : 0,
     }
   }
 
@@ -178,7 +179,8 @@ export class Progress extends BaseComponent {
   setValue(value: number): void {
     const max = this.config.max ?? 100
     const clampedValue = Math.max(0, Math.min(max, value))
-    const percent = (clampedValue / max) * 100
+    // Prevent division by zero - default to 0% if max is 0
+    const percent = max > 0 ? (clampedValue / max) * 100 : 0
 
     this.setState({ value: clampedValue, percent })
 

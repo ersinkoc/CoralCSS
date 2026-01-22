@@ -158,8 +158,15 @@ export class QRCode extends BaseComponent {
   private downloadLink: HTMLAnchorElement | null = null
   private generator: QRCodeGenerator | null = null
 
+  // Bound event handler for proper cleanup
+  private boundHandleDownload: (e: Event) => void
+
   constructor(element: HTMLElement, config: QRCodeConfig) {
     super(element, config)
+
+    // Initialize bound handler
+    this.boundHandleDownload = this.handleDownload.bind(this)
+
     this.cacheElements()
     this.generate()
   }
@@ -208,7 +215,7 @@ export class QRCode extends BaseComponent {
   protected bindEvents(): void {
     // Download button
     if ((this.config as QRCodeConfig).downloadable && this.downloadLink) {
-      this.downloadLink.addEventListener('click', this.handleDownload.bind(this))
+      this.downloadLink.addEventListener('click', this.boundHandleDownload)
     }
   }
 
@@ -306,12 +313,12 @@ export class QRCode extends BaseComponent {
   }
 
   private drawPlaceholder(data: string): void {
-    if (!this.canvas) return
+    if (!this.canvas) {return}
 
     const size = this.config.size || 200
     const ctx = this.canvas.getContext('2d')
 
-    if (!ctx) return
+    if (!ctx) {return}
 
     this.canvas.width = size
     this.canvas.height = size
@@ -387,7 +394,7 @@ export class QRCode extends BaseComponent {
   }
 
   protected override render(): void {
-    if (!this.canvas) return
+    if (!this.canvas) {return}
 
     // Draw logo if specified
     if (this.config.logo && this.state.qrUrl) {
@@ -406,10 +413,10 @@ export class QRCode extends BaseComponent {
   }
 
   private drawLogo(): void {
-    if (!this.canvas || !this.config.logo) return
+    if (!this.canvas || !this.config.logo) {return}
 
     const ctx = this.canvas.getContext('2d')
-    if (!ctx) return
+    if (!ctx) {return}
 
     const size = this.config.size || 200
     const logoSize = size * (this.config.logoSize || 0.2)
@@ -475,7 +482,7 @@ export class QRCode extends BaseComponent {
    * Destroy the component
    */
   override destroy(): void {
-    this.downloadLink?.removeEventListener('click', this.handleDownload.bind(this))
+    this.downloadLink?.removeEventListener('click', this.boundHandleDownload)
     super.destroy()
   }
 }

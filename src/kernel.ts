@@ -20,11 +20,12 @@ import type {
   EventHandler,
   ParsedClass,
   GeneratedCSS,
+  SafelistPattern,
 } from './types'
 import {
   PluginDependencyError,
 } from './errors'
-import { CSSCache, createCache } from './core/cache'
+import { CSSCache, createCache, hashTheme } from './core/cache'
 import { Matcher, createMatcher } from './core/matcher'
 import { Generator, createGenerator, sortGeneratedCSS } from './core/generator'
 import { Transformer, createTransformer } from './core/transformer'
@@ -32,6 +33,15 @@ import { Extractor, createExtractor } from './core/extractor'
 import { parse, expandVariantGroups } from './core/parser'
 import { dedupeStrings } from './utils/string'
 import { defaultTheme } from './theme/default'
+
+/**
+ * Branded type for validated plain objects
+ * This provides stronger type safety than Record<string, unknown>
+ * by marking objects that have passed isPlainObject validation
+ */
+export interface PlainObject extends Record<string, unknown> {
+  readonly __brand: unique symbol
+}
 
 /**
  * Default configuration values
@@ -63,47 +73,139 @@ const defaultConfig: ResolvedConfig = {
 const UNSAFE_MERGE_KEYS = new Set(['__proto__', 'constructor', 'prototype'])
 
 /**
- * Deep merge utility with prototype pollution protection
+ * Maximum depth for deep merge to prevent stack overflow from deeply nested objects
  */
-function deepMerge<T extends object>(target: T, ...sources: DeepPartial<T>[]): T {
-  const result = { ...target }
+const MAX_MERGE_DEPTH = 20
 
-  for (const source of sources) {
-    if (!source) {
-      continue
-    }
+/**
+ * Check if a value is a plain object (not a class instance, array, null, etc.)
+ * This also performs deep validation to prevent prototype pollution via nested values
+ *
+ * @example
+ * ```typescript
+ * if (isPlainObject(value)) {
+ *   // TypeScript now knows value is a PlainObject (branded type)
+ *   console.log(value.someProperty)
+ * }
+ * ```
+ */
+function isPlainObject(value: unknown): value is PlainObject {
+  if (value === null || typeof value !== 'object') {
+    return false
+  }
 
-    for (const key of Object.keys(source) as (keyof T)[]) {
-      // Prototype pollution protection - skip dangerous keys
-      if (UNSAFE_MERGE_KEYS.has(key as string)) {
-        continue
+  // Reject arrays and special objects explicitly
+  if (Array.isArray(value)) return false
+  if (value instanceof Date) return false
+  if (value instanceof RegExp) return false
+  if (value instanceof Function) return false
+  if (value instanceof Map) return false
+  if (value instanceof Set) return false
+  if (value instanceof WeakMap) return false
+  if (value instanceof WeakSet) return false
+  if (value instanceof Promise) return false
+
+  // Check prototype chain
+  const proto = Object.getPrototypeOf(value)
+  if (proto !== Object.prototype && proto !== null) {
+    return false
+  }
+
+  // Deep validation: check that the object doesn't contain dangerous nested values
+  // This prevents: { "toString": { "constructor": { "polluted": true } } }
+  const obj = value as Record<string, unknown>
+  for (const key of Object.keys(obj)) {
+    const val = obj[key]
+
+    // Check if the value itself has a dangerous constructor
+    if (val && typeof val === 'object') {
+      const valProto = Object.getPrototypeOf(val)
+      if (valProto && valProto !== Object.prototype && valProto !== null) {
+        return false
       }
 
-      const sourceValue = source[key]
-      const targetValue = result[key]
-
-      if (
-        sourceValue !== undefined &&
-        typeof sourceValue === 'object' &&
-        sourceValue !== null &&
-        !Array.isArray(sourceValue)
-      ) {
-        if (
-          typeof targetValue === 'object' &&
-          targetValue !== null &&
-          !Array.isArray(targetValue)
-        ) {
-          result[key] = deepMerge(targetValue as object, sourceValue as object) as T[keyof T]
-        } else {
-          result[key] = { ...sourceValue } as T[keyof T]
+      // Check if value has dangerous properties (constructor, prototype, __proto__)
+      if (typeof val === 'object' && val !== null) {
+        const valKeys = Object.keys(val)
+        for (const valKey of valKeys) {
+          if (UNSAFE_MERGE_KEYS.has(valKey)) {
+            return false
+          }
         }
-      } else if (sourceValue !== undefined) {
-        result[key] = sourceValue as T[keyof T]
       }
     }
   }
 
-  return result
+  return true
+}
+
+/**
+ * Deep merge utility with prototype pollution and circular reference protection
+ */
+function deepMerge<T extends object>(target: T, ...sources: DeepPartial<T>[]): T {
+  // Track seen objects to detect circular references
+  const seen = new WeakSet<object>()
+
+  function mergeInternal(
+    targetObj: Record<string, unknown>,
+    sourceObj: Record<string, unknown>,
+    depth: number
+  ): Record<string, unknown> {
+    // Prevent stack overflow from deeply nested objects
+    if (depth > MAX_MERGE_DEPTH) {
+      console.warn('CoralCSS: Deep merge exceeded maximum depth, returning source as-is')
+      return { ...targetObj, ...sourceObj }
+    }
+
+    // Check for circular reference
+    if (seen.has(sourceObj)) {
+      console.warn('CoralCSS: Circular reference detected in deep merge, skipping')
+      return targetObj
+    }
+    seen.add(sourceObj)
+
+    const result = { ...targetObj }
+
+    for (const key of Object.keys(sourceObj)) {
+      // Prototype pollution protection - skip dangerous keys
+      if (UNSAFE_MERGE_KEYS.has(key)) {
+        continue
+      }
+
+      const sourceValue = sourceObj[key]
+      const targetValue = result[key]
+
+      // Only merge plain objects recursively
+      if (isPlainObject(sourceValue)) {
+        if (isPlainObject(targetValue)) {
+          result[key] = mergeInternal(
+            targetValue as Record<string, unknown>,
+            sourceValue as Record<string, unknown>,
+            depth + 1
+          )
+        } else {
+          // Clone source object to prevent shared references
+          result[key] = mergeInternal({}, sourceValue as Record<string, unknown>, depth + 1)
+        }
+      } else if (sourceValue !== undefined) {
+        result[key] = sourceValue
+      }
+    }
+
+    return result
+  }
+
+  let result = { ...target } as Record<string, unknown>
+
+  for (const source of sources) {
+    if (!source || typeof source !== 'object') {
+      continue
+    }
+
+    result = mergeInternal(result, source as Record<string, unknown>, 0)
+  }
+
+  return result as T
 }
 
 /**
@@ -150,6 +252,8 @@ export class Kernel implements Coral {
 
     // Create cache with resolved config
     this._cache = createCache(this._config.cache)
+    // Initialize cache version with initial theme hash
+    this._cache.setThemeVersion(hashTheme(this._config.theme))
 
     // Initialize generator and transformer with empty theme/variants
     // They will be updated after plugins are loaded
@@ -422,6 +526,8 @@ export class Kernel implements Coral {
    */
   reset(): void {
     this._cache.clear()
+    // Re-initialize cache version after reset
+    this._cache.setThemeVersion(hashTheme(this._config.theme))
     this._rules.clear()
     this._variants.clear()
     this._matcher.clear()
@@ -583,7 +689,8 @@ export class Kernel implements Coral {
       extendTheme(theme: DeepPartial<Theme>): void {
         self._config = deepMerge(self._config, { theme } as DeepPartial<ResolvedConfig>)
         self._generator.setTheme(self._config.theme)
-        self._cache.clear() // Clear cache when theme changes
+        // Update cache version with new theme hash for automatic invalidation
+        self._cache.setThemeVersion(hashTheme(self._config.theme))
         self.emit('theme:extended', { plugin: plugin.name })
       },
 
@@ -599,8 +706,9 @@ export class Kernel implements Coral {
           if (current === null || current === undefined) {
             return fallback as T
           }
-          if (typeof current === 'object') {
-            current = (current as Record<string, unknown>)[part]
+          // Use isPlainObject to properly exclude arrays and other non-plain objects
+          if (isPlainObject(current)) {
+            current = current[part]
           } else {
             return fallback as T
           }
@@ -683,28 +791,53 @@ export class Kernel implements Coral {
 
   /**
    * Expand safelist patterns into actual class names
+   * Now properly handles RegExp and object patterns
    */
   private expandSafelist(): string[] {
     const classes: string[] = []
+    const allRules = this.getRules()
 
     for (const item of this._config.safelist) {
       if (typeof item === 'string') {
-        // Direct class name
+        // Direct class name - add as-is
         classes.push(item)
       } else if (item instanceof RegExp) {
-        // RegExp pattern - we can't expand this without knowing all possible classes
-        // This is mainly for preventing purging, so we skip expansion
-        // In a real implementation, you'd scan the rule patterns
-        continue
-      } else if (typeof item === 'object' && item.pattern) {
-        // Pattern with variants
-        // Similar to above, we can't easily expand without knowing all rules
-        // For now, we skip - this is more for static analysis / purge protection
-        continue
+        // RegExp pattern - expand against all registered rules
+        for (const rule of allRules) {
+          const ruleName = rule.name || ''
+          if (item.test(ruleName)) {
+            // Add base rule
+            classes.push(ruleName)
+          }
+        }
+      } else if (typeof item === 'object' && 'pattern' in item) {
+        // SafelistPattern with specific variants/breakpoints
+        const safelistPattern = item as SafelistPattern
+        const pattern = safelistPattern.pattern instanceof RegExp
+          ? safelistPattern.pattern
+          : new RegExp(safelistPattern.pattern)
+
+        for (const rule of allRules) {
+          const ruleName = rule.name || ''
+          if (pattern.test(ruleName)) {
+            // Add base rule
+            classes.push(ruleName)
+
+            // Add specified variants
+            for (const variant of safelistPattern.variants || []) {
+              classes.push(`${variant}:${ruleName}`)
+            }
+
+            // Add specified breakpoints
+            for (const bp of safelistPattern.breakpoints || []) {
+              classes.push(`${bp}:${ruleName}`)
+            }
+          }
+        }
       }
     }
 
-    return classes
+    return dedupeStrings(classes)
   }
 }
 

@@ -22,7 +22,7 @@ export function isBrowser(): boolean {
  * ```
  */
 export function escapeHtml(str: string): string {
-  if (!str) return ''
+  if (!str) {return ''}
   const escapeMap: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',

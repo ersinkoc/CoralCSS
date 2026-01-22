@@ -19,6 +19,76 @@ interface TrackedListener {
 }
 
 /**
+ * Global component registry using WeakMap to allow garbage collection
+ * when elements are removed from the DOM
+ */
+const componentRegistry = new WeakMap<HTMLElement, Map<string, BaseComponent>>()
+
+/**
+ * Get component instance from an element
+ */
+export function getComponentInstance<T extends BaseComponent>(
+  element: HTMLElement,
+  componentName?: string
+): T | undefined {
+  const instanceMap = componentRegistry.get(element)
+  if (!instanceMap) {
+    return undefined
+  }
+
+  if (componentName) {
+    return instanceMap.get(componentName) as T | undefined
+  }
+
+  // Return the first component if no name specified
+  const values = instanceMap.values()
+  const first = values.next()
+  return first.value as T | undefined
+}
+
+/**
+ * Check if an element has a component instance
+ */
+export function hasComponentInstance(element: HTMLElement, componentName?: string): boolean {
+  const instanceMap = componentRegistry.get(element)
+  if (!instanceMap) {
+    return false
+  }
+
+  if (componentName) {
+    return instanceMap.has(componentName)
+  }
+
+  return instanceMap.size > 0
+}
+
+/**
+ * Register a component instance
+ */
+function registerComponent(element: HTMLElement, component: BaseComponent): void {
+  let instanceMap = componentRegistry.get(element)
+  if (!instanceMap) {
+    instanceMap = new Map()
+    componentRegistry.set(element, instanceMap)
+  }
+  instanceMap.set(component.name, component)
+}
+
+/**
+ * Unregister a component instance
+ */
+function unregisterComponent(element: HTMLElement, componentName: string): void {
+  const instanceMap = componentRegistry.get(element)
+  if (instanceMap) {
+    instanceMap.delete(componentName)
+    // Clean up empty map
+    if (instanceMap.size === 0) {
+      componentRegistry.delete(element)
+    }
+  }
+}
+
+/**
  * Base component class that all headless components extend
  */
 export abstract class BaseComponent {
@@ -42,6 +112,16 @@ export abstract class BaseComponent {
     }
     this.hooks = config.hooks ?? {}
     this.state = this.getInitialState()
+
+    // Check for existing instance on this element
+    const existingInstance = getComponentInstance(element, this.name)
+    if (existingInstance) {
+      // Destroy existing instance before creating new one
+      existingInstance.destroy()
+    }
+
+    // Register this component instance
+    registerComponent(element, this)
 
     // Set up component
     this.init()
@@ -329,6 +409,9 @@ export abstract class BaseComponent {
    * Destroy the component and clean up
    */
   destroy(): void {
+    // Unregister from global registry
+    unregisterComponent(this.element, this.name)
+
     // Remove all tracked event listeners (works for any target: element, document, window, etc.)
     this.removeAllEventListeners()
 
@@ -391,15 +474,28 @@ export function createComponentFactory<T extends BaseComponent, C extends Compon
 
 /**
  * Auto-initialize components from data attributes
+ * Skips elements that already have an instance of the same component type
  */
 export function autoInit(
   selector: string,
-  ComponentClass: new (element: HTMLElement, config?: Partial<ComponentConfig>) => BaseComponent
+  ComponentClass: new (element: HTMLElement, config?: Partial<ComponentConfig>) => BaseComponent,
+  options?: { skipExisting?: boolean }
 ): BaseComponent[] {
   const elements = document.querySelectorAll<HTMLElement>(selector)
   const instances: BaseComponent[] = []
+  const skipExisting = options?.skipExisting ?? true
+  const componentName = ComponentClass.name.toLowerCase()
 
   elements.forEach((element) => {
+    // Skip if already initialized (unless explicitly told not to)
+    if (skipExisting && hasComponentInstance(element, componentName)) {
+      const existing = getComponentInstance(element, componentName)
+      if (existing) {
+        instances.push(existing)
+      }
+      return
+    }
+
     // Parse config from data attributes
     const config: Partial<ComponentConfig> = {}
     for (const attr of element.attributes) {
@@ -419,6 +515,20 @@ export function autoInit(
   })
 
   return instances
+}
+
+/**
+ * Destroy all component instances on an element
+ */
+export function destroyAllComponents(element: HTMLElement): void {
+  const instanceMap = componentRegistry.get(element)
+  if (instanceMap) {
+    // Create array of instances to avoid modifying map while iterating
+    const instances = Array.from(instanceMap.values())
+    for (const instance of instances) {
+      instance.destroy()
+    }
+  }
 }
 
 export default BaseComponent

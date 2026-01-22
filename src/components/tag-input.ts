@@ -173,6 +173,8 @@ export class TagInput extends BaseComponent {
   private tagsContainer: HTMLElement | null = null
   private suggestionsContainer: HTMLElement | null = null
   private patternRegex: RegExp | null = null
+  private blurTimer: ReturnType<typeof setTimeout> | null = null
+  private errorTimer: ReturnType<typeof setTimeout> | null = null
 
   protected getDefaultConfig(): TagInputConfig {
     return {
@@ -309,8 +311,12 @@ export class TagInput extends BaseComponent {
 
     this.addEventListener(this.input, 'blur', () => {
       this.element.removeAttribute('data-focused')
-      // Delay to allow click on suggestion
-      setTimeout(() => {
+      // Delay to allow click on suggestion - track for cleanup
+      if (this.blurTimer) {
+        clearTimeout(this.blurTimer)
+      }
+      this.blurTimer = setTimeout(() => {
+        this.blurTimer = null
         this.hideSuggestionsPanel()
       }, 150)
     })
@@ -552,8 +558,12 @@ export class TagInput extends BaseComponent {
     this.element.setAttribute('data-error', '')
     this.dispatch('error', { message })
 
-    // Clear error after delay
-    setTimeout(() => {
+    // Clear error after delay - track for cleanup
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer)
+    }
+    this.errorTimer = setTimeout(() => {
+      this.errorTimer = null
       this.setState({ error: null })
       this.element.removeAttribute('data-error')
     }, 3000)
@@ -812,6 +822,18 @@ export class TagInput extends BaseComponent {
     if (this.state.inputValue) {
       this.filterSuggestions(this.state.inputValue)
     }
+  }
+
+  override destroy(): void {
+    if (this.blurTimer) {
+      clearTimeout(this.blurTimer)
+      this.blurTimer = null
+    }
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer)
+      this.errorTimer = null
+    }
+    super.destroy()
   }
 }
 

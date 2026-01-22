@@ -84,9 +84,9 @@ export const transforms: Record<string, TransformConfig> = {
     filter: (token: ProcessedToken) => token.original.$type === 'color',
     transform: (token: ProcessedToken) => {
       const value = String(token.value)
-      if (value.startsWith('#')) return value
-      if (value.startsWith('rgb')) return rgbToHex(value)
-      if (value.startsWith('hsl')) return hslToHex(value)
+      if (value.startsWith('#')) {return value}
+      if (value.startsWith('rgb')) {return rgbToHex(value)}
+      if (value.startsWith('hsl')) {return hslToHex(value)}
       return value
     },
   },
@@ -99,9 +99,9 @@ export const transforms: Record<string, TransformConfig> = {
     filter: (token: ProcessedToken) => token.original.$type === 'color',
     transform: (token: ProcessedToken) => {
       const value = String(token.value)
-      if (value.startsWith('rgba')) return value
-      if (value.startsWith('#')) return hexToRgba(value)
-      if (value.startsWith('rgb(')) return value.replace('rgb(', 'rgba(').replace(')', ', 1)')
+      if (value.startsWith('rgba')) {return value}
+      if (value.startsWith('#')) {return hexToRgba(value)}
+      if (value.startsWith('rgb(')) {return value.replace('rgb(', 'rgba(').replace(')', ', 1)')}
       return value
     },
   },
@@ -147,7 +147,7 @@ export const transforms: Record<string, TransformConfig> = {
     },
     transform: (token: ProcessedToken) => {
       const value = String(token.value)
-      if (value.endsWith('px')) return value
+      if (value.endsWith('px')) {return value}
       if (value.endsWith('rem')) {
         const numericValue = parseFloat(value) * 16
         return `${numericValue}px`
@@ -171,7 +171,7 @@ export const transforms: Record<string, TransformConfig> = {
     },
     transform: (token: ProcessedToken) => {
       const value = String(token.value)
-      if (value.endsWith('rem')) return value
+      if (value.endsWith('rem')) {return value}
       if (value.endsWith('px')) {
         const numericValue = parseFloat(value) / 16
         return `${numericValue}rem`
@@ -234,7 +234,7 @@ export const transforms: Record<string, TransformConfig> = {
     filter: (token: ProcessedToken) => token.original.$type === 'fontWeight',
     transform: (token: ProcessedToken) => {
       const value = token.value
-      if (typeof value === 'number') return value
+      if (typeof value === 'number') {return value}
 
       const weights: Record<string, number> = {
         thin: 100,
@@ -290,7 +290,7 @@ export const transforms: Record<string, TransformConfig> = {
     filter: (token: ProcessedToken) => token.original.$type === 'shadow',
     transform: (token: ProcessedToken) => {
       const value = token.value
-      if (typeof value === 'string') return value
+      if (typeof value === 'string') {return value}
 
       if (Array.isArray(value)) {
         return value.map(formatShadow).join(', ')
@@ -308,7 +308,7 @@ export const transforms: Record<string, TransformConfig> = {
     filter: (token: ProcessedToken) => token.original.$type === 'cubicBezier',
     transform: (token: ProcessedToken) => {
       const value = token.value
-      if (typeof value === 'string') return value
+      if (typeof value === 'string') {return value}
       if (Array.isArray(value) && value.length === 4) {
         return `cubic-bezier(${value.join(', ')})`
       }
@@ -519,7 +519,7 @@ function formatShadow(shadow: ShadowValue): string {
  * Format dimension value
  */
 function formatDimension(value: number | string): string {
-  if (typeof value === 'string') return value
+  if (typeof value === 'string') {return value}
   return value === 0 ? '0' : `${value}px`
 }
 
@@ -528,7 +528,7 @@ function formatDimension(value: number | string): string {
  */
 function rgbToHex(rgb: string): string {
   const match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
-  if (!match) return rgb
+  if (!match) {return rgb}
 
   const r = parseInt(match[1] as string, 10)
   const g = parseInt(match[2] as string, 10)
@@ -550,7 +550,7 @@ function rgbToHex(rgb: string): string {
  */
 function hslToHex(hsl: string): string {
   const match = hsl.match(/hsla?\((\d+),\s*([\d.]+)%,\s*([\d.]+)%(?:,\s*([\d.]+))?\)/)
-  if (!match) return hsl
+  if (!match) {return hsl}
 
   const h = parseInt(match[1] as string, 10) / 360
   const s = parseFloat(match[2] as string) / 100
@@ -563,11 +563,11 @@ function hslToHex(hsl: string): string {
     r = g = b = l
   } else {
     const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1
-      if (t > 1) t -= 1
-      if (t < 1 / 6) return p + (q - p) * 6 * t
-      if (t < 1 / 2) return q
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+      if (t < 0) {t += 1}
+      if (t > 1) {t -= 1}
+      if (t < 1 / 6) {return p + (q - p) * 6 * t}
+      if (t < 1 / 2) {return q}
+      if (t < 2 / 3) {return p + (q - p) * (2 / 3 - t) * 6}
       return p
     }
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s

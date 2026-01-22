@@ -111,7 +111,7 @@ export function listStylePlugin(): Plugin {
         pattern: /^list-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'list-style-image': `url("${value.replace(/_/g, ' ')}")` } }
         },
       })
@@ -121,7 +121,7 @@ export function listStylePlugin(): Plugin {
         pattern: /^list-type-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'list-style-type': value.replace(/_/g, ' ') } }
         },
       })

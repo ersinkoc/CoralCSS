@@ -114,7 +114,7 @@ export function effectsPlugin(): Plugin {
             pattern: `drop-shadow-${color}-${shade}\\/(\\d+)`,
             handler: (match) => {
               const opacityValue = match[1]
-              if (!opacityValue) return null
+              if (!opacityValue) {return null}
               const opacity = (parseInt(opacityValue, 10) / 100).toFixed(2)
               return {
                 properties: {
@@ -132,7 +132,7 @@ export function effectsPlugin(): Plugin {
         pattern: /^drop-shadow-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return {
             properties: { 'filter': 'drop-shadow(' + value.replace(/_/g, ' ') + ')' }
           }

@@ -49,6 +49,7 @@ export class OTPInput extends BaseComponent {
   // and would overwrite values set during bindEvents().
   private inputs!: HTMLInputElement[]
   private hiddenInput!: HTMLInputElement | null
+  private focusTimeout!: ReturnType<typeof setTimeout> | null
 
   protected getDefaultConfig(): OTPInputConfig {
     return {
@@ -83,12 +84,13 @@ export class OTPInput extends BaseComponent {
     // Initialize all private fields that don't use field initializers
     this.inputs = []
     this.hiddenInput = null
+    this.focusTimeout = null
 
     this.buildDOM()
     this.setupInputEvents()
 
     if (this.config.autoFocus && this.inputs[0]) {
-      setTimeout(() => this.inputs[0]?.focus(), 0)
+      this.focusTimeout = setTimeout(() => this.inputs[0]?.focus(), 0)
     }
   }
 
@@ -188,7 +190,7 @@ export class OTPInput extends BaseComponent {
 
   private handleKeyDown(e: KeyboardEvent, index: number): void {
     const input = this.inputs[index]
-    if (!input) return
+    if (!input) {return}
 
     switch (e.key) {
       case 'Backspace':
@@ -418,6 +420,10 @@ export class OTPInput extends BaseComponent {
   }
 
   override destroy(): void {
+    if (this.focusTimeout) {
+      clearTimeout(this.focusTimeout)
+      this.focusTimeout = null
+    }
     this.inputs = []
     this.hiddenInput = null
     super.destroy()

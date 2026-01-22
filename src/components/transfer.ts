@@ -186,7 +186,7 @@ export class Transfer extends BaseComponent {
   }
 
   private moveToTarget(): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     const selectedItems = this.getSelectedItems('source')
     const maxItems = this.config.maxTargetItems
@@ -215,7 +215,7 @@ export class Transfer extends BaseComponent {
   }
 
   private moveToSource(): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     const selectedItems = this.getSelectedItems('target')
 
@@ -250,7 +250,7 @@ export class Transfer extends BaseComponent {
     const state = list === 'source' ? this.state.source : this.state.target
     const filter = state.filter.toLowerCase()
 
-    if (!filter) return state.items
+    if (!filter) {return state.items}
 
     return state.items.filter((item) =>
       item.label.toLowerCase().includes(filter) ||
@@ -266,7 +266,7 @@ export class Transfer extends BaseComponent {
 
   private renderList(list: 'source' | 'target'): void {
     const listElement = list === 'source' ? this.sourceListElement : this.targetListElement
-    if (!listElement) return
+    if (!listElement) {return}
 
     const state = list === 'source' ? this.state.source : this.state.target
     const items = this.getFilteredItems(list)
@@ -430,7 +430,7 @@ export class Transfer extends BaseComponent {
    * Move all items to target
    */
   moveAllToTarget(): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     const maxItems = this.config.maxTargetItems
     const itemsToMove = maxItems
@@ -453,7 +453,7 @@ export class Transfer extends BaseComponent {
    * Move all items to source
    */
   moveAllToSource(): void {
-    if (this.state.disabled) return
+    if (this.state.disabled) {return}
 
     this.state.source.items.push(...this.state.target.items)
     this.state.target.items = []

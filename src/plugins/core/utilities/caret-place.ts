@@ -74,7 +74,7 @@ export function caretPlacePlugin(): Plugin {
         pattern: /^caret-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'caret-color': value.replace(/_/g, ' ') } }
         },
       })
@@ -114,7 +114,7 @@ export function caretPlacePlugin(): Plugin {
         pattern: /^place-items-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'place-items': value.replace(/_/g, ' ') } }
         },
       })
@@ -123,7 +123,7 @@ export function caretPlacePlugin(): Plugin {
         pattern: /^place-self-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'place-self': value.replace(/_/g, ' ') } }
         },
       })
@@ -132,7 +132,7 @@ export function caretPlacePlugin(): Plugin {
         pattern: /^place-content-\[(.+)\]$/,
         handler: (match) => {
           const value = match[1]
-          if (!value) return null
+          if (!value) {return null}
           return { properties: { 'place-content': value.replace(/_/g, ' ') } }
         },
       })

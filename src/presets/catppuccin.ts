@@ -324,7 +324,7 @@ export function catppuccinPreset(options: CatppuccinPresetOptions = {}): Plugin[
     name: 'catppuccin-theme',
     version: '1.0.0',
     install(api) {
-      let colors = { ...getFlavorColors(flavor) }
+      const colors = { ...getFlavorColors(flavor) }
 
       // Apply custom accent color if provided
       if (accentColor) {

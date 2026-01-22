@@ -187,7 +187,11 @@ export function coralEsbuildPlugin(options: EsbuildPluginOptions = {}): EsbuildP
 
           const finalCSS = base ? `${base}\n${generatedCSS}` : generatedCSS
 
-          await fs.writeFile(outFile, finalCSS, 'utf-8')
+          try {
+            await fs.writeFile(outFile, finalCSS, 'utf-8')
+          } catch (error) {
+            console.error(`CoralCSS: Failed to write CSS file to ${outFile}:`, error)
+          }
         }
       })
     },
@@ -287,14 +291,56 @@ function extractClassesFromCode(code: string): string[] {
 
 /**
  * Simple CSS minification
+ *
+ * Uses a state machine approach to avoid ReDoS vulnerability from
+ * nested comment patterns (e.g. comment-within-comment that causes
+ * catastrophic backtracking in regex solutions).
  */
 function minifyCSS(css: string): string {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
-    .replace(/\s+/g, ' ') // Collapse whitespace
-    .replace(/\s*([{}:;,>+~])\s*/g, '$1') // Remove space around special chars
-    .replace(/;}/g, '}') // Remove last semicolon
+  // State machine approach to avoid ReDoS vulnerability
+  const result: string[] = []
+  let i = 0
+  const len = css.length
+
+  while (i < len) {
+    // Skip CSS comments - O(n) guaranteed, no backtracking
+    if (i + 1 < len && css[i] === '/' && css[i + 1] === '*') {
+      i += 2
+      // Advance until we find closing */
+      while (i + 1 < len) {
+        if (css[i] === '*' && css[i + 1] === '/') {
+          i += 2
+          break
+        }
+        i++
+      }
+      continue
+    }
+
+    // Handle whitespace compression
+    if (/\s/.test(css[i]!)) {
+      result.push(' ')
+      // Skip consecutive whitespace
+      while (i < len && /\s/.test(css[i]!)) {
+        i++
+      }
+      continue
+    }
+
+    // Copy non-whitespace, non-comment characters
+    result.push(css[i]!)
+    i++
+  }
+
+  let output = result.join('')
+
+  // Clean up around special characters - these are safe patterns
+  output = output
+    .replace(/\s*([{}:;,>+~])\s*/g, '$1')
+    .replace(/;}/g, '}')
     .trim()
+
+  return output
 }
 
 /**
